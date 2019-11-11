@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -96,7 +97,7 @@ namespace TetrisDotnet.Code
 
 		#region Helper functions
 
-		void StartNewGame()
+		private void StartNewGame()
 		{
 			SetUpGlobalVars();
 
@@ -106,12 +107,12 @@ namespace TetrisDotnet.Code
 			GC.WaitForPendingFinalizers();
 		}
 
-		void Quit()
+		private void Quit()
 		{
 			window.Close();
 		}
 
-		void DrawActivePieceHardDrop()
+		private void DrawActivePieceHardDrop()
 		{
 			PieceType[,] pieceArray = activePiece.pieceArray;
 
@@ -128,18 +129,11 @@ namespace TetrisDotnet.Code
 			}
 		}
 
-		void NewPiece(PieceType type = PieceType.Empty)
+		private void NewPiece(PieceType type = PieceType.Empty)
 		{
 			holdManager.canSwap = true;
 
-			if (type == PieceType.Empty)
-			{
-				activePiece = new Piece(pieceQueue.GrabNext());
-			}
-			else
-			{
-				activePiece = new Piece(type);
-			}
+			activePiece = type == PieceType.Empty ? new Piece(pieceQueue.GrabNext()) : new Piece(type);
 
 			if (grid.CheckLose())
 			{
@@ -155,7 +149,7 @@ namespace TetrisDotnet.Code
 
 		#region Check if you completed rows
 
-		void CheckFullRows()
+		private void CheckFullRows()
 		{
 			idxRowFull = grid.CheckFullRows();
 
@@ -646,7 +640,7 @@ namespace TetrisDotnet.Code
 
 				#region Queue
 
-				List<PieceType> queueArray = pieceQueue.GetList();
+				List<PieceType> queueArray = pieceQueue.Get().ToList();
 
 				for (int i = 0; i < queueArray.Count; i++)
 				{

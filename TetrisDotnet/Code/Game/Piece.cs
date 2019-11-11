@@ -14,7 +14,7 @@ namespace TetrisDotnet.Code.Game
 		public Piece(PieceType type)
 		{
 			this.type = type;
-			Debug.Assert(this.type == PieceType.Dead, "New piece was \"Dead\". This should never happen.");
+			Debug.Assert(this.type != PieceType.Dead, "New piece was \"Dead\". This should never happen.");
 
 			pieceArray = StaticVars.GetPieceArray(this.type);
 

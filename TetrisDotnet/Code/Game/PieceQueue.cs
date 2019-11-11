@@ -1,27 +1,30 @@
 ﻿using System.Collections.Generic;
-using TetrisDotnet.Code.Utils.Extensions;
 
 namespace TetrisDotnet.Code.Game
 {
 	class PieceQueue
 	{
-		private readonly List<PieceType> pieceList;
+		private readonly Queue<PieceType> pieceList;
 		private readonly Bag bag;
 
 		public PieceQueue()
 		{
 			bag = new Bag();
-			pieceList = new List<PieceType> {bag.Next(), bag.Next(), bag.Next()};
+			pieceList = new Queue<PieceType>();
+			for (int i = 0; i < 3; i++)
+			{
+				pieceList.Enqueue(bag.Next());
+			}
 		}
 
 		public PieceType GrabNext()
 		{
-			pieceList.Add(bag.Next());
+			pieceList.Enqueue(bag.Next());
 
-			return pieceList.PopLeft();
+			return pieceList.Dequeue();
 		}
 
-		public List<PieceType> GetList()
+		public IEnumerable<PieceType> Get()
 		{
 			return pieceList;
 		}
