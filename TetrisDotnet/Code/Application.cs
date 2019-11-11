@@ -151,7 +151,7 @@ namespace TetrisDotnet.Code
 
 		private void CheckFullRows()
 		{
-			idxRowFull = grid.CheckFullRows();
+			idxRowFull = grid.GetFullRows();
 
 			scoreText.CountScore(idxRowFull, levelText);
 

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SFML.System;
 using TetrisDotnet.Code.Utils;
 
 namespace TetrisDotnet.Code.Game.World
 {
-	// TODO: Go over and refactor this code.
 	class Grid
 	{
 		public const int GridHeight = 22;
@@ -15,77 +13,58 @@ namespace TetrisDotnet.Code.Game.World
 
 		public Grid()
 		{
-			grid = new PieceType[22, 10];
-
-			SetUpGrid();
+			grid = new PieceType[GridWidth, GridHeight];
+			InitializeGrid();
 		}
 
+		// TODO: Fuck this function.
 		public PieceType[,] GetDrawable()
 		{
-			PieceType[,] visibleArray = new PieceType[20, 10];
+			PieceType[,] visibleArray = new PieceType[GridWidth - 2, GridHeight];
 
-			for (int i = 0; i < visibleArray.GetLength(0); i++)
+			for (int x = 0; x < GridWidth - 2; x++)
 			{
-				for (int j = 0; j < visibleArray.GetLength(1); j++)
+				for (int y = 0; y < GridHeight; y++)
 				{
 					//i + 2 since we only want the grid where we actually see the pieces
-					visibleArray[i, j] = grid[i + 2, j];
+					visibleArray[x, y] = grid[x + 2, y];
 				}
 			}
 
 			return visibleArray;
 		}
 
-		public bool[,] GetBoolGrid()
+		public List<int> GetFullRows()
 		{
-			bool[,] visibleArray = new bool[20, 10];
+			List<int> fullRows = new List<int>();
 
-			for (int i = 0; i < visibleArray.GetLength(0); i++)
-			{
-				for (int j = 0; j < visibleArray.GetLength(1); j++)
-				{
-					//i + 2 since we only want the grid where we actually see the pieces
-					visibleArray[i, j] = grid[i + 2, j] != PieceType.Empty;
-				}
-			}
-
-			return visibleArray;
-		}
-
-		public List<int> CheckFullRows()
-		{
-			var idxFullRows = new List<int>();
-
-			for (int i = 0; i < grid.GetLength(0); i++)
+			for (int y = 0; y < GridHeight; y++)
 			{
 				bool isFull = true;
 
-				for (int j = 0; j < grid.GetLength(1); j++)
+				for (int x = 0; x < GridWidth; x++)
 				{
-					if (grid[i, j] != PieceType.Dead)
-					{
-						isFull = false;
-
-						break;
-					}
+					if (grid[x, y] == PieceType.Dead) continue;
+					isFull = false;
+					break;
 				}
 
 				if (isFull)
 				{
-					idxFullRows.Add(i);
+					fullRows.Add(y);
 				}
 			}
 
-			return idxFullRows;
+			return fullRows;
 		}
 
 		public bool CheckLose()
 		{
-			for (int i = 0; i < 2; i++)
+			for (int y = 0; y < 2; y++)
 			{
-				for (int j = 0; j < grid.GetLength(1); j++)
+				for (int x = 0; x < GridWidth; x++)
 				{
-					if (grid[i, j] == PieceType.Dead)
+					if (grid[x, y] == PieceType.Dead)
 					{
 						return true;
 					}
@@ -95,29 +74,27 @@ namespace TetrisDotnet.Code.Game.World
 			return false;
 		}
 
-		private void SetUpGrid()
+		private void InitializeGrid()
 		{
-			for (int i = 0; i < grid.GetLength(0); i++)
+			for (int x = 0; x < GridWidth; x++)
 			{
-				for (int j = 0; j < grid.GetLength(1); j++)
+				for (int y = 0; y < GridHeight; y++)
 				{
-					grid[i, j] = PieceType.Empty;
+					grid[x, y] = PieceType.Empty;
 				}
 			}
 		}
 
 		public void KillPiece(Piece piece)
 		{
-			PieceType[,] pieceArray = piece.pieceArray;
-
-			for (int i = 0; i < pieceArray.GetLength(0); i++)
+			for (int x = 0; x < 4; x++)
 			{
-				for (int j = 0; j < pieceArray.GetLength(1); j++)
+				for (int y = 0; y < 4; y++)
 				{
-					if (NotOutOfRange(piece.position.Y + i, piece.position.X + j) &&
-					    grid[piece.position.Y + i, piece.position.X + j] == piece.type)
+					if (!OutOfRange(new Vector2i(piece.position.X + x, piece.position.Y + y)) &&
+					    grid[piece.position.X + x, piece.position.Y + y] == piece.type)
 					{
-						grid[piece.position.Y + i, piece.position.X + j] = PieceType.Dead;
+						grid[piece.position.X + x, piece.position.Y + y] = PieceType.Dead;
 					}
 				}
 			}
@@ -125,134 +102,65 @@ namespace TetrisDotnet.Code.Game.World
 
 		public void RemovePiece(Piece piece)
 		{
-			PieceType[,] pieceArray = piece.pieceArray;
-
-			for (int i = 0; i < pieceArray.GetLength(0); i++)
+			for (int x = 0; x < 4; x++)
 			{
-				for (int j = 0; j < pieceArray.GetLength(1); j++)
+				for (int y = 0; y < 4; y++)
 				{
-					if (NotOutOfRange(piece.position.Y + i, piece.position.X + j) &&
-					    grid[piece.position.Y + i, piece.position.X + j] == piece.type)
+					if (!OutOfRange(new Vector2i(piece.position.X + x, piece.position.Y + y)) &&
+					    grid[piece.position.X + x, piece.position.Y + y] == piece.type)
 					{
-						grid[piece.position.Y + i, piece.position.X + j] = PieceType.Empty;
+						grid[piece.position.X + x, piece.position.Y + y] = PieceType.Empty;
 					}
 				}
 			}
 		}
 
-		private bool NotOutOfRange(int y, int x)
+		private static bool OutOfRange(Vector2i position)
 		{
-			return !(y >= grid.GetLength(0) || y < 0 || x >= grid.GetLength(1) || x < 0);
+			return position.Y >= GridHeight || position.Y < 0 || 
+			       position.X >= GridWidth || position.X < 0;
 		}
 
 		public void RemoveRow(int rowIdx)
 		{
-			for (int i = rowIdx; i > 0; i--)
+			for (int y = rowIdx; y > 0; y--)
 			{
-				for (int j = 0; j < grid.GetLength(1); j++)
+				for (int x = 0; x < grid.GetLength(1); x++)
 				{
-					if (grid[i, j] == PieceType.Dead || grid[i, j] == PieceType.Empty)
+					if (grid[x, y] == PieceType.Dead || grid[x, y] == PieceType.Empty)
 					{
-						grid[i, j] = grid[i - 1, j];
+						grid[x, y] = grid[x, y - 1];
 					}
 				}
 			}
 		}
-
-		#region Move piece
-
-		// (1)
-		/// <summary>
-		/// Vérifie si la pièce active peut être déplacée dans une direction passée en paramètre.
-		/// </summary>
-		/// 
-		/// <param name="piece">
-		/// La pièce active qui sera déplacée.
-		/// </param>
-		/// 
-		/// <param name="position">
-		/// La direction dans laquelle on veut déplacer la pièce active.
-		/// </param>
-		/// 
-		/// <returns>
-		/// Retourne « vrai » si la pièce peut bouger et « faux » si elle ne peut pas.
-		/// </returns>
+		
 		public bool CanPlacePiece(Piece piece, Vector2i position)
 		{
-			PieceType[,] pieceArray = piece.pieceArray;
-
-			for (int i = 0; i < pieceArray.GetLength(0); i++)
+			foreach (Vector2i block in piece.blocks)
 			{
-				for (int j = 0; j < pieceArray.GetLength(1); j++)
+				Vector2i newPosition = block + position;
+
+				if (OutOfRange(newPosition) || grid[newPosition.X, newPosition.Y] == PieceType.Dead)
 				{
-					if (pieceArray[i, j] != PieceType.Empty)
-					{
-						int newYPos = piece.position.Y + position.Y + i;
-
-						int newXPos = piece.position.X + position.X + j;
-
-						if (!NotOutOfRange(newYPos, newXPos) || grid[newYPos, newXPos] == PieceType.Dead)
-						{
-							return false;
-						}
-					}
+					return false;
 				}
 			}
 
 			return true;
 		}
-
-		// (C)
-		/// <summary>
-		/// Déplace la pièce active dans le tableau 2D du jeu dans une direction passée en paramètre.
-		/// </summary>
-		/// 
-		/// <param name="piece">
-		/// La pièce active qui sera déplacée.
-		/// </param>
-		/// 
-		/// <param name="position">
-		/// La direction dans laquelle la pièce active sera déplacée.
-		/// </param>
+		
 		public void AddPiece(Piece piece, Vector2i position)
 		{
-			PieceType[,] pieceArray = piece.pieceArray;
-
-
-			for (int i = 0; i < pieceArray.GetLength(0); i++)
-			{
-				for (int j = 0; j < pieceArray.GetLength(1); j++)
-				{
-					if (pieceArray[i, j] == piece.type && NotOutOfRange(piece.position.Y + position.Y + i,
-						    piece.position.X + position.X + j))
-					{
-						grid[piece.position.Y + position.Y + i, piece.position.X + position.X + j] = pieceArray[i, j];
-					}
-				}
-			}
-
 			piece.position += position;
+			foreach (Vector2i block in piece.getGlobalBlocks)
+			{
+				grid[block.X, block.Y] = piece.type;
+			}
 		}
-
-		// (C)
-		/// <summary>
-		/// Appelle la fonction qui vérifie si la pièce active peut bouger dans la 
-		/// direction passée en paramètre, et ensuite appelle la fonction qui déplace 
-		/// la pièce active si elle peut être déplacée. Appelle aussi les fonctions qui 
-		/// gèrent la pièce fantôme.
-		/// </summary>
-		/// 
-		/// <param name="piece">
-		/// La pièce active qui sera déplacée.
-		/// </param>
-		/// 
-		/// <param name="newPosition">
-		/// La direction dans laquelle la pièce active sera déplacée.
-		/// </param>
+		
 		public void MovePiece(Piece piece, Vector2i newPosition)
 		{
-			PieceType[,] pieceArray = piece.pieceArray;
-
 			if (CanPlacePiece(piece, newPosition))
 			{
 				RemoveGhostPiece(piece);
@@ -262,46 +170,23 @@ namespace TetrisDotnet.Code.Game.World
 				PlaceGhostPiece(piece);
 			}
 		}
-
-		#endregion
-
-		#region Rotate piece
-
-		#region Kickback values
-
+		
 		// All of the possible kickback positions. Used in the function "CanRotatePiece".
-		private static int[] noKickBack = {0, 0};
-		private static int[] kickBackToRight = {0, 1};
-		private static int[] kickBackToLeft = {0, -1};
-		private static int[] kickBackDown = {1, 0};
-		private static int[] kickTDiagLeft = {1, -1};
-		private static int[] kickTDiagRight = {1, 1};
-		private static int[] kickBackUp = {-1, 0};
-		private static int[] kickLineToRight = {0, 2};
-		private static int[] kickLineToLeft = {0, -2};
-		private static int[] kickLineDown = {2, 0};
-		private static int[] kickLineUp = {-2, 0};
+		private static readonly int[] NoKickBack = {0, 0};
+		private static readonly int[] BackToRight = {1, 0};
+		private static readonly int[] BackToLeft = {-1, 0};
+		private static readonly int[] BackDown = {0, 1};
+		private static readonly int[] DiagLeft = {-1, 1};
+		private static readonly int[] DiagRight = {1, 1};
+		private static readonly int[] BackUp = {0, -1};
+		private static readonly int[] LineToRight = {2, 0};
+		private static readonly int[] LineToLeft = {-2, 0};
+		private static readonly int[] LineDown = {0, 2};
+		private static readonly int[] LineUp = {0, -2};
 
-		#endregion
-
-		// (2)
-		/// <summary>
-		/// Fais tourner la pièce active en sens horaire, ou sens antihoraires.
-		/// </summary>
-		/// 
-		/// <param name="piece">
-		/// La pièce active qui sera tournée.
-		/// </param>
-		/// 
-		/// <param name="directionOfRotation">
-		/// Détermine si la pièce sera tournée dans le sens horaire (0), ou antihoraire (1).
-		/// </param>
-		/// 
-		/// <returns>
-		/// Retourne un tableau avec la nouvelle pièce tournée.
-		/// </returns>
-		private PieceType[,] RotatePieceArray(Piece piece, int directionOfRotation)
+		private List<PieceType> RotatePieceArray(Piece piece, int directionOfRotation)
 		{
+			
 			PieceType[,] pieceArray = piece.pieceArray;
 
 			int iLength = pieceArray.GetLength(0);
@@ -385,7 +270,7 @@ namespace TetrisDotnet.Code.Game.World
 			{
 				for (int j = 0; j < pieceArray.GetLength(1); j++)
 				{
-					if (NotOutOfRange(piece.position.Y + i + kickBackPosition[0],
+					if (OutOfRange(piece.position.Y + i + kickBackPosition[0],
 						    piece.position.X + j + kickBackPosition[1]) && pieceArray[i, j] == piece.type)
 					{
 						grid[piece.position.Y + i + kickBackPosition[0], piece.position.X + j + kickBackPosition[1]] =
@@ -422,53 +307,53 @@ namespace TetrisDotnet.Code.Game.World
 		private bool CanRotatePiece(Piece piece, out int[] kickBackPosition, int directionOfRotation)
 		{
 			PieceType[,] newPieceArray = RotatePieceArray(piece, directionOfRotation);
-			if (CheckPiecePositionValid(piece, newPieceArray, noKickBack))
+			if (CheckPiecePositionValid(piece, newPieceArray, NoKickBack))
 			{
-				kickBackPosition = noKickBack;
+				kickBackPosition = NoKickBack;
 			}
-			else if (CheckPiecePositionValid(piece, newPieceArray, kickBackToRight))
+			else if (CheckPiecePositionValid(piece, newPieceArray, BackToRight))
 			{
-				kickBackPosition = kickBackToRight;
+				kickBackPosition = BackToRight;
 			}
-			else if (CheckPiecePositionValid(piece, newPieceArray, kickBackToLeft))
+			else if (CheckPiecePositionValid(piece, newPieceArray, BackToLeft))
 			{
-				kickBackPosition = kickBackToLeft;
+				kickBackPosition = BackToLeft;
 			}
-			else if (CheckPiecePositionValid(piece, newPieceArray, kickBackDown))
+			else if (CheckPiecePositionValid(piece, newPieceArray, BackDown))
 			{
-				kickBackPosition = kickBackDown;
+				kickBackPosition = BackDown;
 			}
-			else if (piece.type == PieceType.T && CheckPiecePositionValid(piece, newPieceArray, kickTDiagLeft))
+			else if (piece.type == PieceType.T && CheckPiecePositionValid(piece, newPieceArray, DiagLeft))
 			{
-				kickBackPosition = kickTDiagLeft;
+				kickBackPosition = DiagLeft;
 			}
-			else if (piece.type == PieceType.T && CheckPiecePositionValid(piece, newPieceArray, kickTDiagRight))
+			else if (piece.type == PieceType.T && CheckPiecePositionValid(piece, newPieceArray, DiagRight))
 			{
-				kickBackPosition = kickTDiagRight;
+				kickBackPosition = DiagRight;
 			}
-			else if (CheckPiecePositionValid(piece, newPieceArray, kickBackUp))
+			else if (CheckPiecePositionValid(piece, newPieceArray, BackUp))
 			{
-				kickBackPosition = kickBackUp;
+				kickBackPosition = BackUp;
 			}
-			else if (piece.type == PieceType.I && CheckPiecePositionValid(piece, newPieceArray, kickLineToRight))
+			else if (piece.type == PieceType.I && CheckPiecePositionValid(piece, newPieceArray, LineToRight))
 			{
-				kickBackPosition = kickLineToRight;
+				kickBackPosition = LineToRight;
 			}
-			else if (piece.type == PieceType.I && CheckPiecePositionValid(piece, newPieceArray, kickLineToLeft))
+			else if (piece.type == PieceType.I && CheckPiecePositionValid(piece, newPieceArray, LineToLeft))
 			{
-				kickBackPosition = kickLineToLeft;
+				kickBackPosition = LineToLeft;
 			}
-			else if (piece.type == PieceType.I && CheckPiecePositionValid(piece, newPieceArray, kickLineDown))
+			else if (piece.type == PieceType.I && CheckPiecePositionValid(piece, newPieceArray, LineDown))
 			{
-				kickBackPosition = kickLineDown;
+				kickBackPosition = LineDown;
 			}
-			else if (piece.type == PieceType.I && CheckPiecePositionValid(piece, newPieceArray, kickLineUp))
+			else if (piece.type == PieceType.I && CheckPiecePositionValid(piece, newPieceArray, LineUp))
 			{
-				kickBackPosition = kickLineUp;
+				kickBackPosition = LineUp;
 			}
 			else
 			{
-				kickBackPosition = noKickBack;
+				kickBackPosition = NoKickBack;
 				return false;
 			}
 
@@ -506,7 +391,7 @@ namespace TetrisDotnet.Code.Game.World
 					int newXPos = piece.position.X + j + kickBackPosition[1];
 					if (newPieceArray[i, j] == piece.type)
 					{
-						if (!NotOutOfRange(newYPos, newXPos) || grid[newYPos, newXPos] == PieceType.Dead)
+						if (!OutOfRange(newYPos, newXPos) || grid[newYPos, newXPos] == PieceType.Dead)
 						{
 							return false;
 						}
@@ -564,7 +449,7 @@ namespace TetrisDotnet.Code.Game.World
 			{
 				for (int j = 0; j < pieceArray.GetLength(1); j++)
 				{
-					if (NotOutOfRange(piece.position.Y + ghostPiecePos + i, piece.position.X + j) &&
+					if (OutOfRange(piece.position.Y + ghostPiecePos + i, piece.position.X + j) &&
 					    pieceArray[i, j] == piece.type)
 					{
 						if (grid[piece.position.Y + ghostPiecePos + i, piece.position.X + j] != piece.type)
@@ -610,41 +495,12 @@ namespace TetrisDotnet.Code.Game.World
 			{
 				for (int j = 0; j < grid.GetLength(1); j++)
 				{
-					if (NotOutOfRange(i, j) && grid[i, j] == PieceType.Ghost)
+					if (OutOfRange(i, j) && grid[i, j] == PieceType.Ghost)
 					{
 						grid[i, j] = PieceType.Empty;
 					}
 				}
 			}
 		}
-
-		#endregion
-
-		#region Debug
-
-		public void debug_print_grid()
-		{
-			for (int i = 0; i < grid.GetLength(0); i++)
-			{
-				for (int j = 0; j < grid.GetLength(1); j++)
-				{
-					Console.Write(grid[i, j] + ' ');
-				}
-
-				Console.WriteLine();
-			}
-		}
-
-		public void debug_change_type(int i, int j, PieceType type)
-		{
-			grid[i, j] = type;
-		}
-
-		public PieceType debug_get_type(int i, int j)
-		{
-			return grid[i, j];
-		}
-
-		#endregion
 	}
 }
