@@ -1,15 +1,10 @@
-﻿using SFML.Graphics;
+﻿using System.Collections.Generic;
+using SFML.Graphics;
 using SFML.System;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TetrisDotnet;
+using TetrisDotnet.Code.Utils;
 
-namespace Tetris
+namespace TetrisDotnet.Code.UI
 {
-
 	public enum Direction
 	{
 		Up = -1,
@@ -20,7 +15,6 @@ namespace Tetris
 
 	class Menu
 	{
-
 		//private static Texture menuBackdropTexture = new Texture("Art/menu_backdrop.png");
 		//private static Sprite menuBackdrop = new Sprite(menuBackdropTexture);
 
@@ -35,110 +29,94 @@ namespace Tetris
 
 		public Menu(params string[] menuItems)
 		{
-
 			//elementsToDraw.Add(menuBackdrop);
 
 			longestWord = "";
 
-			charSizeBuffer = (float)charSize + (float)((double)charSize * 0.1);
+			charSizeBuffer = charSize + (float) (charSize * 0.1);
 
 			for (int i = 0; i < menuItems.Length; i++)
 			{
-
 				if (menuItems[i].Length > longestWord.Length)
 				{
-
 					longestWord = menuItems[i];
-
 				}
 
-				Text text = new Text(menuItems[i], StaticVars.font);
-
-				text.CharacterSize = charSize;
+				Text text = new Text(menuItems[i], StaticVars.font)
+				{
+					FillColor = Color.Green,
+					CharacterSize = charSize
+				};
 
 				FloatRect textRect = text.GetLocalBounds();
-				text.Origin = new Vector2f(textRect.Left + textRect.Width / 2.0f, textRect.Top + textRect.Height / 2.0f);
-				text.Position = new Vector2f(Application.WINDOW_WIDTH / 2, Application.WINDOW_HEIGHT / 2 + (i * charSizeBuffer) - ((menuItems.Length - 1) / 2 * charSizeBuffer));
-				text.Color = Color.Green;
+				text.Origin = new Vector2f(textRect.Left + textRect.Width * 0.5f,
+					textRect.Top + textRect.Height * 0.5f);
+
+				text.Position = new Vector2f(Application.WINDOW_WIDTH * 0.5f,
+					Application.WINDOW_HEIGHT * 0.5f + (i * charSizeBuffer) -
+					((menuItems.Length - 1) * 0.5f * charSizeBuffer));
 
 				elementsToDraw.Add(text);
-
 			}
 
 			menuLength = menuItems.Length;
 
 			cursorPos = 0;
 
-			cursor = new Text(">", StaticVars.font);
+			cursor = new Text(">", StaticVars.font) {CharacterSize = charSize};
 
-			cursor.CharacterSize = charSize;
 
 			FloatRect cursorRect = cursor.GetLocalBounds();
-			cursor.Origin = new Vector2f(cursorRect.Left + cursorRect.Width / 2.0f, cursorRect.Top + cursorRect.Height / 2.0f);
-			cursor.Color = Color.Green;
+			cursor.Origin = new Vector2f(cursorRect.Left + cursorRect.Width * 0.5f,
+				cursorRect.Top + cursorRect.Height * 0.5f);
+			cursor.FillColor = Color.Green;
 
 			elementsToDraw.Add(cursor);
 
 			UpdateCursorPos();
-
 		}
 
 		private void UpdateCursorPos()
 		{
-
-			cursor.Position = new Vector2f(Application.WINDOW_WIDTH / 2 - longestWord.Length * (charSize / 3), Application.WINDOW_HEIGHT / 2 + (cursorPos * charSizeBuffer) - ((menuLength - 1) / 2 * charSizeBuffer));
+			cursor.Position = new Vector2f(Application.WINDOW_WIDTH / 2 - longestWord.Length * (charSize / 3),
+				Application.WINDOW_HEIGHT * 0.5f + cursorPos * charSizeBuffer -
+				(menuLength - 1) * 0.5f * charSizeBuffer);
 
 			elementsToDraw.RemoveAt(elementsToDraw.Count - 1);
 			elementsToDraw.Add(cursor);
-
 		}
 
 		private void LimitCursor()
 		{
-
 			if (cursorPos >= menuLength)
 			{
-
 				cursorPos = 0;
-
 			}
 			else if (cursorPos < 0)
 			{
-
 				cursorPos = menuLength - 1;
-
 			}
-
 		}
 
 		public void MoveCursor(Direction direction)
 		{
-
 			if (direction == Direction.Up)
 			{
-
-				cursorPos += (int)direction;
-
+				cursorPos += (int) direction;
 			}
-			else if(direction == Direction.Down)
+			else if (direction == Direction.Down)
 			{
-
-				cursorPos += (int)direction;
-
+				cursorPos += (int) direction;
 			}
 
 			LimitCursor();
 
 			UpdateCursorPos();
-
 		}
 
 		public List<Drawable> GetDrawable()
 		{
-
 			return elementsToDraw;
-
 		}
-
 	}
 }
