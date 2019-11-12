@@ -12,6 +12,11 @@ namespace TetrisDotnet.Code.Game.World
 
 		private readonly PieceType[,] grid;
 
+		public PieceType GetBlock(int x, int y)
+		{
+			return grid[x, y];
+		}
+
 		public Grid()
 		{
 			grid = new PieceType[GridWidth, GridHeight];

@@ -24,7 +24,7 @@ namespace TetrisDotnet.Code.UI
 		public static Texture statsTexture { get; } = new Texture("Art/stats.png");
 		private static Texture backDropTexture { get; } = new Texture("Art/background_img.png");
 		public static Texture holdTexture { get; } = new Texture("Art/holdbox_Frame.png");
-		private static Texture queueTexture { get; } = new Texture("Art/queuebox_Frame.png");
+		public static Texture queueTexture { get; } = new Texture("Art/queuebox_Frame.png");
 		private static Texture drawGridBackgroundTexture { get; } = new Texture("Art/gridbox_Frame.png");
 
 		public static Sprite backDrop { get; } = new Sprite(backDropTexture);

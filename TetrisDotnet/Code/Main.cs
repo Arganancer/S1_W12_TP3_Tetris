@@ -1,7 +1,6 @@
 ﻿using System;
 using SFML.Graphics;
 using SFML.Window;
-using Tetris;
 using TetrisDotnet.Code.Controls;
 using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Scenes;
@@ -48,6 +47,13 @@ namespace TetrisDotnet.Code
 				Draw();
 			}
 		}
+		
+		private void Draw()
+		{
+			window.Clear();
+			sceneManager.Draw(window);
+			window.Display();
+		}
 
 		private void Quit()
 		{
@@ -57,13 +63,6 @@ namespace TetrisDotnet.Code
 		private void OnWindowClosed(object sender, EventArgs e)
 		{
 			Quit();
-		}
-
-		private void Draw()
-		{
-			window.Clear();
-			sceneManager.Draw(window);
-			window.Display();
 		}
 	}
 }
