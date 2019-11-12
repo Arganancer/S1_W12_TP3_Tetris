@@ -22,16 +22,16 @@ namespace TetrisDotnet.Code.Utils
 			};
 
 			//Create the VISIBLE grid of sprites for the game
-			drawGrid = new Sprite[20, 10];
+			drawGrid = new Sprite[10, 20];
 
 			//Basically takes the resolution of the block sprite and uses it for calculations
 			imageSize = new Vector2i((int) blockTextures[0].Size.X,
 				(int) blockTextures[0].Size.Y);
 
 			gridXPos = Application.WINDOW_WIDTH / 2 -
-			           drawGrid.GetLength(1) * imageSize.X / 2; //(int)drawGrid[0,0].Size.X / 2;
+			           drawGrid.GetLength(0) * imageSize.X / 2; //(int)drawGrid[0,0].Size.X / 2;
 			gridYPos = Application.WINDOW_HEIGHT / 2 -
-			           drawGrid.GetLength(0) * imageSize.Y / 2; //* (int)drawGrid[0, 0].Size.Y / 2;
+			           drawGrid.GetLength(1) * imageSize.Y / 2; //* (int)drawGrid[0, 0].Size.Y / 2;
 
 			backDropTexture = new Texture("Art/background_img.png");
 			holdTexture = new Texture("Art/holdbox_Frame.png");

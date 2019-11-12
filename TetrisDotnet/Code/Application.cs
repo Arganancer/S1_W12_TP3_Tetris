@@ -114,18 +114,10 @@ namespace TetrisDotnet.Code
 
 		private void DrawActivePieceHardDrop()
 		{
-			PieceType[,] pieceArray = activePiece.pieceArray;
-
-			for (int i = 0; i < pieceArray.GetLength(0); i++)
+			foreach (Vector2i block in activePiece.getGlobalBlocks)
 			{
-				for (int j = 0; j < pieceArray.GetLength(1); j++)
-				{
-					if (pieceArray[i, j] == activePiece.type)
-					{
-						StaticVars.drawGrid[Math.Max(0, activePiece.position.Y + i - 2), activePiece.position.X + j]
-							.Texture = StaticVars.blockTextures[(int) activePiece.type];
-					}
-				}
+				StaticVars.drawGrid[block.X, Math.Max(0, block.Y - 2)].Texture =
+					StaticVars.blockTextures[(int) activePiece.type];
 			}
 		}
 
@@ -160,20 +152,20 @@ namespace TetrisDotnet.Code
 
 		void RemoveRows(List<int> fullRows)
 		{
-			foreach (var rowIdx in fullRows)
+			foreach (int rowIdx in fullRows)
 			{
 				grid.RemoveRow(rowIdx);
 
 				PieceType[,] drawableGrid = grid.GetDrawable();
 
-				for (int i = rowIdx - 2; i > 0; i--)
+				for (int y = rowIdx - 2; y > 0; y--)
 				{
-					for (int j = 0; j < StaticVars.drawGrid.GetLength(1); j++)
+					for (int x = 0; x < StaticVars.drawGrid.GetLength(0); x++)
 					{
 						//Only move "Dead" textures since the rest gets sorted out
-						if (drawableGrid[i, j] == PieceType.Dead)
+						if (drawableGrid[x, y] == PieceType.Dead)
 						{
-							StaticVars.drawGrid[i, j].Texture = StaticVars.drawGrid[i - 1, j].Texture;
+							StaticVars.drawGrid[x, y].Texture = StaticVars.drawGrid[x, y - 1].Texture;
 						}
 					}
 				}
@@ -194,15 +186,17 @@ namespace TetrisDotnet.Code
 
 			holdManager = new Hold();
 
-			for (int i = 0; i < StaticVars.drawGrid.GetLength(0); i++)
+			for (int x = 0; x < StaticVars.drawGrid.GetLength(0); x++)
 			{
-				for (int j = 0; j < StaticVars.drawGrid.GetLength(1); j++)
+				for (int y = 0; y < StaticVars.drawGrid.GetLength(1); y++)
 				{
-					StaticVars.drawGrid[i, j] = new Sprite();
+					StaticVars.drawGrid[x, y] = new Sprite
+					{
+						Position = new Vector2f(x * StaticVars.imageSize.X + StaticVars.gridXPos,
+							y * StaticVars.imageSize.Y + StaticVars.gridYPos + StaticVars.imageSize.Y)
+					};
 
 					//Place each block of the grid at the corresponding position of the array
-					StaticVars.drawGrid[i, j].Position = new Vector2f(j * StaticVars.imageSize.X + StaticVars.gridXPos,
-						i * StaticVars.imageSize.Y + StaticVars.gridYPos + StaticVars.imageSize.Y);
 				}
 			}
 
@@ -412,7 +406,7 @@ namespace TetrisDotnet.Code
 					// Rotate active piece clockwise.
 					case Keyboard.Key.Up:
 					case Keyboard.Key.W:
-						if (grid.RotatePiece(activePiece, 0))
+						if (grid.RotatePiece(activePiece, Rotation.Clockwise))
 						{
 							dropTime -= levelText.sideMoveSpeed;
 						}
@@ -421,7 +415,7 @@ namespace TetrisDotnet.Code
 
 					// Rotate active piece counter clockwise.
 					case Keyboard.Key.E:
-						if (grid.RotatePiece(activePiece, 1))
+						if (grid.RotatePiece(activePiece, Rotation.CounterClockwise))
 						{
 							dropTime -= levelText.sideMoveSpeed;
 						}
@@ -601,9 +595,9 @@ namespace TetrisDotnet.Code
 				PieceType[,] drawArray = grid.GetDrawable();
 
 				//Loop through the drawable grid elements
-				for (int i = 0; i < drawArray.GetLength(0); i++)
+				for (int x = 0; x < drawArray.GetLength(0); x++)
 				{
-					for (int j = 0; j < drawArray.GetLength(1); j++)
+					for (int y = 0; y < drawArray.GetLength(1); y++)
 					{
 						//Slower code?
 						/*
@@ -622,15 +616,15 @@ namespace TetrisDotnet.Code
 						*/
 
 						//Update the textures except dead pieces, since we want them to keep their original colors
-						if (drawArray[i, j] != PieceType.Dead)
+						if (drawArray[x, y] != PieceType.Dead)
 						{
 							//Associated the blockTextures with the same indexes as the Enum
 							//Look at both and you will understand
-							StaticVars.drawGrid[i, j].Texture = StaticVars.blockTextures[(int) drawArray[i, j]];
+							StaticVars.drawGrid[x, y].Texture = StaticVars.blockTextures[(int) drawArray[x, y]];
 						}
 
 						//Finally draw to the screen the final results
-						window.Draw(StaticVars.drawGrid[i, j]);
+						window.Draw(StaticVars.drawGrid[x, y]);
 					}
 				}
 
@@ -642,109 +636,110 @@ namespace TetrisDotnet.Code
 
 				List<PieceType> queueArray = pieceQueue.Get().ToList();
 
-				for (int i = 0; i < queueArray.Count; i++)
-				{
-					PieceType[,] queuePieceToDraw = StaticVars.GetPieceArray(queueArray[i]);
-
-					if (queueArray[i] == PieceType.I)
-					{
-						for (int j = 0; j < queueSpriteArray1x4[0].GetLength(0); j++)
-						{
-							for (int k = 0; k < queuePieceToDraw.GetLength(1); k++)
-							{
-								if (queuePieceToDraw[j + 1, k] != PieceType.Empty)
-								{
-									queueSpriteArray1x4[i][j, k].Texture =
-										StaticVars.blockTextures[(int) queuePieceToDraw[j + 1, k]];
-
-									window.Draw(queueSpriteArray1x4[i][j, k]);
-								}
-							}
-						}
-					}
-					else if (queuePieceToDraw.GetLength(1) == 4)
-					{
-						for (int j = 0; j < queuePieceToDraw.GetLength(0); j++)
-						{
-							for (int k = 0; k < queuePieceToDraw.GetLength(1); k++)
-							{
-								if (queuePieceToDraw[j, k] != PieceType.Empty)
-								{
-									queueSpriteArray4x4[i][j, k].Texture =
-										StaticVars.blockTextures[(int) queuePieceToDraw[j, k]];
-
-									window.Draw(queueSpriteArray4x4[i][j, k]);
-								}
-							}
-						}
-					}
-					else
-					{
-						for (int j = 0; j < queuePieceToDraw.GetLength(0); j++)
-						{
-							for (int k = 0; k < queuePieceToDraw.GetLength(1); k++)
-							{
-								if (queuePieceToDraw[j, k] != PieceType.Empty)
-								{
-									queueSpriteArray3x3[i][j, k].Texture =
-										StaticVars.blockTextures[(int) queuePieceToDraw[j, k]];
-									window.Draw(queueSpriteArray3x3[i][j, k]);
-								}
-							}
-						}
-					}
-				}
+//				for (int i = 0; i < queueArray.Count; i++)
+//				{
+//					List<PieceType> blocks = queueArray[i].
+//					PieceType[,] queuePieceToDraw = StaticVars.GetPieceArray(queueArray[i]);
+//
+//					if (queueArray[i] == PieceType.I)
+//					{
+//						for (int j = 0; j < queueSpriteArray1x4[0].GetLength(0); j++)
+//						{
+//							for (int k = 0; k < queuePieceToDraw.GetLength(1); k++)
+//							{
+//								if (queuePieceToDraw[j + 1, k] != PieceType.Empty)
+//								{
+//									queueSpriteArray1x4[i][j, k].Texture =
+//										StaticVars.blockTextures[(int) queuePieceToDraw[j + 1, k]];
+//
+//									window.Draw(queueSpriteArray1x4[i][j, k]);
+//								}
+//							}
+//						}
+//					}
+//					else if (queuePieceToDraw.GetLength(1) == 4)
+//					{
+//						for (int j = 0; j < queuePieceToDraw.GetLength(0); j++)
+//						{
+//							for (int k = 0; k < queuePieceToDraw.GetLength(1); k++)
+//							{
+//								if (queuePieceToDraw[j, k] != PieceType.Empty)
+//								{
+//									queueSpriteArray4x4[i][j, k].Texture =
+//										StaticVars.blockTextures[(int) queuePieceToDraw[j, k]];
+//
+//									window.Draw(queueSpriteArray4x4[i][j, k]);
+//								}
+//							}
+//						}
+//					}
+//					else
+//					{
+//						for (int j = 0; j < queuePieceToDraw.GetLength(0); j++)
+//						{
+//							for (int k = 0; k < queuePieceToDraw.GetLength(1); k++)
+//							{
+//								if (queuePieceToDraw[j, k] != PieceType.Empty)
+//								{
+//									queueSpriteArray3x3[i][j, k].Texture =
+//										StaticVars.blockTextures[(int) queuePieceToDraw[j, k]];
+//									window.Draw(queueSpriteArray3x3[i][j, k]);
+//								}
+//							}
+//						}
+//					}
+//				}
 
 				#endregion
 
 				#region Hold
 
-				PieceType[,] pieceToDraw = StaticVars.GetPieceArray(holdManager.currentPiece);
-
-				if (holdManager.currentPiece == PieceType.I)
-				{
-					for (int j = 0; j < holdSprite1x4.GetLength(0); j++)
-					{
-						for (int k = 0; k < pieceToDraw.GetLength(1); k++)
-						{
-							if (pieceToDraw[j + 1, k] != PieceType.Empty)
-							{
-								holdSprite1x4[j, k].Texture = StaticVars.blockTextures[(int) pieceToDraw[j + 1, k]];
-
-								window.Draw(holdSprite1x4[j, k]);
-							}
-						}
-					}
-				}
-				else if (pieceToDraw.GetLength(1) == 4)
-				{
-					for (int j = 0; j < pieceToDraw.GetLength(0); j++)
-					{
-						for (int k = 0; k < pieceToDraw.GetLength(1); k++)
-						{
-							if (pieceToDraw[j, k] != PieceType.Empty)
-							{
-								holdSprite4x4[j, k].Texture = StaticVars.blockTextures[(int) pieceToDraw[j, k]];
-
-								window.Draw(holdSprite4x4[j, k]);
-							}
-						}
-					}
-				}
-				else
-				{
-					for (int j = 0; j < pieceToDraw.GetLength(0); j++)
-					{
-						for (int k = 0; k < pieceToDraw.GetLength(1); k++)
-						{
-							if (pieceToDraw[j, k] != PieceType.Empty)
-							{
-								holdSprite3x3[j, k].Texture = StaticVars.blockTextures[(int) pieceToDraw[j, k]];
-								window.Draw(holdSprite3x3[j, k]);
-							}
-						}
-					}
-				}
+//				PieceType[,] pieceToDraw = StaticVars.GetPieceArray(holdManager.currentPiece);
+//
+//				if (holdManager.currentPiece == PieceType.I)
+//				{
+//					for (int j = 0; j < holdSprite1x4.GetLength(0); j++)
+//					{
+//						for (int k = 0; k < pieceToDraw.GetLength(1); k++)
+//						{
+//							if (pieceToDraw[j + 1, k] != PieceType.Empty)
+//							{
+//								holdSprite1x4[j, k].Texture = StaticVars.blockTextures[(int) pieceToDraw[j + 1, k]];
+//
+//								window.Draw(holdSprite1x4[j, k]);
+//							}
+//						}
+//					}
+//				}
+//				else if (pieceToDraw.GetLength(1) == 4)
+//				{
+//					for (int j = 0; j < pieceToDraw.GetLength(0); j++)
+//					{
+//						for (int k = 0; k < pieceToDraw.GetLength(1); k++)
+//						{
+//							if (pieceToDraw[j, k] != PieceType.Empty)
+//							{
+//								holdSprite4x4[j, k].Texture = StaticVars.blockTextures[(int) pieceToDraw[j, k]];
+//
+//								window.Draw(holdSprite4x4[j, k]);
+//							}
+//						}
+//					}
+//				}
+//				else
+//				{
+//					for (int j = 0; j < pieceToDraw.GetLength(0); j++)
+//					{
+//						for (int k = 0; k < pieceToDraw.GetLength(1); k++)
+//						{
+//							if (pieceToDraw[j, k] != PieceType.Empty)
+//							{
+//								holdSprite3x3[j, k].Texture = StaticVars.blockTextures[(int) pieceToDraw[j, k]];
+//								window.Draw(holdSprite3x3[j, k]);
+//							}
+//						}
+//					}
+//				}
 
 				#endregion
 

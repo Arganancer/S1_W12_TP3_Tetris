@@ -64,10 +64,19 @@ namespace TetrisDotnet.Code.Game
 				case PieceType.I:
 					break;
 				default:
-					List<Vector2i> positions = blocks.Select(block => RotateBlock(block, rotation)).ToList();
-					blocks = positions;
+					blocks = blocks.Select(block => RotateBlock(block, rotation)).ToList();
 					break;
 			}
+		}
+
+		public List<Vector2i> SimulateRotation(Rotation rotation)
+		{
+			return type switch
+			{
+				PieceType.O => blocks,
+				PieceType.I => blocks,
+				_ => blocks.Select(block => RotateBlock(block, rotation)).ToList()
+			};
 		}
 	}
 }
