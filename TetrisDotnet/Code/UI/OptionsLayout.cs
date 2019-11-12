@@ -1,14 +1,11 @@
 ﻿using System.Collections.Generic;
 using SFML.Graphics;
 using SFML.System;
-using TetrisDotnet;
-using TetrisDotnet.Code;
-using TetrisDotnet.Code.UI;
 using TetrisDotnet.Code.Utils;
 
-namespace Tetris
+namespace TetrisDotnet.Code.UI
 {
-	class Options
+	class OptionsLayout
 	{
 		private string[][] menuItems;
 		private List<Text> elementsToDraw = new List<Text>();
@@ -17,7 +14,7 @@ namespace Tetris
 		public int cursorPosX { get; private set; }
 		public int cursorPosY { get; private set; }
 
-		public Options()
+		public OptionsLayout()
 		{
 			int charSizeBuffer = (int) (CharSize * 1.4);
 

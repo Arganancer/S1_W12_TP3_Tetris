@@ -12,7 +12,6 @@ using TetrisDotnet.Code.Utils;
 
 namespace TetrisDotnet.Code
 {
-	// TODO: Go over and refactor this code.
 	class Application
 	{
 		#region Global vars
@@ -117,7 +116,7 @@ namespace TetrisDotnet.Code
 			foreach (Vector2i block in activePiece.getGlobalBlocks)
 			{
 				StaticVars.drawGrid[block.X, Math.Max(0, block.Y - 2)].Texture =
-					StaticVars.blockTextures[(int) activePiece.type];
+					AssetPool.blockTextures[(int) activePiece.type];
 			}
 		}
 
@@ -133,7 +132,7 @@ namespace TetrisDotnet.Code
 			}
 			else
 			{
-				grid.MovePiece(activePiece, StaticVars.flat);
+				grid.MovePiece(activePiece, Vector2iUtils.flat);
 
 				statsTextBlock.AddToCounter(activePiece.type);
 			}
@@ -425,21 +424,21 @@ namespace TetrisDotnet.Code
 					// Move active piece left.
 					case Keyboard.Key.Left:
 					case Keyboard.Key.A:
-						if (!grid.CanPlacePiece(activePiece, StaticVars.down))
+						if (!grid.CanPlacePiece(activePiece, Vector2iUtils.down))
 						{
 							dropTime -= levelText.sideMoveSpeed;
 						}
 
-						grid.MovePiece(activePiece, StaticVars.left);
+						grid.MovePiece(activePiece, Vector2iUtils.left);
 
 						break;
 
 					// Move active piece down.
 					case Keyboard.Key.Down:
 					case Keyboard.Key.S:
-						if (grid.CanPlacePiece(activePiece, StaticVars.down))
+						if (grid.CanPlacePiece(activePiece, Vector2iUtils.down))
 						{
-							grid.MovePiece(activePiece, StaticVars.down);
+							grid.MovePiece(activePiece, Vector2iUtils.down);
 							scoreText.AddScore(1);
 						}
 						else
@@ -452,12 +451,12 @@ namespace TetrisDotnet.Code
 					// Move active piece right.
 					case Keyboard.Key.Right:
 					case Keyboard.Key.D:
-						if (!grid.CanPlacePiece(activePiece, StaticVars.down))
+						if (!grid.CanPlacePiece(activePiece, Vector2iUtils.down))
 						{
 							dropTime -= levelText.sideMoveSpeed;
 						}
 
-						grid.MovePiece(activePiece, StaticVars.right);
+						grid.MovePiece(activePiece, Vector2iUtils.right);
 						break;
 
 					// Holds the active piece (if a held piece exists, it will be selected as the new active piece).
@@ -489,7 +488,7 @@ namespace TetrisDotnet.Code
 						int spacesMoved = grid.DetermineDropdownPosition(activePiece);
 						scoreText.AddScore(2 * spacesMoved);
 
-						grid.MovePiece(activePiece, StaticVars.down * (spacesMoved));
+						grid.MovePiece(activePiece, Vector2iUtils.down * (spacesMoved));
 
 						dropTime = levelText.dropSpeed;
 
@@ -560,9 +559,9 @@ namespace TetrisDotnet.Code
 				{
 					dropTime = 0;
 
-					if (grid.CanPlacePiece(activePiece, StaticVars.down))
+					if (grid.CanPlacePiece(activePiece, Vector2iUtils.down))
 					{
-						grid.MovePiece(activePiece, StaticVars.down);
+						grid.MovePiece(activePiece, Vector2iUtils.down);
 					}
 					else
 					{
@@ -620,7 +619,7 @@ namespace TetrisDotnet.Code
 						{
 							//Associated the blockTextures with the same indexes as the Enum
 							//Look at both and you will understand
-							StaticVars.drawGrid[x, y].Texture = StaticVars.blockTextures[(int) drawArray[x, y]];
+							StaticVars.drawGrid[x, y].Texture = AssetPool.blockTextures[(int) drawArray[x, y]];
 						}
 
 						//Finally draw to the screen the final results

@@ -13,7 +13,7 @@ namespace TetrisDotnet.Code.UI
 		Right
 	}
 
-	class Menu
+	class MenuLayout
 	{
 		//private static Texture menuBackdropTexture = new Texture("Art/menu_backdrop.png");
 		//private static Sprite menuBackdrop = new Sprite(menuBackdropTexture);
@@ -27,7 +27,7 @@ namespace TetrisDotnet.Code.UI
 		private string longestWord;
 		public int cursorPos { get; private set; }
 
-		public Menu(params string[] menuItems)
+		public MenuLayout(params string[] menuItems)
 		{
 			//elementsToDraw.Add(menuBackdrop);
 

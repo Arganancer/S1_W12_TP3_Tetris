@@ -282,7 +282,7 @@ namespace TetrisDotnet.Code.Game.World
 		{
 			int lowestDownPosition = 0;
 
-			for (; CanPlacePiece(piece, StaticVars.down * lowestDownPosition); lowestDownPosition++)
+			for (; CanPlacePiece(piece, Vector2iUtils.down * lowestDownPosition); lowestDownPosition++)
 			{
 			}
 
