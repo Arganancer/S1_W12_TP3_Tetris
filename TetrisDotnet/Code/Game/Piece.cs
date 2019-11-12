@@ -45,7 +45,7 @@ namespace TetrisDotnet.Code.Game
 			{
 				return cornerBlocks[(index + (int) rotation) % 4];
 			}
-			
+
 			index = outerBlocks.FindIndex(b => b == block);
 			if (index >= 0)
 			{
@@ -55,6 +55,17 @@ namespace TetrisDotnet.Code.Game
 			return block;
 		}
 
+		// TODO: Garbage way of doing rotations. Temporary until I find a better solution (Or rather take the time to do better).
+		private int currentLinePieceRotationIndex = 0;
+
+		private readonly List<List<Vector2i>> linePieceRotations = new List<List<Vector2i>>
+		{
+			new List<Vector2i> {new Vector2i(0, 1), new Vector2i(1, 1), new Vector2i(2, 1), new Vector2i(3, 1)},
+			new List<Vector2i> {new Vector2i(2, 0), new Vector2i(2, 1), new Vector2i(2, 2), new Vector2i(2, 3)},
+			new List<Vector2i> {new Vector2i(0, 2), new Vector2i(1, 2), new Vector2i(2, 2), new Vector2i(3, 2)},
+			new List<Vector2i> {new Vector2i(1, 0), new Vector2i(1, 1), new Vector2i(1, 2), new Vector2i(1, 3)}
+		};
+
 		public void Rotate(Rotation rotation)
 		{
 			switch (type)
@@ -62,6 +73,8 @@ namespace TetrisDotnet.Code.Game
 				case PieceType.O:
 					return;
 				case PieceType.I:
+					currentLinePieceRotationIndex += (int) rotation;
+					blocks = linePieceRotations[currentLinePieceRotationIndex % 4];
 					break;
 				default:
 					blocks = blocks.Select(block => RotateBlock(block, rotation)).ToList();
@@ -74,7 +87,7 @@ namespace TetrisDotnet.Code.Game
 			return type switch
 			{
 				PieceType.O => blocks,
-				PieceType.I => blocks,
+				PieceType.I => linePieceRotations[(int) (currentLinePieceRotationIndex + rotation) % 4],
 				_ => blocks.Select(block => RotateBlock(block, rotation)).ToList()
 			};
 		}
