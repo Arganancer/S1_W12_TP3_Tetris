@@ -6,106 +6,6 @@ namespace TetrisDotnet.Code.Utils
 {
 	internal static class StaticVars
 	{
-		private static readonly PieceType[,] EmptyArray =
-		{
-			{PieceType.Empty, PieceType.Empty, PieceType.Empty, PieceType.Empty},
-			{PieceType.Empty, PieceType.Empty, PieceType.Empty, PieceType.Empty},
-			{PieceType.Empty, PieceType.Empty, PieceType.Empty, PieceType.Empty},
-			{PieceType.Empty, PieceType.Empty, PieceType.Empty, PieceType.Empty}
-		};
-
-		// ReSharper disable once InconsistentNaming
-		private static readonly PieceType[,] IArray =
-		{
-			{PieceType.Empty, PieceType.Empty, PieceType.Empty, PieceType.Empty},
-			{PieceType.I, PieceType.I, PieceType.I, PieceType.I},
-			{PieceType.Empty, PieceType.Empty, PieceType.Empty, PieceType.Empty},
-			{PieceType.Empty, PieceType.Empty, PieceType.Empty, PieceType.Empty}
-		};
-
-		private static readonly PieceType[,] JArray =
-		{
-			{PieceType.J, PieceType.Empty, PieceType.Empty},
-			{PieceType.J, PieceType.J, PieceType.J},
-			{PieceType.Empty, PieceType.Empty, PieceType.Empty}
-		};
-
-		private static readonly PieceType[,] LArray =
-		{
-			{PieceType.Empty, PieceType.Empty, PieceType.L},
-			{PieceType.L, PieceType.L, PieceType.L},
-			{PieceType.Empty, PieceType.Empty, PieceType.Empty}
-		};
-
-		private static readonly PieceType[,] OArray =
-		{
-			{PieceType.Empty, PieceType.Empty, PieceType.Empty, PieceType.Empty},
-			{PieceType.Empty, PieceType.O, PieceType.O, PieceType.Empty},
-			{PieceType.Empty, PieceType.O, PieceType.O, PieceType.Empty},
-			{PieceType.Empty, PieceType.Empty, PieceType.Empty, PieceType.Empty}
-		};
-
-		private static readonly PieceType[,] SArray =
-		{
-			{PieceType.Empty, PieceType.S, PieceType.S},
-			{PieceType.S, PieceType.S, PieceType.Empty},
-			{PieceType.Empty, PieceType.Empty, PieceType.Empty}
-		};
-
-		// ReSharper disable once InconsistentNaming
-		private static readonly PieceType[,] TArray =
-		{
-			{PieceType.Empty, PieceType.T, PieceType.Empty},
-			{PieceType.T, PieceType.T, PieceType.T},
-			{PieceType.Empty, PieceType.Empty, PieceType.Empty}
-		};
-
-		private static readonly PieceType[,] ZArray =
-		{
-			{PieceType.Z, PieceType.Z, PieceType.Empty},
-			{PieceType.Empty, PieceType.Z, PieceType.Z},
-			{PieceType.Empty, PieceType.Empty, PieceType.Empty}
-		};
-
-		public static PieceType[,] GetPieceArray(PieceType type)
-		{
-			//Based on
-			//http://vignette1.wikia.nocookie.net/tetrisconcept/images/3/3d/SRS-pieces.png/revision/latest?cb=20060626173148
-
-			switch (type)
-			{
-				case PieceType.Dead:
-					return EmptyArray;
-
-				case PieceType.Empty:
-					return EmptyArray;
-
-				case PieceType.I:
-					return IArray;
-
-				case PieceType.J:
-					return JArray;
-
-				case PieceType.L:
-					return LArray;
-
-				case PieceType.O:
-					return OArray;
-
-				case PieceType.S:
-					return SArray;
-
-				case PieceType.T:
-					return TArray;
-
-				case PieceType.Z:
-					return ZArray;
-
-				default:
-					return EmptyArray;
-			}
-		}
-
 		static StaticVars()
 		{
 			blockTextures = new[]
@@ -122,16 +22,16 @@ namespace TetrisDotnet.Code.Utils
 			};
 
 			//Create the VISIBLE grid of sprites for the game
-			drawGrid = new Sprite[20, 10];
+			drawGrid = new Sprite[10, 20];
 
 			//Basically takes the resolution of the block sprite and uses it for calculations
 			imageSize = new Vector2i((int) blockTextures[0].Size.X,
 				(int) blockTextures[0].Size.Y);
 
 			gridXPos = Application.WINDOW_WIDTH / 2 -
-			           drawGrid.GetLength(1) * imageSize.X / 2; //(int)drawGrid[0,0].Size.X / 2;
+			           drawGrid.GetLength(0) * imageSize.X / 2; //(int)drawGrid[0,0].Size.X / 2;
 			gridYPos = Application.WINDOW_HEIGHT / 2 -
-			           drawGrid.GetLength(0) * imageSize.Y / 2; //* (int)drawGrid[0, 0].Size.Y / 2;
+			           drawGrid.GetLength(1) * imageSize.Y / 2; //* (int)drawGrid[0, 0].Size.Y / 2;
 
 			backDropTexture = new Texture("Art/background_img.png");
 			holdTexture = new Texture("Art/holdbox_Frame.png");
