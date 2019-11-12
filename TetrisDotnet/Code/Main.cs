@@ -15,8 +15,9 @@ namespace TetrisDotnet.Code
 		public const int WindowWidth = 1024;
 
 		public static EventSystem eventSystem { get; } = new EventSystem();
-		public static InputManager inputManager { get; } = new InputManager();
 		public static GameClock gameClock { get; } = new GameClock();
+		
+		private InputManager inputManager { get; } = new InputManager();
 		
 		private readonly RenderWindow window;
 		private readonly SceneManager sceneManager;
