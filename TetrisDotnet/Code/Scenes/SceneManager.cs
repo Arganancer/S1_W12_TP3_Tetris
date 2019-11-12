@@ -16,7 +16,7 @@ namespace TetrisDotnet.Code.Scenes
 				{SceneType.Game, new GameScene()},
 				{SceneType.PauseMenu, new PauseMenuScene()}
 			};
-			currentScene = scenes[SceneType.MainMenu];
+			currentScene = scenes[SceneType.Game];
 		}
 
 		public void Update(float deltaTime)

@@ -25,12 +25,12 @@ namespace TetrisDotnet.Code.UI.Elements
 
 			for (int x = 0; x < Grid.GridWidth; x++)
 			{
-				for (int y = 0; y < Grid.GridHeight; y++)
+				for (int y = 0; y < Grid.GridHeight - 2; y++)
 				{
 					DrawableGrid[x, y] = new Sprite
 					{
 						Position = new Vector2f(x * AssetPool.blockSize.X + position.X,
-							y * AssetPool.blockSize.Y + position.Y)
+							y * AssetPool.blockSize.Y + position.Y + AssetPool.blockSize.Y)
 					};
 				}
 			}
