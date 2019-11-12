@@ -23,12 +23,12 @@ namespace TetrisDotnet.Code.UI.Elements
 
 			for (int i = 0; i < counter.Length; i++)
 			{
-				Text text = new Text(GenerateString(i), StaticVars.font, charSize)
+				Text text = new Text(GenerateString(i), AssetPool.font, charSize)
 				{
 					FillColor = Color.Green,
 					Position = new Vector2f(
-						StaticVars.statsSprite.Position.X + StaticVars.statsTexture.Size.X + charSize,
-						StaticVars.statsSprite.Position.Y + i * charSize * 2.4f)
+						AssetPool.statsSprite.Position.X + AssetPool.statsTexture.Size.X + charSize,
+						AssetPool.statsSprite.Position.Y + i * charSize * 2.4f)
 				};
 
 				elementsToDraw.Add(text);

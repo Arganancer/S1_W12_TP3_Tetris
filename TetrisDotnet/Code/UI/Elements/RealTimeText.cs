@@ -10,11 +10,11 @@ namespace TetrisDotnet.Code.UI.Elements
 		public RealTimeText()
 		{
 			DisplayedString = "00:00:00";
-			Font = StaticVars.font;
+			Font = AssetPool.font;
 			CharacterSize = 16;
 			FillColor = Color.Green;
-			Position = new Vector2f(StaticVars.holdSprite.Position.X,
-				StaticVars.holdSprite.Position.Y + StaticVars.holdTexture.Size.Y + 51);
+			Position = new Vector2f(AssetPool.holdSprite.Position.X,
+				AssetPool.holdSprite.Position.Y + AssetPool.holdTexture.Size.Y + 51);
 
 			realTime = 0;
 		}

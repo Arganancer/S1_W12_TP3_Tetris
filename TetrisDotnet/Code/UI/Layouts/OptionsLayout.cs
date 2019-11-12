@@ -43,17 +43,17 @@ namespace TetrisDotnet.Code.UI.Layouts
 			{
 				for (int j = 0; j < menuItems[i].Length; j++)
 				{
-					Text text = new Text(menuItems[i][j], StaticVars.font, CharSize);
+					Text text = new Text(menuItems[i][j], AssetPool.font, CharSize);
 					text.Color = Color.Green;
 
 					FloatRect textRect = text.GetLocalBounds();
 					text.Origin = new Vector2f(textRect.Left + textRect.Width / 2.0f,
 						textRect.Top + textRect.Height / 2.0f);
 					text.Position = new Vector2f(
-						Application.WINDOW_WIDTH / 2 -
+						Main.WindowWidth / 2 -
 						((menuItems[i].Length - 1) / 2 * (charSizeBuffer / 1.8f * longestWordsLens[i])) +
 						(charSizeBuffer / 1.8f * longestWordsLens[i]) * j,
-						Application.WINDOW_HEIGHT / 2 - ((menuItems.Length * 0.5f) / 2 * charSizeBuffer) +
+						Main.WindowHeight / 2 - ((menuItems.Length * 0.5f) / 2 * charSizeBuffer) +
 						(i * charSizeBuffer));
 
 					elementsToDraw.Add(text);

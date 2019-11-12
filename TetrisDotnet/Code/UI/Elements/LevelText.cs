@@ -9,9 +9,9 @@ namespace TetrisDotnet.Code.UI.Elements
 		public LevelText()
 		{
 			DisplayedString = "0";
-			Font = StaticVars.font;
-			Position = new Vector2f(StaticVars.holdSprite.Position.X,
-				StaticVars.holdSprite.Position.Y + StaticVars.holdTexture.Size.Y + 26);
+			Font = AssetPool.font;
+			Position = new Vector2f(AssetPool.holdSprite.Position.X,
+				AssetPool.holdSprite.Position.Y + AssetPool.holdTexture.Size.Y + 26);
 			FillColor = Color.Green;
 			CharacterSize = 16;
 

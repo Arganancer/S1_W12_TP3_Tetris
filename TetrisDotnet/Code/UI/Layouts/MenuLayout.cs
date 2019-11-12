@@ -42,7 +42,7 @@ namespace TetrisDotnet.Code.UI.Layouts
 					longestWord = menuItems[i];
 				}
 
-				Text text = new Text(menuItems[i], StaticVars.font)
+				Text text = new Text(menuItems[i], AssetPool.font)
 				{
 					FillColor = Color.Green,
 					CharacterSize = charSize
@@ -52,8 +52,8 @@ namespace TetrisDotnet.Code.UI.Layouts
 				text.Origin = new Vector2f(textRect.Left + textRect.Width * 0.5f,
 					textRect.Top + textRect.Height * 0.5f);
 
-				text.Position = new Vector2f(Application.WINDOW_WIDTH * 0.5f,
-					Application.WINDOW_HEIGHT * 0.5f + (i * charSizeBuffer) -
+				text.Position = new Vector2f(Main.WindowWidth * 0.5f,
+					Main.WindowHeight * 0.5f + (i * charSizeBuffer) -
 					((menuItems.Length - 1) * 0.5f * charSizeBuffer));
 
 				elementsToDraw.Add(text);
@@ -63,7 +63,7 @@ namespace TetrisDotnet.Code.UI.Layouts
 
 			cursorPos = 0;
 
-			cursor = new Text(">", StaticVars.font) {CharacterSize = charSize};
+			cursor = new Text(">", AssetPool.font) {CharacterSize = charSize};
 
 
 			FloatRect cursorRect = cursor.GetLocalBounds();
@@ -78,8 +78,8 @@ namespace TetrisDotnet.Code.UI.Layouts
 
 		private void UpdateCursorPos()
 		{
-			cursor.Position = new Vector2f(Application.WINDOW_WIDTH / 2 - longestWord.Length * (charSize / 3),
-				Application.WINDOW_HEIGHT * 0.5f + cursorPos * charSizeBuffer -
+			cursor.Position = new Vector2f(Main.WindowWidth / 2 - longestWord.Length * (charSize / 3),
+				Main.WindowHeight * 0.5f + cursorPos * charSizeBuffer -
 				(menuLength - 1) * 0.5f * charSizeBuffer);
 
 			elementsToDraw.RemoveAt(elementsToDraw.Count - 1);
