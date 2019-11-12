@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using SFML.System;
 using TetrisDotnet.Code.Utils;
+using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code.Game.World
 {

@@ -8,7 +8,9 @@ using Tetris;
 using TetrisDotnet.Code.Game;
 using TetrisDotnet.Code.Game.World;
 using TetrisDotnet.Code.UI;
+using TetrisDotnet.Code.UI.Elements;
 using TetrisDotnet.Code.Utils;
+using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code
 {

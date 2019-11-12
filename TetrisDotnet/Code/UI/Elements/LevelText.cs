@@ -2,7 +2,7 @@
 using SFML.System;
 using TetrisDotnet.Code.Utils;
 
-namespace TetrisDotnet.Code.UI
+namespace TetrisDotnet.Code.UI.Elements
 {
 	class LevelText : Text
 	{
@@ -16,7 +16,6 @@ namespace TetrisDotnet.Code.UI
 			CharacterSize = 16;
 
 			level = 0;
-			// TODO: FUCKING TODO: ULTIMATE TODO:
 			dropSpeed = 1f;
 			sideMoveSpeed = 0.05f;
 		}

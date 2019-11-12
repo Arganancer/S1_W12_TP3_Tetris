@@ -1,4 +1,4 @@
-﻿namespace TetrisDotnet.Code.Game
+﻿namespace TetrisDotnet.Code.Utils.Enums
 {
 	public enum GameState
 	{

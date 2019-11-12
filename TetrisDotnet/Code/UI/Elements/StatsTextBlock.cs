@@ -5,7 +5,7 @@ using SFML.System;
 using TetrisDotnet.Code.Game;
 using TetrisDotnet.Code.Utils;
 
-namespace TetrisDotnet.Code.UI
+namespace TetrisDotnet.Code.UI.Elements
 {
 	class StatsTextBlock
 	{

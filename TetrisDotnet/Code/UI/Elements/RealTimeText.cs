@@ -3,7 +3,7 @@ using SFML.Graphics;
 using SFML.System;
 using TetrisDotnet.Code.Utils;
 
-namespace TetrisDotnet.Code.UI
+namespace TetrisDotnet.Code.UI.Elements
 {
 	class RealTimeText : Text
 	{

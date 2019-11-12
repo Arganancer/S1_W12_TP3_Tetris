@@ -1,4 +1,4 @@
-namespace TetrisDotnet.Code.Utils
+namespace TetrisDotnet.Code.Utils.Enums
 {
 	public enum Rotation
 	{

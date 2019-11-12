@@ -4,8 +4,7 @@ namespace TetrisDotnet.Code.UI
 {
 	public static class AssetPool
 	{
-		public static Texture[] blockTextures { get; } = new[]
-		{
+		public static Texture[] blockTextures { get; } = {
 			new Texture("Art/blocks/placeholder_I.png"),
 			new Texture("Art/blocks/placeholder_O.png"),
 			new Texture("Art/blocks/placeholder_T.png"),
