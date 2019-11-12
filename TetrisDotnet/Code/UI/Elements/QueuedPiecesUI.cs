@@ -17,9 +17,9 @@ namespace TetrisDotnet.Code.UI.Elements
 		{
 			// Code that was in the SetUpVariables function:
 			
-//			AssetPool.queueSprite.Position =
-//				new Vector2f(AssetPool.gridXPos /*Now in GridUI, Position*/ + AssetPool.blockSize.X * (Grid.GridHeight - 2 + 2.25f),
-//					AssetPool.gridYPos /*Now in GridUI, Position*/);
+			AssetPool.queueSprite.Position =
+				new Vector2f(GridUI.position.X + AssetPool.blockSize.X * (Grid.GridHeight - 2 + 2.25f),
+					GridUI.position.Y);
 
 			queueSpriteArray4x4 = new[]
 			{

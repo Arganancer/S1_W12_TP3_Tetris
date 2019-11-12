@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using SFML.Graphics;
 using SFML.System;
-using TetrisDotnet.Code.Game;
 
 namespace TetrisDotnet.Code.UI.Elements
 {
@@ -14,11 +12,9 @@ namespace TetrisDotnet.Code.UI.Elements
 
 		public HeldPieceUI()
 		{
-			// Code that was in the SetUpVariables function:
-			
-//			AssetPool.holdSprite.Position =
-//				new Vector2f(AssetPool.gridXPos /*Now in GridUI, Position*/ - AssetPool.holdTexture.Size.X - (AssetPool.blockSize.X * 2.25f),
-//					AssetPool.gridYPos /*Now in GridUI, Position*/ );
+			AssetPool.holdSprite.Position =
+				new Vector2f(GridUI.position.X - AssetPool.holdTexture.Size.X - (AssetPool.blockSize.X * 2.25f),
+					GridUI.position.Y);
 
 			holdSprite3x3 = new Sprite[3, 3];
 

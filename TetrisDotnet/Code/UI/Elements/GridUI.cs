@@ -7,7 +7,7 @@ namespace TetrisDotnet.Code.UI.Elements
 	// ReSharper disable once InconsistentNaming
 	public class GridUI
 	{
-		public Vector2f position { get; }
+		public static Vector2f position { get; private set; }
 
 		public Sprite[,] DrawableGrid;
 

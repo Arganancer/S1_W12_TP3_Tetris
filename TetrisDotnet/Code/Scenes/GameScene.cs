@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using SFML.Graphics;
 using SFML.System;
 using TetrisDotnet.Code.Events;
-using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.Game;
 using TetrisDotnet.Code.Game.World;
 using TetrisDotnet.Code.UI;
@@ -63,9 +62,11 @@ namespace TetrisDotnet.Code.Scenes
 			scoreText = new ScoreText();
 			levelText = new LevelText();
 			realTimeText = new RealTimeText();
-			statsTextBlock = new StatsTextBlock();
 			controlsText = new ControlsText();
 			
+			HeldPieceUI heldPieceUi = new HeldPieceUI();
+			QueuedPiecesUI queuedPiecesUi = new QueuedPiecesUI();
+
 			StartNewGame();
 		}
 
@@ -237,15 +238,6 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void InitializeGame()
 		{
-			//Select a new active piece
-			NewPiece();
-
-			//Add the piece to the grid, with a movement of 0,0
-			grid.AddPiece(activePiece, new Vector2i(0, 0));
-
-			AssetPool.drawGridSprite.Position = new Vector2f(gridUi.position.X - AssetPool.blockSize.X * 1.5f,
-				gridUi.position.Y - AssetPool.blockSize.Y * 2f);
-
 			scoreText = new ScoreText();
 
 			levelText = new LevelText();
@@ -255,8 +247,19 @@ namespace TetrisDotnet.Code.Scenes
 			AssetPool.statsSprite.Position = new Vector2f(AssetPool.holdSprite.Position.X,
 				realTimeText.Position.Y + AssetPool.blockSize.Y);
 
+			statsTextBlock = new StatsTextBlock();
+
 			controlsText.Position = new Vector2f(AssetPool.queueSprite.Position.X,
 				AssetPool.queueSprite.Position.Y + AssetPool.queueTexture.Size.Y + AssetPool.blockSize.Y);
+			
+			//Select a new active piece
+			NewPiece();
+
+			//Add the piece to the grid, with a movement of 0,0
+			grid.AddPiece(activePiece, new Vector2i(0, 0));
+
+			AssetPool.drawGridSprite.Position = new Vector2f(GridUI.position.X - AssetPool.blockSize.X * 1.5f,
+				GridUI.position.Y - AssetPool.blockSize.Y * 2f);
 		}
 
 		private void StartNewGame()
