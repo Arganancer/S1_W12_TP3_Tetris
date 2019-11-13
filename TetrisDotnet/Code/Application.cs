@@ -3,6 +3,7 @@ using SFML.Graphics;
 using SFML.Window;
 using TetrisDotnet.Code.Controls;
 using TetrisDotnet.Code.Events;
+using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.Scenes;
 using TetrisDotnet.Code.Utils;
 using EventType = TetrisDotnet.Code.Events.EventType;
@@ -29,7 +30,7 @@ namespace TetrisDotnet.Code
 			sceneManager = new SceneManager();
 			
 			window.KeyPressed += inputManager.OnKeyPressed;
-			eventSystem.Subscribe(EventType.InputEscape, Quit);
+			eventSystem.Subscribe(EventType.InputEscape, OnQuit);
 			window.Closed += OnWindowClosed;
 
 			window.SetKeyRepeatEnabled(false);
@@ -40,7 +41,7 @@ namespace TetrisDotnet.Code
 
 		~Application()
 		{
-			eventSystem.Unsubscribe(EventType.InputEscape, Quit);
+			eventSystem.Unsubscribe(EventType.InputEscape, OnQuit);
 		}
 		
 		public void Run()
@@ -66,6 +67,11 @@ namespace TetrisDotnet.Code
 		private void Quit()
 		{
 			window.Close();
+		}
+
+		private void OnQuit(EventData eventData)
+		{
+			Quit();
 		}
 
 		private void OnWindowClosed(object sender, EventArgs e)

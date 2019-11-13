@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SFML.Graphics;
 using SFML.System;
 using TetrisDotnet.Code.Events;
+using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.Game;
 using TetrisDotnet.Code.Game.World;
 using TetrisDotnet.Code.UI;
@@ -144,7 +145,7 @@ namespace TetrisDotnet.Code.Scenes
 			}
 		}
 
-		private void OnInputRotateClockwise()
+		private void OnInputRotateClockwise(EventData eventData)
 		{
 			if (isPaused)
 				return;
@@ -155,7 +156,7 @@ namespace TetrisDotnet.Code.Scenes
 			}
 		}
 
-		private void OnInputRotateCounterClockwise()
+		private void OnInputRotateCounterClockwise(EventData eventData)
 		{
 			if (isPaused)
 				return;
@@ -166,7 +167,7 @@ namespace TetrisDotnet.Code.Scenes
 			}
 		}
 
-		private void OnInputDown()
+		private void OnInputDown(EventData eventData)
 		{
 			if (isPaused)
 				return;
@@ -182,7 +183,7 @@ namespace TetrisDotnet.Code.Scenes
 			}
 		}
 
-		private void OnInputLeft()
+		private void OnInputLeft(EventData eventData)
 		{
 			if (isPaused)
 				return;
@@ -195,7 +196,7 @@ namespace TetrisDotnet.Code.Scenes
 			grid.MovePiece(activePiece, Vector2iUtils.left);
 		}
 
-		private void OnInputRight()
+		private void OnInputRight(EventData eventData)
 		{
 			if (isPaused)
 				return;
@@ -208,7 +209,7 @@ namespace TetrisDotnet.Code.Scenes
 			grid.MovePiece(activePiece, Vector2iUtils.right);
 		}
 
-		private void OnInputHold()
+		private void OnInputHold(EventData eventData)
 		{
 			if (isPaused)
 				return;
@@ -233,7 +234,7 @@ namespace TetrisDotnet.Code.Scenes
 			}
 		}
 
-		private void OnInputHardDrop()
+		private void OnInputHardDrop(EventData eventData)
 		{
 			if (isPaused)
 				return;
@@ -248,7 +249,7 @@ namespace TetrisDotnet.Code.Scenes
 			DrawActivePieceHardDrop();
 		}
 
-		private void OnInputPause()
+		private void OnInputPause(EventData eventData)
 		{
 			isPaused = !isPaused;
 		}
