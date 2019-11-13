@@ -9,15 +9,14 @@ namespace TetrisDotnet.Code.AI
 {
 	class Controller
 	{
-		private int rotation = 0;
+		private int rotation;
 		private Vector2i move = new Vector2i(0, 0);
 
-		public void PlanPath(State state, Piece desiredPlacement)
+		public void PlanPath(Piece desiredPlacement)
 		{
-			// Plan path here.
-			rotation = RotationRequired(state.currentPiece.rotationIndex, desiredPlacement.rotationIndex);
+			rotation = desiredPlacement.rotationIndex;
 
-			move = desiredPlacement.blocks.First() + desiredPlacement.position;
+			move = desiredPlacement.position;
 		}
 
 		public void RunCommands(State state)
@@ -29,7 +28,7 @@ namespace TetrisDotnet.Code.AI
 				return;
 			}
 
-			int currentX = state.currentPiece.blocks.First().X + state.currentPiece.position.X;
+			int currentX = state.currentPiece.position.X;
 
 			int moves = move.X - currentX;
 			if (moves != 0)
@@ -47,18 +46,6 @@ namespace TetrisDotnet.Code.AI
 			}
 
 			Application.eventSystem.ProcessEvent(EventType.InputHardDrop);
-		}
-
-		private int RotationRequired(int current, int desired)
-		{
-			int result = 0;
-
-			while ((current + result) % 4 != desired)
-			{
-				result += 1;
-			}
-
-			return result;
 		}
 	}
 }
