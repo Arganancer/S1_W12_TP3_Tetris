@@ -37,15 +37,8 @@ namespace TetrisDotnet.Code.Scenes
 		{
 			isPaused = false;
 			nextScene = SceneType;
-
-			Application.eventSystem.Subscribe(EventType.InputRotateClockwise, OnInputRotateClockwise);
-			Application.eventSystem.Subscribe(EventType.InputRotateCounterClockwise, OnInputRotateCounterClockwise);
-			Application.eventSystem.Subscribe(EventType.InputDown, OnInputDown);
-			Application.eventSystem.Subscribe(EventType.InputLeft, OnInputLeft);
-			Application.eventSystem.Subscribe(EventType.InputRight, OnInputRight);
-			Application.eventSystem.Subscribe(EventType.InputHold, OnInputHold);
-			Application.eventSystem.Subscribe(EventType.InputHardDrop, OnInputHardDrop);
-			Application.eventSystem.Subscribe(EventType.InputPause, OnInputPause);
+			
+			SubscribeToInputs();
 
 			scoreText = new ScoreText();
 			levelText = new LevelText();
@@ -59,6 +52,23 @@ namespace TetrisDotnet.Code.Scenes
 		}
 
 		~GameScene()
+		{
+			UnsubscribeFromInputs();
+		}
+
+		private void SubscribeToInputs()
+		{
+			Application.eventSystem.Subscribe(EventType.InputRotateClockwise, OnInputRotateClockwise);
+			Application.eventSystem.Subscribe(EventType.InputRotateCounterClockwise, OnInputRotateCounterClockwise);
+			Application.eventSystem.Subscribe(EventType.InputDown, OnInputDown);
+			Application.eventSystem.Subscribe(EventType.InputLeft, OnInputLeft);
+			Application.eventSystem.Subscribe(EventType.InputRight, OnInputRight);
+			Application.eventSystem.Subscribe(EventType.InputHold, OnInputHold);
+			Application.eventSystem.Subscribe(EventType.InputHardDrop, OnInputHardDrop);
+			Application.eventSystem.Subscribe(EventType.InputPause, OnInputPause);
+		}
+
+		private void UnsubscribeFromInputs()
 		{
 			Application.eventSystem.Unsubscribe(EventType.InputRotateClockwise, OnInputRotateClockwise);
 			Application.eventSystem.Unsubscribe(EventType.InputRotateCounterClockwise, OnInputRotateCounterClockwise);
@@ -147,9 +157,6 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputRotateClockwise(EventData eventData)
 		{
-			if (isPaused)
-				return;
-
 			if (grid.RotatePiece(activePiece, Rotation.Clockwise))
 			{
 				dropTime -= levelText.sideMoveSpeed;
@@ -158,9 +165,6 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputRotateCounterClockwise(EventData eventData)
 		{
-			if (isPaused)
-				return;
-
 			if (grid.RotatePiece(activePiece, Rotation.CounterClockwise))
 			{
 				dropTime -= levelText.sideMoveSpeed;
@@ -169,9 +173,6 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputDown(EventData eventData)
 		{
-			if (isPaused)
-				return;
-
 			if (grid.CanPlacePiece(activePiece, Vector2iUtils.down))
 			{
 				grid.MovePiece(activePiece, Vector2iUtils.down);
@@ -185,9 +186,6 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputLeft(EventData eventData)
 		{
-			if (isPaused)
-				return;
-
 			if (!grid.CanPlacePiece(activePiece, Vector2iUtils.down))
 			{
 				dropTime -= levelText.sideMoveSpeed;
@@ -198,9 +196,6 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputRight(EventData eventData)
 		{
-			if (isPaused)
-				return;
-
 			if (!grid.CanPlacePiece(activePiece, Vector2iUtils.down))
 			{
 				dropTime -= levelText.sideMoveSpeed;
@@ -211,9 +206,6 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputHold(EventData eventData)
 		{
-			if (isPaused)
-				return;
-
 			if (holdManager.canSwap)
 			{
 				PieceType oldPiece = activePiece.type;
@@ -236,9 +228,6 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputHardDrop(EventData eventData)
 		{
-			if (isPaused)
-				return;
-
 			int spacesMoved = grid.DetermineDropdownPosition(activePiece);
 			scoreText.AddScore(2 * spacesMoved);
 
@@ -252,6 +241,14 @@ namespace TetrisDotnet.Code.Scenes
 		private void OnInputPause(EventData eventData)
 		{
 			isPaused = !isPaused;
+			if (isPaused)
+			{
+				UnsubscribeFromInputs();
+			}
+			else
+			{
+				SubscribeToInputs();;
+			}
 		}
 
 		private void InitializeGame()
