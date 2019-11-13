@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using SFML.System;
-using TetrisDotnet.Code.Utils;
 using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code.Game
@@ -13,6 +12,7 @@ namespace TetrisDotnet.Code.Game
 		public List<Vector2i> getGlobalBlocks => blocks.Select(block => block + position).ToList();
 		public PieceType type { get; }
 		public Vector2i position { get; set; }
+		public int rotationIndex { get; private set; }
 
 		public Piece(PieceType type)
 		{
@@ -21,6 +21,14 @@ namespace TetrisDotnet.Code.Game
 			this.type = type;
 			blocks = PieceTypeUtils.GetPieceTypeBlocks(type);
 			position = PieceTypeUtils.GetDefaultPosition(type);
+		}
+		
+		public Piece(Piece piece)
+		{
+			type = piece.type;
+			blocks = piece.blocks;
+			position = piece.position;
+			rotationIndex = piece.rotationIndex;
 		}
 
 		private readonly List<Vector2i> cornerBlocks = new List<Vector2i>
@@ -81,6 +89,8 @@ namespace TetrisDotnet.Code.Game
 					blocks = blocks.Select(block => RotateBlock(block, rotation)).ToList();
 					break;
 			}
+
+			rotationIndex = (rotationIndex + (int) rotation) % 4;
 		}
 
 		public List<Vector2i> SimulateRotation(Rotation rotation)

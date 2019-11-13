@@ -41,6 +41,21 @@ namespace TetrisDotnet.Code.Game.World
 			return visibleArray;
 		}
 
+		public bool[,] GetBoolGrid()
+		{
+			bool[,] boolGrid = new bool[GridWidth, GridHeight];
+			
+			for (int x = 0; x < GridWidth; x++)
+			{
+				for (int y = 0; y < GridHeight; y++)
+				{
+					boolGrid[x, y] = grid[x, y] != PieceType.Empty;
+				}
+			}
+
+			return boolGrid;
+		}
+
 		public List<int> GetFullRows()
 		{
 			List<int> fullRows = new List<int>();

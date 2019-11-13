@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using SFML.Graphics;
 using SFML.System;
+using TetrisDotnet.Code.AI;
 using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.Game;
@@ -23,6 +24,12 @@ namespace TetrisDotnet.Code.Scenes
 		private SceneType nextScene;
 		private bool isPaused;
 		private float dropTime;
+		
+		// AI Elements
+		private readonly Evaluator evaluator;
+		private readonly Controller controller;
+		private const float AiTickInterval = 0.1f;
+		private float lastAiTick = 0.0f;
 
 		// UI Elements
 		private readonly GridUI gridUi = new GridUI();
@@ -37,7 +44,10 @@ namespace TetrisDotnet.Code.Scenes
 		{
 			isPaused = false;
 			nextScene = SceneType;
-			
+
+			evaluator = new Evaluator();
+			controller = new Controller();
+
 			SubscribeToInputs();
 
 			scoreText = new ScoreText();
@@ -107,6 +117,13 @@ namespace TetrisDotnet.Code.Scenes
 					CheckFullRows();
 					NewPiece();
 				}
+			}
+
+			lastAiTick += deltaTime;
+			if (lastAiTick >= AiTickInterval)
+			{
+				lastAiTick = 0;
+				controller.RunCommands(new State(activePiece, grid.GetBoolGrid()));
 			}
 
 			return nextScene;
@@ -306,8 +323,11 @@ namespace TetrisDotnet.Code.Scenes
 			else
 			{
 				grid.MovePiece(activePiece, Vector2iUtils.flat);
-
 				statsTextBlock.AddToCounter(activePiece.type);
+
+				State currentState = new State(activePiece, grid.GetBoolGrid());
+				Piece finalPiece = evaluator.GetBestPlacement(currentState);
+				controller.PlanPath(currentState, finalPiece);
 			}
 		}
 
