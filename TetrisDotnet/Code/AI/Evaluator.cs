@@ -26,9 +26,9 @@ namespace TetrisDotnet.Code.AI
 
 			public float GetWeight()
 			{
-				int topHeightValue = 29 - TopHeight;
+				int topHeightValue = Grid.GridHeight - TopHeight;
 
-				return NbOfClosedHoles + (NbOfHoles * 5.0f) + (topHeightValue * 0.5f);
+				return NbOfClosedHoles + (NbOfHoles * 4.0f) + (topHeightValue * 0.5f);
 			}
 		}
 
@@ -155,12 +155,13 @@ namespace TetrisDotnet.Code.AI
 		{
 			foreach (var point in piece.blocks)
 			{
-				if (point.X < 0 || point.X > Grid.GridWidth - 1 || point.Y < 0 || point.Y > Grid.GridHeight - 1)
+				Vector2i pointFinalPosition = point + piece.position;
+				if (pointFinalPosition.X < 0 || pointFinalPosition.X > Grid.GridWidth - 1 || pointFinalPosition.Y < 0 || pointFinalPosition.Y > Grid.GridHeight - 1)
 				{
 					return false;
 				}
 
-				if (state.GetBlock(point.X, point.Y))
+				if (state.GetBlock(pointFinalPosition.X, pointFinalPosition.Y))
 				{
 					return false;
 				}
@@ -171,7 +172,7 @@ namespace TetrisDotnet.Code.AI
 
 		private int GetPieceTopHeight(Piece piece)
 		{
-			return piece.blocks.Max(point => point.Y);
+			return piece.blocks.Min(point => point.Y + piece.position.Y);
 		}
 	}
 }
