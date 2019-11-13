@@ -2,21 +2,20 @@
 using SFML.System;
 using TetrisDotnet.Code.Utils;
 
-namespace TetrisDotnet.Code.UI
+namespace TetrisDotnet.Code.UI.Elements
 {
 	class LevelText : Text
 	{
 		public LevelText()
 		{
 			DisplayedString = "0";
-			Font = StaticVars.font;
-			Position = new Vector2f(StaticVars.holdSprite.Position.X,
-				StaticVars.holdSprite.Position.Y + StaticVars.holdTexture.Size.Y + 26);
+			Font = AssetPool.font;
+			Position = new Vector2f(AssetPool.holdSprite.Position.X,
+				AssetPool.holdSprite.Position.Y + AssetPool.holdTexture.Size.Y + 26);
 			FillColor = Color.Green;
 			CharacterSize = 16;
 
 			level = 0;
-			// TODO: FUCKING TODO: ULTIMATE TODO:
 			dropSpeed = 1f;
 			sideMoveSpeed = 0.05f;
 		}

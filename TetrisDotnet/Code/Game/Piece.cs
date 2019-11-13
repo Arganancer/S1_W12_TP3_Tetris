@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using SFML.System;
 using TetrisDotnet.Code.Utils;
+using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code.Game
 {

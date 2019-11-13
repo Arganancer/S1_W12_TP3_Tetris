@@ -3,7 +3,7 @@ using SFML.Graphics;
 using SFML.System;
 using TetrisDotnet.Code.Utils;
 
-namespace TetrisDotnet.Code.UI
+namespace TetrisDotnet.Code.UI.Elements
 {
 	// TODO: Separate UI from Logic.
 	class ScoreText : Text
@@ -13,11 +13,11 @@ namespace TetrisDotnet.Code.UI
 		public ScoreText()
 		{
 			DisplayedString = "0";
-			Font = StaticVars.font;
+			Font = AssetPool.font;
 			CharacterSize = 16;
 			FillColor = Color.Green;
-			Position = new Vector2f(StaticVars.holdSprite.Position.X,
-				StaticVars.holdSprite.Position.Y + StaticVars.holdTexture.Size.Y + 1);
+			Position = new Vector2f(AssetPool.holdSprite.Position.X,
+				AssetPool.holdSprite.Position.Y + AssetPool.holdTexture.Size.Y + 1);
 
 			score = 0;
 		}

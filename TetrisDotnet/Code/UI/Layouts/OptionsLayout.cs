@@ -1,14 +1,11 @@
 ﻿using System.Collections.Generic;
 using SFML.Graphics;
 using SFML.System;
-using TetrisDotnet;
-using TetrisDotnet.Code;
-using TetrisDotnet.Code.UI;
 using TetrisDotnet.Code.Utils;
 
-namespace Tetris
+namespace TetrisDotnet.Code.UI.Layouts
 {
-	class Options
+	class OptionsLayout
 	{
 		private string[][] menuItems;
 		private List<Text> elementsToDraw = new List<Text>();
@@ -17,7 +14,7 @@ namespace Tetris
 		public int cursorPosX { get; private set; }
 		public int cursorPosY { get; private set; }
 
-		public Options()
+		public OptionsLayout()
 		{
 			int charSizeBuffer = (int) (CharSize * 1.4);
 
@@ -46,17 +43,17 @@ namespace Tetris
 			{
 				for (int j = 0; j < menuItems[i].Length; j++)
 				{
-					Text text = new Text(menuItems[i][j], StaticVars.font, CharSize);
+					Text text = new Text(menuItems[i][j], AssetPool.font, CharSize);
 					text.Color = Color.Green;
 
 					FloatRect textRect = text.GetLocalBounds();
 					text.Origin = new Vector2f(textRect.Left + textRect.Width / 2.0f,
 						textRect.Top + textRect.Height / 2.0f);
 					text.Position = new Vector2f(
-						Application.WINDOW_WIDTH / 2 -
+						Application.WindowWidth / 2 -
 						((menuItems[i].Length - 1) / 2 * (charSizeBuffer / 1.8f * longestWordsLens[i])) +
 						(charSizeBuffer / 1.8f * longestWordsLens[i]) * j,
-						Application.WINDOW_HEIGHT / 2 - ((menuItems.Length * 0.5f) / 2 * charSizeBuffer) +
+						Application.WindowHeight / 2 - ((menuItems.Length * 0.5f) / 2 * charSizeBuffer) +
 						(i * charSizeBuffer));
 
 					elementsToDraw.Add(text);

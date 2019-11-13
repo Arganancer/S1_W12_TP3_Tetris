@@ -3,7 +3,7 @@ using SFML.Graphics;
 using SFML.System;
 using TetrisDotnet.Code.Utils;
 
-namespace TetrisDotnet.Code.UI
+namespace TetrisDotnet.Code.UI.Layouts
 {
 	public enum Direction
 	{
@@ -13,7 +13,7 @@ namespace TetrisDotnet.Code.UI
 		Right
 	}
 
-	class Menu
+	class MenuLayout
 	{
 		//private static Texture menuBackdropTexture = new Texture("Art/menu_backdrop.png");
 		//private static Sprite menuBackdrop = new Sprite(menuBackdropTexture);
@@ -27,7 +27,7 @@ namespace TetrisDotnet.Code.UI
 		private string longestWord;
 		public int cursorPos { get; private set; }
 
-		public Menu(params string[] menuItems)
+		public MenuLayout(params string[] menuItems)
 		{
 			//elementsToDraw.Add(menuBackdrop);
 
@@ -42,7 +42,7 @@ namespace TetrisDotnet.Code.UI
 					longestWord = menuItems[i];
 				}
 
-				Text text = new Text(menuItems[i], StaticVars.font)
+				Text text = new Text(menuItems[i], AssetPool.font)
 				{
 					FillColor = Color.Green,
 					CharacterSize = charSize
@@ -52,8 +52,8 @@ namespace TetrisDotnet.Code.UI
 				text.Origin = new Vector2f(textRect.Left + textRect.Width * 0.5f,
 					textRect.Top + textRect.Height * 0.5f);
 
-				text.Position = new Vector2f(Application.WINDOW_WIDTH * 0.5f,
-					Application.WINDOW_HEIGHT * 0.5f + (i * charSizeBuffer) -
+				text.Position = new Vector2f(Application.WindowWidth * 0.5f,
+					Application.WindowHeight * 0.5f + (i * charSizeBuffer) -
 					((menuItems.Length - 1) * 0.5f * charSizeBuffer));
 
 				elementsToDraw.Add(text);
@@ -63,7 +63,7 @@ namespace TetrisDotnet.Code.UI
 
 			cursorPos = 0;
 
-			cursor = new Text(">", StaticVars.font) {CharacterSize = charSize};
+			cursor = new Text(">", AssetPool.font) {CharacterSize = charSize};
 
 
 			FloatRect cursorRect = cursor.GetLocalBounds();
@@ -78,8 +78,8 @@ namespace TetrisDotnet.Code.UI
 
 		private void UpdateCursorPos()
 		{
-			cursor.Position = new Vector2f(Application.WINDOW_WIDTH / 2 - longestWord.Length * (charSize / 3),
-				Application.WINDOW_HEIGHT * 0.5f + cursorPos * charSizeBuffer -
+			cursor.Position = new Vector2f(Application.WindowWidth / 2 - longestWord.Length * (charSize / 3),
+				Application.WindowHeight * 0.5f + cursorPos * charSizeBuffer -
 				(menuLength - 1) * 0.5f * charSizeBuffer);
 
 			elementsToDraw.RemoveAt(elementsToDraw.Count - 1);
