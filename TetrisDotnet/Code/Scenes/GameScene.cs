@@ -56,7 +56,7 @@ namespace TetrisDotnet.Code.Scenes
 
 			StartNewGame();
 		}
-		
+
 		~GameScene()
 		{
 			Application.eventSystem.Unsubscribe(EventType.InputRotateClockwise, OnInputRotateClockwise);
@@ -80,7 +80,6 @@ namespace TetrisDotnet.Code.Scenes
 				return nextScene;
 
 			dropTime += deltaTime;
-
 			realTimeText.realTime += deltaTime;
 
 			if (dropTime > levelText.dropSpeed)
@@ -94,9 +93,7 @@ namespace TetrisDotnet.Code.Scenes
 				else
 				{
 					grid.KillPiece(activePiece);
-
 					CheckFullRows();
-
 					NewPiece();
 				}
 			}
