@@ -77,6 +77,9 @@ namespace TetrisDotnet.Code.Scenes
 
 		public override SceneType Update(float deltaTime)
 		{
+			if (gameState == GameState.Pause)
+				return nextScene;
+			
 			dropTime += deltaTime;
 
 			realTimeText.realTime += deltaTime;
@@ -150,6 +153,9 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputRotateClockwise()
 		{
+			if (gameState == GameState.Pause)
+				return;
+			
 			if (grid.RotatePiece(activePiece, Rotation.Clockwise))
 			{
 				dropTime -= levelText.sideMoveSpeed;
@@ -158,6 +164,9 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputRotateCounterClockwise()
 		{
+			if (gameState == GameState.Pause)
+				return;
+
 			if (grid.RotatePiece(activePiece, Rotation.CounterClockwise))
 			{
 				dropTime -= levelText.sideMoveSpeed;
@@ -166,6 +175,9 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputDown()
 		{
+			if (gameState == GameState.Pause)
+				return;
+
 			if (grid.CanPlacePiece(activePiece, Vector2iUtils.down))
 			{
 				grid.MovePiece(activePiece, Vector2iUtils.down);
@@ -179,6 +191,9 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputLeft()
 		{
+			if (gameState == GameState.Pause)
+				return;
+
 			if (!grid.CanPlacePiece(activePiece, Vector2iUtils.down))
 			{
 				dropTime -= levelText.sideMoveSpeed;
@@ -189,6 +204,9 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputRight()
 		{
+			if (gameState == GameState.Pause)
+				return;
+
 			if (!grid.CanPlacePiece(activePiece, Vector2iUtils.down))
 			{
 				dropTime -= levelText.sideMoveSpeed;
@@ -199,6 +217,9 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputHold()
 		{
+			if (gameState == GameState.Pause)
+				return;
+
 			if (holdManager.canSwap)
 			{
 				PieceType oldPiece = activePiece.type;
@@ -221,6 +242,9 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputHardDrop()
 		{
+			if (gameState == GameState.Pause)
+				return;
+
 			int spacesMoved = grid.DetermineDropdownPosition(activePiece);
 			scoreText.AddScore(2 * spacesMoved);
 
@@ -233,7 +257,14 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputPause()
 		{
-			gameState = GameState.Pause;
+			if (gameState == GameState.Playing)
+			{
+				gameState = GameState.Pause;
+			}
+			else
+			{
+				gameState = GameState.Playing;
+			}
 		}
 
 		private void InitializeGame()
