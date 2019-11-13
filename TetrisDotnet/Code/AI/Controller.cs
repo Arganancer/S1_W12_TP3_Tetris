@@ -1,9 +1,5 @@
-﻿using System.Drawing;
-using System.Linq;
-using SFML.System;
+﻿using System.Linq;
 using TetrisDotnet.Code.Events;
-using TetrisDotnet.Code.Game;
-using TetrisDotnet.Code.Game.World;
 
 namespace TetrisDotnet.Code.AI
 {

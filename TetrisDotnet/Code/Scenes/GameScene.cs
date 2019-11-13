@@ -18,10 +18,10 @@ namespace TetrisDotnet.Code.Scenes
 	public class GameScene : Scene
 	{
 		// Logic Elements
-		private Grid grid = new Grid();
-		private PieceQueue pieceQueue = new PieceQueue();
+		private readonly Grid grid = new Grid();
+		private readonly PieceQueue pieceQueue = new PieceQueue();
 		private Piece activePiece;
-		private Hold holdManager = new Hold();
+		private readonly Hold holdManager = new Hold();
 		private SceneType nextScene;
 		private bool isPaused;
 		private float dropTime;
@@ -40,6 +40,8 @@ namespace TetrisDotnet.Code.Scenes
 		private StatsTextBlock statsTextBlock;
 		private readonly ControlsText controlsText;
 		private readonly PauseText pauseText = new PauseText();
+		private readonly HeldPieceUI heldPieceUi;
+		private QueuedPiecesUI queuedPiecesUi;
 
 		public GameScene() : base(SceneType.Game)
 		{
@@ -56,8 +58,8 @@ namespace TetrisDotnet.Code.Scenes
 			realTimeText = new RealTimeText();
 			controlsText = new ControlsText();
 
-			HeldPieceUI heldPieceUi = new HeldPieceUI();
-			QueuedPiecesUI queuedPiecesUi = new QueuedPiecesUI();
+			heldPieceUi = new HeldPieceUI();
+			queuedPiecesUi = new QueuedPiecesUI();
 
 			StartNewGame();
 		}
@@ -156,6 +158,7 @@ namespace TetrisDotnet.Code.Scenes
 				}
 			}
 
+			heldPieceUi.Draw(window, holdManager);
 			window.Draw(scoreText);
 			window.Draw(levelText);
 			window.Draw(realTimeText);

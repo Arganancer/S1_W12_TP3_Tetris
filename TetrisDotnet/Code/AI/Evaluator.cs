@@ -44,6 +44,10 @@ namespace TetrisDotnet.Code.AI
 					return new Action(ActionType.Hold, null);
 				}
 			}
+			else
+			{
+				return new Action(ActionType.Hold, null);
+			}
 
 			return new Action(ActionType.Place, currentFinalPiece.Piece);
 		}
