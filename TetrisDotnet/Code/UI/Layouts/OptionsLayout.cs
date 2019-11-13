@@ -50,10 +50,10 @@ namespace TetrisDotnet.Code.UI.Layouts
 					text.Origin = new Vector2f(textRect.Left + textRect.Width / 2.0f,
 						textRect.Top + textRect.Height / 2.0f);
 					text.Position = new Vector2f(
-						Main.WindowWidth / 2 -
+						Application.WindowWidth / 2 -
 						((menuItems[i].Length - 1) / 2 * (charSizeBuffer / 1.8f * longestWordsLens[i])) +
 						(charSizeBuffer / 1.8f * longestWordsLens[i]) * j,
-						Main.WindowHeight / 2 - ((menuItems.Length * 0.5f) / 2 * charSizeBuffer) +
+						Application.WindowHeight / 2 - ((menuItems.Length * 0.5f) / 2 * charSizeBuffer) +
 						(i * charSizeBuffer));
 
 					elementsToDraw.Add(text);

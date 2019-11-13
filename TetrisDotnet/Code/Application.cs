@@ -9,7 +9,7 @@ using EventType = TetrisDotnet.Code.Events.EventType;
 
 namespace TetrisDotnet.Code
 {
-	class Main
+	class Application
 	{
 		public const int WindowHeight = 768;
 		public const int WindowWidth = 1024;
@@ -22,12 +22,12 @@ namespace TetrisDotnet.Code
 		private readonly RenderWindow window;
 		private readonly SceneManager sceneManager;
 
-		~Main()
+		~Application()
 		{
 			eventSystem.Unsubscribe(EventType.InputEscape, Quit);
 		}
 
-		public Main(string title = "Tetris", Styles style = Styles.Close)
+		public Application(string title = "Tetris", Styles style = Styles.Close)
 		{
 			window = new RenderWindow(new VideoMode(WindowWidth, WindowHeight), title, style);
 

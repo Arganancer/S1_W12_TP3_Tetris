@@ -11,35 +11,35 @@ namespace TetrisDotnet.Code.Controls
 			{
 				case Keyboard.Key.Up:
 				case Keyboard.Key.W:
-					Main.eventSystem.ProcessEvent(EventType.InputRotateClockwise);
+					Application.eventSystem.ProcessEvent(EventType.InputRotateClockwise);
 					break;
 				case Keyboard.Key.E:
-					Main.eventSystem.ProcessEvent(EventType.InputRotateCounterClockwise);
+					Application.eventSystem.ProcessEvent(EventType.InputRotateCounterClockwise);
 					break;
 				case Keyboard.Key.Left:
 				case Keyboard.Key.A:
-					Main.eventSystem.ProcessEvent(EventType.InputLeft);
+					Application.eventSystem.ProcessEvent(EventType.InputLeft);
 					break;
 				case Keyboard.Key.Down:
 				case Keyboard.Key.S:
-					Main.eventSystem.ProcessEvent(EventType.InputDown);
+					Application.eventSystem.ProcessEvent(EventType.InputDown);
 					break;
 				case Keyboard.Key.Right:
 				case Keyboard.Key.D:
-					Main.eventSystem.ProcessEvent(EventType.InputRight);
+					Application.eventSystem.ProcessEvent(EventType.InputRight);
 					break;
 				case Keyboard.Key.LShift:
 				case Keyboard.Key.C:
-					Main.eventSystem.ProcessEvent(EventType.InputHold);
+					Application.eventSystem.ProcessEvent(EventType.InputHold);
 					break;
 				case Keyboard.Key.Space:
-					Main.eventSystem.ProcessEvent(EventType.InputHardDrop);
+					Application.eventSystem.ProcessEvent(EventType.InputHardDrop);
 					break;
 				case Keyboard.Key.Escape:
-					Main.eventSystem.ProcessEvent(EventType.InputEscape);
+					Application.eventSystem.ProcessEvent(EventType.InputEscape);
 					break;
 				case Keyboard.Key.P:
-					Main.eventSystem.ProcessEvent(EventType.InputPause);
+					Application.eventSystem.ProcessEvent(EventType.InputPause);
 					break;
 			}
 		}
