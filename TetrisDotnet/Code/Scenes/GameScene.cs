@@ -32,18 +32,6 @@ namespace TetrisDotnet.Code.Scenes
 		private readonly ControlsText controlsText;
 		private readonly PauseText pauseText = new PauseText();
 
-		~GameScene()
-		{
-			Application.eventSystem.Unsubscribe(EventType.InputRotateClockwise, OnInputRotateClockwise);
-			Application.eventSystem.Unsubscribe(EventType.InputRotateCounterClockwise, OnInputRotateCounterClockwise);
-			Application.eventSystem.Unsubscribe(EventType.InputDown, OnInputDown);
-			Application.eventSystem.Unsubscribe(EventType.InputLeft, OnInputLeft);
-			Application.eventSystem.Unsubscribe(EventType.InputRight, OnInputRight);
-			Application.eventSystem.Unsubscribe(EventType.InputHold, OnInputHold);
-			Application.eventSystem.Unsubscribe(EventType.InputHardDrop, OnInputHardDrop);
-			Application.eventSystem.Unsubscribe(EventType.InputPause, OnInputPause);
-		}
-
 		public GameScene() : base(SceneType.Game)
 		{
 			isPaused = false;
@@ -67,6 +55,18 @@ namespace TetrisDotnet.Code.Scenes
 			QueuedPiecesUI queuedPiecesUi = new QueuedPiecesUI();
 
 			StartNewGame();
+		}
+		
+		~GameScene()
+		{
+			Application.eventSystem.Unsubscribe(EventType.InputRotateClockwise, OnInputRotateClockwise);
+			Application.eventSystem.Unsubscribe(EventType.InputRotateCounterClockwise, OnInputRotateCounterClockwise);
+			Application.eventSystem.Unsubscribe(EventType.InputDown, OnInputDown);
+			Application.eventSystem.Unsubscribe(EventType.InputLeft, OnInputLeft);
+			Application.eventSystem.Unsubscribe(EventType.InputRight, OnInputRight);
+			Application.eventSystem.Unsubscribe(EventType.InputHold, OnInputHold);
+			Application.eventSystem.Unsubscribe(EventType.InputHardDrop, OnInputHardDrop);
+			Application.eventSystem.Unsubscribe(EventType.InputPause, OnInputPause);
 		}
 
 		public override void Resume()

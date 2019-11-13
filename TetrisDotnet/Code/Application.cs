@@ -22,11 +22,6 @@ namespace TetrisDotnet.Code
 		private readonly RenderWindow window;
 		private readonly SceneManager sceneManager;
 
-		~Application()
-		{
-			eventSystem.Unsubscribe(EventType.InputEscape, Quit);
-		}
-
 		public Application(string title = "Tetris", Styles style = Styles.Close)
 		{
 			window = new RenderWindow(new VideoMode(WindowWidth, WindowHeight), title, style);
@@ -43,6 +38,11 @@ namespace TetrisDotnet.Code
 			window.SetIcon(48, 48, IconGenerator.IconToBytes("Art/icon.png"));
 		}
 
+		~Application()
+		{
+			eventSystem.Unsubscribe(EventType.InputEscape, Quit);
+		}
+		
 		public void Run()
 		{
 			window.SetVisible(true);
