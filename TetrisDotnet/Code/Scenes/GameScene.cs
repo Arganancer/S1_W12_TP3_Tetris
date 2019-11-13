@@ -327,7 +327,7 @@ namespace TetrisDotnet.Code.Scenes
 
 				State currentState = new State(activePiece, grid.GetBoolGrid());
 				Piece finalPiece = evaluator.GetBestPlacement(currentState);
-				controller.PlanPath(currentState, finalPiece);
+				controller.PlanPath(finalPiece);
 			}
 		}
 
