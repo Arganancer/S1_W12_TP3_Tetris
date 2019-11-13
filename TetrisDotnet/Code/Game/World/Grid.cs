@@ -49,7 +49,7 @@ namespace TetrisDotnet.Code.Game.World
 			{
 				for (int y = 0; y < GridHeight; y++)
 				{
-					boolGrid[x, y] = grid[x, y] != PieceType.Empty;
+					boolGrid[x, y] = grid[x, y] == PieceType.Dead;
 				}
 			}
 

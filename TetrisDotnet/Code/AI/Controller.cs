@@ -16,21 +16,18 @@ namespace TetrisDotnet.Code.AI
 		{
 			rotation = desiredPlacement.rotationIndex;
 
-			move = desiredPlacement.position;
+			move = desiredPlacement.getGlobalBlocks.First();
 		}
 
 		public void RunCommands(State state)
 		{
-			if (rotation > 0)
+			if (rotation-- > 0)
 			{
-				rotation--;
 				Application.eventSystem.ProcessEvent(EventType.InputRotateClockwise);
 				return;
 			}
 
-			int currentX = state.currentPiece.position.X;
-
-			int moves = move.X - currentX;
+			int moves = move.X - state.currentPiece.getGlobalBlocks.First().X;
 			if (moves != 0)
 			{
 				if (moves < 0)
