@@ -106,9 +106,9 @@ namespace TetrisDotnet.Code.AI
 			holes = 0;
 			closedHoles = 0;
 
-			var lowestPointsOfPiece = piece.GetLowestPointsOfPiece();
+			List<Vector2i> lowestPointsOfPiece = piece.GetLowestPointsOfPiece();
 
-			foreach (var point in lowestPointsOfPiece)
+			foreach (Vector2i point in lowestPointsOfPiece)
 			{
 				for (int y = point.Y + 1; y < Grid.GridHeight; y++)
 				{
@@ -153,15 +153,14 @@ namespace TetrisDotnet.Code.AI
 
 		private bool PieceIsValid(State state, Piece piece)
 		{
-			foreach (var point in piece.blocks)
+			foreach (var point in piece.getGlobalBlocks)
 			{
-				Vector2i pointFinalPosition = point + piece.position;
-				if (pointFinalPosition.X < 0 || pointFinalPosition.X > Grid.GridWidth - 1 || pointFinalPosition.Y < 0 || pointFinalPosition.Y > Grid.GridHeight - 1)
+				if (point.X < 0 || point.X > Grid.GridWidth - 1 || point.Y < 0 || point.Y > Grid.GridHeight - 1)
 				{
 					return false;
 				}
 
-				if (state.GetBlock(pointFinalPosition.X, pointFinalPosition.Y))
+				if (state.GetBlock(point.X, point.Y))
 				{
 					return false;
 				}
@@ -172,7 +171,7 @@ namespace TetrisDotnet.Code.AI
 
 		private int GetPieceTopHeight(Piece piece)
 		{
-			return piece.blocks.Min(point => point.Y + piece.position.Y);
+			return piece.getGlobalBlocks.Min(point => point.Y);
 		}
 	}
 }

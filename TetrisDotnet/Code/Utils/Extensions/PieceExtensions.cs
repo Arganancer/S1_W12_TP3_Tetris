@@ -17,7 +17,7 @@ namespace TetrisDotnet.Code.Utils.Extensions
 		{
 			Dictionary<int, Vector2i> highest = new Dictionary<int, Vector2i>();
 
-			foreach (var block in piece.blocks)
+			foreach (var block in piece.getGlobalBlocks)
 			{
 				if (highest.ContainsKey(block.X))
 				{
@@ -39,7 +39,7 @@ namespace TetrisDotnet.Code.Utils.Extensions
 		{
 			Dictionary<int, Vector2i> highest = new Dictionary<int, Vector2i>();
 
-			foreach (var block in piece.blocks)
+			foreach (var block in piece.getGlobalBlocks)
 			{
 				if (highest.ContainsKey(block.X))
 				{
@@ -61,7 +61,7 @@ namespace TetrisDotnet.Code.Utils.Extensions
 		{
 			Dictionary<int, Vector2i> highest = new Dictionary<int, Vector2i>();
 
-			foreach (var block in piece.blocks)
+			foreach (var block in piece.getGlobalBlocks)
 			{
 				if (highest.ContainsKey(block.Y))
 				{
@@ -83,7 +83,7 @@ namespace TetrisDotnet.Code.Utils.Extensions
 		{
 			Dictionary<int, Vector2i> highest = new Dictionary<int, Vector2i>();
 
-			foreach (var block in piece.blocks)
+			foreach (var block in piece.getGlobalBlocks)
 			{
 				if (highest.ContainsKey(block.Y))
 				{
