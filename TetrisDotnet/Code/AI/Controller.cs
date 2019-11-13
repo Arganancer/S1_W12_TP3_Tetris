@@ -21,10 +21,10 @@ namespace TetrisDotnet.Code.AI
 		{
 			if (currentAction.actionType == ActionType.Place)
 			{
-				if (rotation-- > 0)
+				if (rotation > 0)
 				{
+					rotation--;
 					Application.eventSystem.ProcessEvent(EventType.InputRotateClockwise);
-					return;
 				}
 
 				int moves = currentAction.destinationPiece.getGlobalBlocks.First().X -
@@ -43,7 +43,10 @@ namespace TetrisDotnet.Code.AI
 					return;
 				}
 
-				Application.eventSystem.ProcessEvent(EventType.InputHardDrop);
+				if (rotation == 0)
+				{
+					Application.eventSystem.ProcessEvent(EventType.InputHardDrop);
+				}
 			}
 			else if (currentAction.actionType == ActionType.Hold)
 			{
