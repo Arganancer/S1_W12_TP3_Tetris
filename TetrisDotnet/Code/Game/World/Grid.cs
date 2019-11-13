@@ -9,6 +9,7 @@ namespace TetrisDotnet.Code.Game.World
 	{
 		public const int GridHeight = 22;
 		public const int GridWidth = 10;
+		public const int VisibleGridHeight = GridHeight - 2;
 
 		private readonly PieceType[,] grid;
 
@@ -26,11 +27,11 @@ namespace TetrisDotnet.Code.Game.World
 		// TODO: Fuck this function.
 		public PieceType[,] GetDrawable()
 		{
-			PieceType[,] visibleArray = new PieceType[GridWidth, GridHeight - 2];
+			PieceType[,] visibleArray = new PieceType[GridWidth, VisibleGridHeight];
 
 			for (int x = 0; x < GridWidth; x++)
 			{
-				for (int y = 0; y < GridHeight - 2; y++)
+				for (int y = 0; y < VisibleGridHeight; y++)
 				{
 					//i + 2 since we only want the grid where we actually see the pieces
 					visibleArray[x, y] = grid[x, y + 2];

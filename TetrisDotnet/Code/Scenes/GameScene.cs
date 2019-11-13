@@ -20,7 +20,6 @@ namespace TetrisDotnet.Code.Scenes
 		private Piece activePiece;
 		private Hold holdManager = new Hold();
 		private SceneType nextScene;
-		private List<int> idxRowFull = new List<int>();
 		private GameState gameState;
 		private float dropTime;
 
@@ -35,14 +34,14 @@ namespace TetrisDotnet.Code.Scenes
 
 		~GameScene()
 		{
-			Main.eventSystem.Unsubscribe(EventType.InputRotateClockwise, OnInputRotateClockwise);
-			Main.eventSystem.Unsubscribe(EventType.InputRotateCounterClockwise, OnInputRotateCounterClockwise);
-			Main.eventSystem.Unsubscribe(EventType.InputDown, OnInputDown);
-			Main.eventSystem.Unsubscribe(EventType.InputLeft, OnInputLeft);
-			Main.eventSystem.Unsubscribe(EventType.InputRight, OnInputRight);
-			Main.eventSystem.Unsubscribe(EventType.InputHold, OnInputHold);
-			Main.eventSystem.Unsubscribe(EventType.InputHardDrop, OnInputHardDrop);
-			Main.eventSystem.Unsubscribe(EventType.InputPause, OnInputPause);
+			Application.eventSystem.Unsubscribe(EventType.InputRotateClockwise, OnInputRotateClockwise);
+			Application.eventSystem.Unsubscribe(EventType.InputRotateCounterClockwise, OnInputRotateCounterClockwise);
+			Application.eventSystem.Unsubscribe(EventType.InputDown, OnInputDown);
+			Application.eventSystem.Unsubscribe(EventType.InputLeft, OnInputLeft);
+			Application.eventSystem.Unsubscribe(EventType.InputRight, OnInputRight);
+			Application.eventSystem.Unsubscribe(EventType.InputHold, OnInputHold);
+			Application.eventSystem.Unsubscribe(EventType.InputHardDrop, OnInputHardDrop);
+			Application.eventSystem.Unsubscribe(EventType.InputPause, OnInputPause);
 		}
 
 		public GameScene() : base(SceneType.Game)
@@ -50,14 +49,14 @@ namespace TetrisDotnet.Code.Scenes
 			gameState = GameState.Playing;
 			nextScene = SceneType;
 
-			Main.eventSystem.Subscribe(EventType.InputRotateClockwise, OnInputRotateClockwise);
-			Main.eventSystem.Subscribe(EventType.InputRotateCounterClockwise, OnInputRotateCounterClockwise);
-			Main.eventSystem.Subscribe(EventType.InputDown, OnInputDown);
-			Main.eventSystem.Subscribe(EventType.InputLeft, OnInputLeft);
-			Main.eventSystem.Subscribe(EventType.InputRight, OnInputRight);
-			Main.eventSystem.Subscribe(EventType.InputHold, OnInputHold);
-			Main.eventSystem.Subscribe(EventType.InputHardDrop, OnInputHardDrop);
-			Main.eventSystem.Subscribe(EventType.InputPause, OnInputPause);
+			Application.eventSystem.Subscribe(EventType.InputRotateClockwise, OnInputRotateClockwise);
+			Application.eventSystem.Subscribe(EventType.InputRotateCounterClockwise, OnInputRotateCounterClockwise);
+			Application.eventSystem.Subscribe(EventType.InputDown, OnInputDown);
+			Application.eventSystem.Subscribe(EventType.InputLeft, OnInputLeft);
+			Application.eventSystem.Subscribe(EventType.InputRight, OnInputRight);
+			Application.eventSystem.Subscribe(EventType.InputHold, OnInputHold);
+			Application.eventSystem.Subscribe(EventType.InputHardDrop, OnInputHardDrop);
+			Application.eventSystem.Subscribe(EventType.InputPause, OnInputPause);
 			
 			scoreText = new ScoreText();
 			levelText = new LevelText();
@@ -117,7 +116,7 @@ namespace TetrisDotnet.Code.Scenes
 				// TODO: This whole bit of code should go.
 				for (int x = 0; x < Grid.GridWidth; x++)
 				{
-					for (int y = 0; y < Grid.GridHeight - 2; y++)
+					for (int y = 0; y < Grid.VisibleGridHeight; y++)
 					{
 						//Update the textures except dead pieces, since we want them to keep their original colors
 						PieceType block = grid.GetBlock(x, y + 2);
@@ -329,7 +328,7 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void CheckFullRows()
 		{
-			idxRowFull = grid.GetFullRows();
+			List<int> idxRowFull = grid.GetFullRows();
 
 			scoreText.CountScore(idxRowFull, levelText);
 
