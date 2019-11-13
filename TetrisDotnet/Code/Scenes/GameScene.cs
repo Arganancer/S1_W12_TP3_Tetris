@@ -20,7 +20,7 @@ namespace TetrisDotnet.Code.Scenes
 		private Piece activePiece;
 		private Hold holdManager = new Hold();
 		private SceneType nextScene;
-		private GameState gameState;
+		private bool isPaused;
 		private float dropTime;
 
 		// UI Elements
@@ -46,7 +46,7 @@ namespace TetrisDotnet.Code.Scenes
 
 		public GameScene() : base(SceneType.Game)
 		{
-			gameState = GameState.Playing;
+			isPaused = false;
 			nextScene = SceneType;
 
 			Application.eventSystem.Subscribe(EventType.InputRotateClockwise, OnInputRotateClockwise);
@@ -57,12 +57,12 @@ namespace TetrisDotnet.Code.Scenes
 			Application.eventSystem.Subscribe(EventType.InputHold, OnInputHold);
 			Application.eventSystem.Subscribe(EventType.InputHardDrop, OnInputHardDrop);
 			Application.eventSystem.Subscribe(EventType.InputPause, OnInputPause);
-			
+
 			scoreText = new ScoreText();
 			levelText = new LevelText();
 			realTimeText = new RealTimeText();
 			controlsText = new ControlsText();
-			
+
 			HeldPieceUI heldPieceUi = new HeldPieceUI();
 			QueuedPiecesUI queuedPiecesUi = new QueuedPiecesUI();
 
@@ -76,9 +76,9 @@ namespace TetrisDotnet.Code.Scenes
 
 		public override SceneType Update(float deltaTime)
 		{
-			if (gameState == GameState.Pause)
+			if (isPaused)
 				return nextScene;
-			
+
 			dropTime += deltaTime;
 
 			realTimeText.realTime += deltaTime;
@@ -106,55 +106,52 @@ namespace TetrisDotnet.Code.Scenes
 
 		public override void Draw(RenderWindow window)
 		{
-			if (gameState == GameState.Playing || gameState == GameState.Pause)
+			window.Draw(AssetPool.backDrop);
+			window.Draw(AssetPool.holdSprite);
+			window.Draw(AssetPool.queueSprite);
+			window.Draw(AssetPool.drawGridSprite);
+
+			// TODO: This whole bit of code should go.
+			for (int x = 0; x < Grid.GridWidth; x++)
 			{
-				window.Draw(AssetPool.backDrop);
-				window.Draw(AssetPool.holdSprite);
-				window.Draw(AssetPool.queueSprite);
-				window.Draw(AssetPool.drawGridSprite);
-
-				// TODO: This whole bit of code should go.
-				for (int x = 0; x < Grid.GridWidth; x++)
+				for (int y = 0; y < Grid.VisibleGridHeight; y++)
 				{
-					for (int y = 0; y < Grid.VisibleGridHeight; y++)
+					//Update the textures except dead pieces, since we want them to keep their original colors
+					PieceType block = grid.GetBlock(x, y + 2);
+					if (block != PieceType.Dead)
 					{
-						//Update the textures except dead pieces, since we want them to keep their original colors
-						PieceType block = grid.GetBlock(x, y + 2);
-						if (block != PieceType.Dead)
-						{
-							//Associated the blockTextures with the same indexes as the Enum
-							//Look at both and you will understand
-							gridUi.DrawableGrid[x, y].Texture = AssetPool.blockTextures[(int) block];
-						}
-
-						//Finally draw to the screen the final results
-						window.Draw(gridUi.DrawableGrid[x, y]);
+						//Associated the blockTextures with the same indexes as the Enum
+						//Look at both and you will understand
+						gridUi.DrawableGrid[x, y].Texture = AssetPool.blockTextures[(int) block];
 					}
-				}
 
-				window.Draw(scoreText);
-				window.Draw(levelText);
-				window.Draw(realTimeText);
-				window.Draw(controlsText);
-				window.Draw(AssetPool.statsSprite);
-				
-				foreach (Text statTextBlock in statsTextBlock.GetDrawable())
-				{
-					window.Draw(statTextBlock);
+					//Finally draw to the screen the final results
+					window.Draw(gridUi.DrawableGrid[x, y]);
 				}
+			}
 
-				if (gameState == GameState.Pause)
-				{
-					window.Draw(pauseText);
-				}
+			window.Draw(scoreText);
+			window.Draw(levelText);
+			window.Draw(realTimeText);
+			window.Draw(controlsText);
+			window.Draw(AssetPool.statsSprite);
+
+			foreach (Text statTextBlock in statsTextBlock.GetDrawable())
+			{
+				window.Draw(statTextBlock);
+			}
+
+			if (isPaused)
+			{
+				window.Draw(pauseText);
 			}
 		}
 
 		private void OnInputRotateClockwise()
 		{
-			if (gameState == GameState.Pause)
+			if (isPaused)
 				return;
-			
+
 			if (grid.RotatePiece(activePiece, Rotation.Clockwise))
 			{
 				dropTime -= levelText.sideMoveSpeed;
@@ -163,7 +160,7 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputRotateCounterClockwise()
 		{
-			if (gameState == GameState.Pause)
+			if (isPaused)
 				return;
 
 			if (grid.RotatePiece(activePiece, Rotation.CounterClockwise))
@@ -174,7 +171,7 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputDown()
 		{
-			if (gameState == GameState.Pause)
+			if (isPaused)
 				return;
 
 			if (grid.CanPlacePiece(activePiece, Vector2iUtils.down))
@@ -190,7 +187,7 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputLeft()
 		{
-			if (gameState == GameState.Pause)
+			if (isPaused)
 				return;
 
 			if (!grid.CanPlacePiece(activePiece, Vector2iUtils.down))
@@ -203,7 +200,7 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputRight()
 		{
-			if (gameState == GameState.Pause)
+			if (isPaused)
 				return;
 
 			if (!grid.CanPlacePiece(activePiece, Vector2iUtils.down))
@@ -216,7 +213,7 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputHold()
 		{
-			if (gameState == GameState.Pause)
+			if (isPaused)
 				return;
 
 			if (holdManager.canSwap)
@@ -241,7 +238,7 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputHardDrop()
 		{
-			if (gameState == GameState.Pause)
+			if (isPaused)
 				return;
 
 			int spacesMoved = grid.DetermineDropdownPosition(activePiece);
@@ -256,14 +253,7 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputPause()
 		{
-			if (gameState == GameState.Playing)
-			{
-				gameState = GameState.Pause;
-			}
-			else
-			{
-				gameState = GameState.Playing;
-			}
+			isPaused = !isPaused;
 		}
 
 		private void InitializeGame()
@@ -281,7 +271,7 @@ namespace TetrisDotnet.Code.Scenes
 
 			controlsText.Position = new Vector2f(AssetPool.queueSprite.Position.X,
 				AssetPool.queueSprite.Position.Y + AssetPool.queueTexture.Size.Y + AssetPool.blockSize.Y);
-			
+
 			//Select a new active piece
 			NewPiece();
 
