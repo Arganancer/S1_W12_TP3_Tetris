@@ -11,6 +11,7 @@ using TetrisDotnet.Code.UI;
 using TetrisDotnet.Code.UI.Elements;
 using TetrisDotnet.Code.Utils;
 using TetrisDotnet.Code.Utils.Enums;
+using Action = TetrisDotnet.Code.AI.Action;
 
 namespace TetrisDotnet.Code.Scenes
 {
@@ -28,7 +29,7 @@ namespace TetrisDotnet.Code.Scenes
 		// AI Elements
 		private readonly Evaluator evaluator;
 		private readonly Controller controller;
-		private const float AiTickInterval = 0.1f;
+		private const float AiTickInterval = 0.02f;
 		private float lastAiTick = 0.0f;
 
 		// UI Elements
@@ -123,7 +124,7 @@ namespace TetrisDotnet.Code.Scenes
 			if (lastAiTick >= AiTickInterval)
 			{
 				lastAiTick = 0;
-				controller.RunCommands(new State(activePiece, grid.GetBoolGrid()));
+				controller.RunCommands(new State(activePiece, grid.GetBoolGrid(), holdManager.currentPiece));
 			}
 
 			return nextScene;
@@ -325,9 +326,9 @@ namespace TetrisDotnet.Code.Scenes
 				grid.MovePiece(activePiece, Vector2iUtils.flat);
 				statsTextBlock.AddToCounter(activePiece.type);
 
-				State currentState = new State(activePiece, grid.GetBoolGrid());
-				Piece finalPiece = evaluator.GetBestPlacement(currentState);
-				controller.PlanPath(finalPiece);
+				State currentState = new State(activePiece, grid.GetBoolGrid(), holdManager.currentPiece);
+				Action action = evaluator.GetBestPlacement(currentState);
+				controller.PlanPath(action);
 			}
 		}
 

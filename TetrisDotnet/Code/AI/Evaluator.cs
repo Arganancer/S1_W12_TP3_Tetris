@@ -28,27 +28,38 @@ namespace TetrisDotnet.Code.AI
 			{
 				int topHeightValue = Grid.GridHeight - TopHeight;
 
-				return NbOfClosedHoles + (NbOfHoles * 4.0f) + (topHeightValue * 0.5f);
+				return NbOfClosedHoles + (NbOfHoles * 1.5f) + (topHeightValue * 1.0f);
 			}
 		}
 
-		public Piece GetBestPlacement(State state)
+		public Action GetBestPlacement(State state)
 		{
-			return GetBestPiece(GenerateAllFinalPossibilities(state));
+			FinalPiece currentFinalPiece = GetBestPiece(GenerateAllFinalPossibilities(state, state.currentPiece));
+			if (state.currentHeldPiece != PieceType.Empty)
+			{
+				FinalPiece heldPiece =
+					GetBestPiece(GenerateAllFinalPossibilities(state, new Piece(state.currentHeldPiece)));
+				if (heldPiece.GetWeight() < currentFinalPiece.GetWeight())
+				{
+					return new Action(ActionType.Hold, null);
+				}
+			}
+
+			return new Action(ActionType.Place, currentFinalPiece.Piece);
 		}
 
-		private List<FinalPiece> GenerateAllFinalPossibilities(State state)
+		private List<FinalPiece> GenerateAllFinalPossibilities(State state, Piece originalPiece)
 		{
 			List<FinalPiece> finalPieces = new List<FinalPiece>();
 			for (int x = 0; x < Grid.GridWidth; ++x)
 			{
 				for (int y = 0; y < Grid.GridHeight; ++y)
 				{
-					if (y != 0 && (y == Grid.GridHeight - 1 || state.GetBlock(x, y + 1)) && !state.currentPiece.ContainsPoint(new Vector2i(x, y)))
+					if (y != 0 && (y == Grid.GridHeight - 1 || state.GetBlock(x, y + 1)) && !originalPiece.ContainsPoint(new Vector2i(x, y)))
 					{
 						for (int i = 0; i < 4; i++)
 						{
-							Piece piece = new Piece(state.currentPiece);
+							Piece piece = new Piece(originalPiece);
 							for (int j = 0; j < i; j++)
 							{
 								piece.Rotate(Rotation.Clockwise);
@@ -66,7 +77,7 @@ namespace TetrisDotnet.Code.AI
 			return finalPieces;
 		}
 
-		private Piece GetBestPiece(List<FinalPiece> pieces)
+		private FinalPiece GetBestPiece(List<FinalPiece> pieces)
 		{
 			FinalPiece finalPiece = pieces.First();
 
@@ -78,7 +89,7 @@ namespace TetrisDotnet.Code.AI
 				}
 			}
 
-			return finalPiece.Piece;
+			return finalPiece;
 		}
 
 		private bool PositionIsValid(State state, Piece piece, Vector2i position, out FinalPiece modifiedPiece)

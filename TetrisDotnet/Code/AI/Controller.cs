@@ -10,39 +10,49 @@ namespace TetrisDotnet.Code.AI
 	class Controller
 	{
 		private int rotation;
-		private Vector2i move = new Vector2i(0, 0);
+		private Action currentAction;
 
-		public void PlanPath(Piece desiredPlacement)
+		public void PlanPath(Action action)
 		{
-			rotation = desiredPlacement.rotationIndex;
-
-			move = desiredPlacement.getGlobalBlocks.First();
+			currentAction = action;
+			if (currentAction.actionType == ActionType.Place)
+			{
+				rotation = action.destinationPiece.rotationIndex;
+			}
 		}
 
 		public void RunCommands(State state)
 		{
-			if (rotation-- > 0)
+			if (currentAction.actionType == ActionType.Place)
 			{
-				Application.eventSystem.ProcessEvent(EventType.InputRotateClockwise);
-				return;
-			}
-
-			int moves = move.X - state.currentPiece.getGlobalBlocks.First().X;
-			if (moves != 0)
-			{
-				if (moves < 0)
+				if (rotation-- > 0)
 				{
-					Application.eventSystem.ProcessEvent(EventType.InputLeft);
-				}
-				else
-				{
-					Application.eventSystem.ProcessEvent(EventType.InputRight);
+					Application.eventSystem.ProcessEvent(EventType.InputRotateClockwise);
+					return;
 				}
 
-				return;
-			}
+				int moves = currentAction.destinationPiece.getGlobalBlocks.First().X -
+				            state.currentPiece.getGlobalBlocks.First().X;
+				if (moves != 0)
+				{
+					if (moves < 0)
+					{
+						Application.eventSystem.ProcessEvent(EventType.InputLeft);
+					}
+					else
+					{
+						Application.eventSystem.ProcessEvent(EventType.InputRight);
+					}
 
-			Application.eventSystem.ProcessEvent(EventType.InputHardDrop);
+					return;
+				}
+
+				Application.eventSystem.ProcessEvent(EventType.InputHardDrop);
+			}
+			else if (currentAction.actionType == ActionType.Hold)
+			{
+				Application.eventSystem.ProcessEvent(EventType.InputHold);
+			}
 		}
 	}
 }
