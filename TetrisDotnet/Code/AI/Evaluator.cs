@@ -127,7 +127,7 @@ namespace TetrisDotnet.Code.AI
 
 			for (int x = 0; x < Grid.GridWidth; ++x)
 			{
-				for (int y = 0; y < Grid.GridHeight; ++y)
+				for (int y = 2; y < Grid.GridHeight; ++y)
 				{
 					if ((y == Grid.GridHeight - 1 || state.GetBlock(x, y + 1)) &&
 					    !state.GetBlock(x, y) || originalPiece.ContainsPoint(new Vector2i(x, y)))
@@ -205,19 +205,17 @@ namespace TetrisDotnet.Code.AI
 
 			for (int y = bottomRow; y <= topRow; y++)
 			{
-				int nbOfBlocks = 0;
-
+				bool isFull = true;
 				for (int x = 0; x < Grid.GridWidth; x++)
 				{
-					if (state.GetBlock(x, y))
+					if (!state.GetBlock(x, y) && !blocks.Contains(new Vector2i(x, y)))
 					{
-						++nbOfBlocks;
+						isFull = false;
+						break;
 					}
 				}
 
-				nbOfBlocks += blocks.Count(pos => pos.Y == y);
-
-				if (nbOfBlocks == Grid.GridWidth)
+				if (isFull)
 				{
 					++linesCleared;
 				}
@@ -281,23 +279,6 @@ namespace TetrisDotnet.Code.AI
 
 		private Vector2i GetBlockOffset(Piece piece, Vector2i position, int anchor)
 		{
-//			Vector2i desiredPoint = points.First();
-//
-//			foreach (var point in points)
-//			{
-//				if (point.Y > desiredPoint.Y)
-//				{
-//					desiredPoint = point;
-//				}
-//				else if (point.Y == desiredPoint.Y)
-//				{
-//					if (point.X < desiredPoint.X)
-//					{
-//						desiredPoint = point;
-//					}
-//				}
-//			}
-
 			return position - piece.blocks[anchor];
 		}
 
@@ -305,7 +286,7 @@ namespace TetrisDotnet.Code.AI
 		{
 			foreach (var point in piece.getGlobalBlocks)
 			{
-				if (point.X < 0 || point.X > Grid.GridWidth - 1 || point.Y < 0 || point.Y > Grid.GridHeight - 1)
+				if (point.X < 0 || point.X > Grid.GridWidth - 1 || point.Y < 2 || point.Y > Grid.GridHeight - 1)
 				{
 					return false;
 				}
