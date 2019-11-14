@@ -8,7 +8,7 @@ namespace TetrisDotnet.Code.Utils
 
 		static Rand()
 		{
-			Random = new Random();
+			Random = new Random(2);
 		}
 
 		public static int Next()

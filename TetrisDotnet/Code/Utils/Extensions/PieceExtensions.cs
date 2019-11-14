@@ -10,7 +10,7 @@ namespace TetrisDotnet.Code.Utils.Extensions
 	{
 		public static bool ContainsPoint(this Piece piece, Vector2i point)
 		{
-			return piece.blocks.Contains(point);
+			return piece.getGlobalBlocks.Contains(point);
 		}
 
 		public static List<Vector2i> GetLowestPointsOfPiece(this Piece piece)

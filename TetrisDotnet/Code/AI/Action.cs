@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using TetrisDotnet.Code.AI.Pathfinding;
 using TetrisDotnet.Code.Game;
 
 namespace TetrisDotnet.Code.AI
@@ -5,12 +7,12 @@ namespace TetrisDotnet.Code.AI
 	class Action
 	{
 		public ActionType actionType { get; }
-		public Piece destinationPiece { get; }
+		public Stack<PathNode> path { get; }
 
-		public Action(ActionType actionType, Piece destinationPiece)
+		public Action(ActionType actionType, Stack<PathNode> path)
 		{
 			this.actionType = actionType;
-			this.destinationPiece = destinationPiece;
+			this.path = path;
 		}
 	}
 }

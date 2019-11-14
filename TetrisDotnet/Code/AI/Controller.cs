@@ -1,19 +1,20 @@
-﻿using System.Linq;
+﻿using SFML.System;
+using TetrisDotnet.Code.AI.Pathfinding;
 using TetrisDotnet.Code.Events;
 
 namespace TetrisDotnet.Code.AI
 {
 	class Controller
 	{
-		private int rotation;
 		private Action currentAction;
+		private PathNode currentPathNodeAction;
 
 		public void PlanPath(Action action)
 		{
 			currentAction = action;
 			if (currentAction.actionType == ActionType.Place)
 			{
-				rotation = action.destinationPiece.rotationIndex;
+				currentPathNodeAction = action.path.Pop();
 			}
 		}
 
@@ -21,17 +22,27 @@ namespace TetrisDotnet.Code.AI
 		{
 			if (currentAction.actionType == ActionType.Place)
 			{
-				if (rotation > 0)
+				if (state.currentPiece.rotationIndex != currentPathNodeAction.Rotation)
 				{
-					rotation--;
 					Application.eventSystem.ProcessEvent(EventType.InputRotateClockwise);
+					return;
 				}
 
-				int moves = currentAction.destinationPiece.getGlobalBlocks.First().X -
-				            state.currentPiece.getGlobalBlocks.First().X;
-				if (moves != 0)
+				Vector2i currentMove = currentPathNodeAction.Position - state.currentPiece.position;
+
+				if (currentMove.X == 0 && currentMove.Y <= 0)
 				{
-					if (moves < 0)
+					if (currentAction.path.Count == 0)
+					{
+						Application.eventSystem.ProcessEvent(EventType.InputHardDrop);
+						return;
+					}
+					currentPathNodeAction = currentAction.path.Pop();
+				}
+				
+				if (currentMove.X != 0)
+				{
+					if (currentMove.X < 0)
 					{
 						Application.eventSystem.ProcessEvent(EventType.InputLeft);
 					}
@@ -42,10 +53,10 @@ namespace TetrisDotnet.Code.AI
 
 					return;
 				}
-
-				if (rotation == 0)
+				
+				if(currentMove.Y > 0)
 				{
-					Application.eventSystem.ProcessEvent(EventType.InputHardDrop);
+					Application.eventSystem.ProcessEvent(EventType.InputDown);
 				}
 			}
 			else if (currentAction.actionType == ActionType.Hold)

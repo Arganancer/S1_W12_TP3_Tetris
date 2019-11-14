@@ -26,7 +26,7 @@ namespace TetrisDotnet.Code.UI.Elements
 
 			DisplayedString = level.ToString();
 
-			dropSpeed -= dropSpeed / 3;
+			dropSpeed -= dropSpeed * 0.1f;
 
 			sideMoveSpeed -= sideMoveSpeed / 3;
 		}

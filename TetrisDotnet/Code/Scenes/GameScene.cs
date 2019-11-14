@@ -29,7 +29,7 @@ namespace TetrisDotnet.Code.Scenes
 		// AI Elements
 		private readonly Evaluator evaluator;
 		private readonly Controller controller;
-		private const float AiTickInterval = 0.02f;
+		private const float AiTickInterval = 0.0001f;
 		private float lastAiTick = 0.0f;
 
 		// UI Elements
@@ -45,7 +45,7 @@ namespace TetrisDotnet.Code.Scenes
 
 		public GameScene() : base(SceneType.Game)
 		{
-			isPaused = false;
+			isPaused = true;
 			nextScene = SceneType;
 
 			evaluator = new Evaluator();
