@@ -105,7 +105,7 @@ namespace TetrisDotnet.Code.AI.Pathfinding
 			{
 				if (isRemovingLastStraightForDropdown)
 				{
-					if (current.Parent != null && current.Position.Y == current.Parent.Position.Y)
+					if (current.Parent != null && current.Position.X == current.Parent.Position.X)
 					{
 						current = current.Parent;
 						continue;
@@ -127,7 +127,7 @@ namespace TetrisDotnet.Code.AI.Pathfinding
 			float y = origin.Y - destination.Y;
 
 			// We want the AI to align itself horizontally before going down.
-			x *= 5f;
+			x *= 100f;
 
 			return (float) Math.Sqrt(x * x + y * y);
 		}
