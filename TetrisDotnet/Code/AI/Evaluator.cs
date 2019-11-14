@@ -31,10 +31,10 @@ namespace TetrisDotnet.Code.AI
 
 			public float GetWeight()
 			{
-				return bumpiness * 0.1f +
+				return bumpiness * 0.4f +
 				       NbOfHoles * 2.0f +
 				       TopHeight * -0.2f +
-				       //AggregateHeight * 0.01f +
+				       AggregateHeight * 0.001f +
 				       GetLinesClearedWeight();
 			}
 
@@ -43,53 +43,49 @@ namespace TetrisDotnet.Code.AI
 				switch (Piece.type)
 				{
 					case PieceType.I:
-						if (LinesCleared == 4)
+						switch (LinesCleared)
 						{
-							return -100;
+							case 4:
+								return -100;
+							case 3:
+								return -40;
+							case 2:
+								return -10;
+							case 1:
+								return -3;
 						}
-						else if (LinesCleared == 3)
-						{
-							return -40;
-						}
-						else if (LinesCleared == 2)
-						{
-							return -10;
-						}
-						else if (LinesCleared == 1)
-						{
-							return -3;
-						}
-
 						break;
 					case PieceType.O:
+						switch (LinesCleared)
+						{
+							case 2:
+								return -100;
+							case 1:
+								return -10;
+						}
+						break;
 					case PieceType.T:
 					case PieceType.S:
 					case PieceType.Z:
-						if (LinesCleared == 2)
+						switch (LinesCleared)
 						{
-							return -50;
+							case 2:
+								return -45;
+							case 1:
+								return -8;
 						}
-						else if (LinesCleared == 1)
-						{
-							return -15;
-						}
-
 						break;
 					case PieceType.J:
 					case PieceType.L:
-						if (LinesCleared == 3)
+						switch (LinesCleared)
 						{
-							return -100;
+							case 3:
+								return -100;
+							case 2:
+								return -20;
+							case 1:
+								return -5;
 						}
-						else if (LinesCleared == 2)
-						{
-							return -20;
-						}
-						else if (LinesCleared == 1)
-						{
-							return -5;
-						}
-
 						break;
 				}
 
@@ -136,7 +132,7 @@ namespace TetrisDotnet.Code.AI
 					if ((y == Grid.GridHeight - 1 || state.GetBlock(x, y + 1)) &&
 					    !state.GetBlock(x, y) || originalPiece.ContainsPoint(new Vector2i(x, y)))
 					{
-						for (int i = 0; i < 4; i++)
+						for (int i = 0; i < originalPiece.type.PossibleRotations(); i++)
 						{
 							Piece piece = new Piece(originalPiece);
 							for (int j = 0; j < i; j++)
