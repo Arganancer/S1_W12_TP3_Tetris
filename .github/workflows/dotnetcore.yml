@@ -15,3 +15,7 @@ jobs:
         dotnet-version: 3.0.100
     - name: Build with dotnet
       run: dotnet build TetrisDotnet --configuration Release
+    - uses: actions/upload-artifact@master
+      with:
+        name: tetris
+        path: TetrisDotnet/bin/Release/netcoreapp3.0/win-x64/publish
