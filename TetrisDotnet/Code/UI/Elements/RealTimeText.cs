@@ -7,9 +7,18 @@ namespace TetrisDotnet.Code.UI.Elements
 {
 	class RealTimeText : Text
 	{
+		private float realTime;
+		public float RealTime {
+			get => realTime;
+			set
+			{
+				realTime = value;
+				UpdateTimeString();
+			} }
+
 		public RealTimeText()
 		{
-			DisplayedString = "00:00:00";
+			DisplayedString = "Time:  00:00:00";
 			Font = AssetPool.font;
 			CharacterSize = 16;
 			FillColor = Color.Green;
@@ -21,9 +30,7 @@ namespace TetrisDotnet.Code.UI.Elements
 
 		public void UpdateTimeString()
 		{
-			DisplayedString = TimeSpan.FromSeconds(realTime).ToString(@"hh\:mm\:ss");
+			DisplayedString = $"Time:  {TimeSpan.FromSeconds(realTime):hh\\:mm\\:ss}";
 		}
-
-		public float realTime { get; set; }
 	}
 }

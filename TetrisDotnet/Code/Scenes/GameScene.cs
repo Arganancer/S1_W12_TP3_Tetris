@@ -31,6 +31,7 @@ namespace TetrisDotnet.Code.Scenes
 		private readonly Controller controller;
 		private const float AiTickInterval = 0.0001f;
 		private float lastAiTick = 0.0f;
+		private bool aiPlaying = false;
 
 		// UI Elements
 		private readonly GridUI gridUi = new GridUI();
@@ -104,7 +105,7 @@ namespace TetrisDotnet.Code.Scenes
 				return nextScene;
 
 			dropTime += deltaTime;
-			realTimeText.realTime += deltaTime;
+			realTimeText.RealTime += deltaTime;
 
 			if (dropTime > levelText.dropSpeed)
 			{
@@ -122,11 +123,16 @@ namespace TetrisDotnet.Code.Scenes
 				}
 			}
 
-			lastAiTick += deltaTime;
-			if (lastAiTick >= AiTickInterval)
+			if (aiPlaying)
 			{
-				lastAiTick = 0;
-				controller.RunCommands(new State(activePiece, grid.GetBoolGrid(), holdManager.currentPiece));
+				lastAiTick += deltaTime;
+				if (lastAiTick >= AiTickInterval)
+				{
+					int nbOfTicks = (int) (lastAiTick / AiTickInterval);
+					lastAiTick = 0;
+					controller.RunCommands(new State(activePiece, grid.GetBoolGrid(), holdManager.currentPiece),
+						nbOfTicks);
+				}
 			}
 
 			return nextScene;
@@ -159,6 +165,7 @@ namespace TetrisDotnet.Code.Scenes
 			}
 
 			heldPieceUi.Draw(window, holdManager);
+			queuedPiecesUi.Draw(window, pieceQueue);
 			window.Draw(scoreText);
 			window.Draw(levelText);
 			window.Draw(realTimeText);
@@ -329,9 +336,12 @@ namespace TetrisDotnet.Code.Scenes
 				grid.MovePiece(activePiece, Vector2iUtils.flat);
 				statsTextBlock.AddToCounter(activePiece.type);
 
-				State currentState = new State(activePiece, grid.GetBoolGrid(), holdManager.currentPiece);
-				Action action = evaluator.GetBestPlacement(currentState);
-				controller.PlanPath(action);
+				if (aiPlaying)
+				{
+					State currentState = new State(activePiece, grid.GetBoolGrid(), holdManager.currentPiece);
+					Action action = evaluator.GetBestPlacement(currentState);
+					controller.PlanPath(action);
+				}
 			}
 		}
 

@@ -31,10 +31,10 @@ namespace TetrisDotnet.Code.AI
 
 			public float GetWeight()
 			{
-				return bumpiness * 0.4f +
-				       NbOfHoles * 2.0f +
-				       TopHeight * -0.2f +
-				       AggregateHeight * 0.001f +
+				return bumpiness * 0.3f +
+				       NbOfHoles * 1.8f +
+				       TopHeight * -0.18f +
+				       AggregateHeight * 0.4f +
 				       GetLinesClearedWeight();
 			}
 
@@ -115,6 +115,11 @@ namespace TetrisDotnet.Code.AI
 			Stack<PathNode> finalPath = null;
 			while (finalPath == null)
 			{
+				if (finalPieces.Count <= 0)
+				{
+					return null;
+				}
+				
 				finalPath = Pathfinder.pathfinder.FindPath(state, state.currentPiece, finalPieces.Dequeue().Piece);
 			}
 

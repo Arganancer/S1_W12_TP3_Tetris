@@ -18,50 +18,58 @@ namespace TetrisDotnet.Code.AI
 			}
 		}
 
-		public void RunCommands(State state)
+		public void RunCommands(State state, int nbOfTicks)
 		{
-			if (currentAction.actionType == ActionType.Place)
+			for (int i = 0; i < nbOfTicks; i++)
 			{
-				if (state.currentPiece.rotationIndex != currentPathNodeAction.Rotation)
+				if (currentAction.actionType == ActionType.Place)
 				{
-					Application.eventSystem.ProcessEvent(EventType.InputRotateClockwise);
-					return;
-				}
-
-				Vector2i currentMove = currentPathNodeAction.Position - state.currentPiece.position;
-
-				if (currentMove.X == 0 && currentMove.Y <= 0)
-				{
-					if (currentAction.path.Count == 0)
+					if (state.currentPiece.rotationIndex != currentPathNodeAction.Rotation)
 					{
-						Application.eventSystem.ProcessEvent(EventType.InputHardDrop);
-						return;
-					}
-					currentPathNodeAction = currentAction.path.Pop();
-				}
-				
-				if (currentMove.X != 0)
-				{
-					if (currentMove.X < 0)
-					{
-						Application.eventSystem.ProcessEvent(EventType.InputLeft);
-					}
-					else
-					{
-						Application.eventSystem.ProcessEvent(EventType.InputRight);
+						Application.eventSystem.ProcessEvent(EventType.InputRotateClockwise);
+						continue;
 					}
 
-					return;
+					Vector2i currentMove = currentPathNodeAction.Position - state.currentPiece.position;
+
+					if (currentMove.X == 0 && currentMove.Y <= 0)
+					{
+						if (currentAction.path.Count == 0)
+						{
+							if (state.currentPiece.rotationIndex == currentPathNodeAction.Rotation)
+							{
+								Application.eventSystem.ProcessEvent(EventType.InputHardDrop);
+							}
+
+							return;
+						}
+
+						currentPathNodeAction = currentAction.path.Pop();
+					}
+
+					if (currentMove.X != 0)
+					{
+						if (currentMove.X < 0)
+						{
+							Application.eventSystem.ProcessEvent(EventType.InputLeft);
+						}
+						else
+						{
+							Application.eventSystem.ProcessEvent(EventType.InputRight);
+						}
+
+						continue;
+					}
+
+					if (currentMove.Y > 0)
+					{
+						Application.eventSystem.ProcessEvent(EventType.InputDown);
+					}
 				}
-				
-				if(currentMove.Y > 0)
+				else if (currentAction.actionType == ActionType.Hold)
 				{
-					Application.eventSystem.ProcessEvent(EventType.InputDown);
+					Application.eventSystem.ProcessEvent(EventType.InputHold);
 				}
-			}
-			else if (currentAction.actionType == ActionType.Hold)
-			{
-				Application.eventSystem.ProcessEvent(EventType.InputHold);
 			}
 		}
 	}

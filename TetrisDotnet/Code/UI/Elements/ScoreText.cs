@@ -12,7 +12,7 @@ namespace TetrisDotnet.Code.UI.Elements
 
 		public ScoreText()
 		{
-			DisplayedString = "0";
+			DisplayedString = "Score: 0";
 			Font = AssetPool.font;
 			CharacterSize = 16;
 			FillColor = Color.Green;
@@ -26,7 +26,7 @@ namespace TetrisDotnet.Code.UI.Elements
 		{
 			score += scoreToAdd;
 
-			DisplayedString = score.ToString();
+			DisplayedString = $"Score: {score.ToString()}";
 		}
 
 		public void CountScore(List<int> fullRows, LevelText levelText)
