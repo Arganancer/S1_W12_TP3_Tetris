@@ -5,7 +5,7 @@ using TetrisDotnet.Code.Utils;
 
 namespace TetrisDotnet.Code.UI.Layouts
 {
-	class OptionsLayout
+	class OptionsLayout : UiLayout
 	{
 		private string[][] menuItems;
 		private List<Text> elementsToDraw = new List<Text>();

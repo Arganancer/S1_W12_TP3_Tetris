@@ -1,21 +1,26 @@
 using SFML.Graphics;
+using TetrisDotnet.Code.UI;
+using TetrisDotnet.Code.UI.Layouts;
 
 namespace TetrisDotnet.Code.Scenes
 {
 	public class MainMenuScene : Scene
 	{
-		public MainMenuScene() : base(SceneType.MainMenu)
+		private readonly UiLayout uiLayout;
+		public MainMenuScene() : base(SceneType.MainMenu, new MenuLayout())
 		{
+			uiLayout = new UiLayout();
 		}
 		
 		public override SceneType Update(float deltaTime)
 		{
-			throw new System.NotImplementedException();
+			uiLayout.Update();
+			return SceneType.MainMenu;
 		}
 
 		public override void Draw(RenderWindow window)
 		{
-			throw new System.NotImplementedException();
+			uiLayout.Draw(window);
 		}
 	}
 }

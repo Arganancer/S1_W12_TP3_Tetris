@@ -1,10 +1,11 @@
 using SFML.Graphics;
+using TetrisDotnet.Code.UI.Layouts;
 
 namespace TetrisDotnet.Code.Scenes
 {
-	public class PauseMenuScene : Scene
+	public class OptionsMenuScene : Scene
 	{
-		public PauseMenuScene() : base(SceneType.PauseMenu)
+		public OptionsMenuScene() : base(SceneType.OptionsMenu, new OptionsLayout())
 		{
 			
 		}

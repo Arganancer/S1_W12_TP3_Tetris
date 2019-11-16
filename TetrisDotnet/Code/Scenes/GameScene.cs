@@ -9,6 +9,7 @@ using TetrisDotnet.Code.Game;
 using TetrisDotnet.Code.Game.World;
 using TetrisDotnet.Code.UI;
 using TetrisDotnet.Code.UI.Elements;
+using TetrisDotnet.Code.UI.Layouts;
 using TetrisDotnet.Code.Utils;
 using TetrisDotnet.Code.Utils.Enums;
 using Action = TetrisDotnet.Code.AI.Action;
@@ -30,7 +31,7 @@ namespace TetrisDotnet.Code.Scenes
 		private readonly Evaluator evaluator;
 		private readonly Controller controller;
 		private const float AiTickInterval = 0.0001f;
-		private float lastAiTick = 0.0f;
+		private float lastAiTick;
 		private bool aiPlaying = false;
 
 		// UI Elements
@@ -44,7 +45,7 @@ namespace TetrisDotnet.Code.Scenes
 		private readonly HeldPieceUI heldPieceUi;
 		private QueuedPiecesUI queuedPiecesUi;
 
-		public GameScene() : base(SceneType.Game)
+		public GameScene() : base(SceneType.Game, new GameLayout())
 		{
 			isPaused = true;
 			nextScene = SceneType;
