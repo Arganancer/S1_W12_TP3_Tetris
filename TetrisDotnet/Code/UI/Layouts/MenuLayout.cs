@@ -13,7 +13,7 @@ namespace TetrisDotnet.Code.UI.Layouts
 		Right
 	}
 
-	class MenuLayout
+	class MenuLayout : UiLayout
 	{
 		//private static Texture menuBackdropTexture = new Texture("Art/menu_backdrop.png");
 		//private static Sprite menuBackdrop = new Sprite(menuBackdropTexture);

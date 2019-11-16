@@ -8,7 +8,7 @@ namespace TetrisDotnet.Code.UI.Elements
 	{
 		public LevelText()
 		{
-			DisplayedString = "0";
+			DisplayedString = "Level: 0";
 			Font = AssetPool.font;
 			Position = new Vector2f(AssetPool.holdSprite.Position.X,
 				AssetPool.holdSprite.Position.Y + AssetPool.holdTexture.Size.Y + 26);
@@ -24,18 +24,15 @@ namespace TetrisDotnet.Code.UI.Elements
 		{
 			level++;
 
-			DisplayedString = level.ToString();
+			DisplayedString = $"Level: {level.ToString()}";
 
-			dropSpeed -= dropSpeed / 3;
+			dropSpeed -= dropSpeed * 0.1f;
 
 			sideMoveSpeed -= sideMoveSpeed / 3;
 		}
-
-
-		// TODO: NO.
+		
 		public float dropSpeed { get; set; }
 
-		// TODO: DON'T.
 		public float sideMoveSpeed { get; set; }
 
 		public int level { get; set; }

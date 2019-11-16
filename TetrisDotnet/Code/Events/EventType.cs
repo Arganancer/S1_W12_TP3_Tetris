@@ -11,6 +11,12 @@ namespace TetrisDotnet.Code.Events
         InputHold,
         InputHardDrop,
         InputPause,
-        InputEscape
+        InputEscape,
+        
+        // UI Events
+        MouseEnter,
+        MouseLeave,
+        GainFocus,
+        LoseFocus,
     }
 }

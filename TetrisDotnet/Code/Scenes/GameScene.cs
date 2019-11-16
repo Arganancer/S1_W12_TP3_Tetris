@@ -2,27 +2,37 @@ using System;
 using System.Collections.Generic;
 using SFML.Graphics;
 using SFML.System;
+using TetrisDotnet.Code.AI;
 using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.Game;
 using TetrisDotnet.Code.Game.World;
 using TetrisDotnet.Code.UI;
 using TetrisDotnet.Code.UI.Elements;
+using TetrisDotnet.Code.UI.Layouts;
 using TetrisDotnet.Code.Utils;
 using TetrisDotnet.Code.Utils.Enums;
+using Action = TetrisDotnet.Code.AI.Action;
 
 namespace TetrisDotnet.Code.Scenes
 {
 	public class GameScene : Scene
 	{
 		// Logic Elements
-		private Grid grid = new Grid();
-		private PieceQueue pieceQueue = new PieceQueue();
+		private readonly Grid grid = new Grid();
+		private readonly PieceQueue pieceQueue = new PieceQueue();
 		private Piece activePiece;
-		private Hold holdManager = new Hold();
+		private readonly Hold holdManager = new Hold();
 		private SceneType nextScene;
 		private bool isPaused;
 		private float dropTime;
+		
+		// AI Elements
+		private readonly Evaluator evaluator;
+		private readonly Controller controller;
+		private const float AiTickInterval = 0.0001f;
+		private float lastAiTick;
+		private bool aiPlaying = false;
 
 		// UI Elements
 		private readonly GridUI gridUi = new GridUI();
@@ -32,12 +42,17 @@ namespace TetrisDotnet.Code.Scenes
 		private StatsTextBlock statsTextBlock;
 		private readonly ControlsText controlsText;
 		private readonly PauseText pauseText = new PauseText();
+		private readonly HeldPieceUI heldPieceUi;
+		private QueuedPiecesUI queuedPiecesUi;
 
-		public GameScene() : base(SceneType.Game)
+		public GameScene() : base(SceneType.Game, new GameLayout())
 		{
-			isPaused = false;
+			isPaused = true;
 			nextScene = SceneType;
-			
+
+			evaluator = new Evaluator();
+			controller = new Controller();
+
 			SubscribeToInputs();
 
 			scoreText = new ScoreText();
@@ -45,8 +60,8 @@ namespace TetrisDotnet.Code.Scenes
 			realTimeText = new RealTimeText();
 			controlsText = new ControlsText();
 
-			HeldPieceUI heldPieceUi = new HeldPieceUI();
-			QueuedPiecesUI queuedPiecesUi = new QueuedPiecesUI();
+			heldPieceUi = new HeldPieceUI();
+			queuedPiecesUi = new QueuedPiecesUI();
 
 			StartNewGame();
 		}
@@ -91,7 +106,7 @@ namespace TetrisDotnet.Code.Scenes
 				return nextScene;
 
 			dropTime += deltaTime;
-			realTimeText.realTime += deltaTime;
+			realTimeText.RealTime += deltaTime;
 
 			if (dropTime > levelText.dropSpeed)
 			{
@@ -106,6 +121,18 @@ namespace TetrisDotnet.Code.Scenes
 					grid.KillPiece(activePiece);
 					CheckFullRows();
 					NewPiece();
+				}
+			}
+
+			if (aiPlaying)
+			{
+				lastAiTick += deltaTime;
+				if (lastAiTick >= AiTickInterval)
+				{
+					int nbOfTicks = (int) (lastAiTick / AiTickInterval);
+					lastAiTick = 0;
+					controller.RunCommands(new State(activePiece, grid.GetBoolGrid(), holdManager.currentPiece),
+						nbOfTicks);
 				}
 			}
 
@@ -138,6 +165,8 @@ namespace TetrisDotnet.Code.Scenes
 				}
 			}
 
+			heldPieceUi.Draw(window, holdManager);
+			queuedPiecesUi.Draw(window, pieceQueue);
 			window.Draw(scoreText);
 			window.Draw(levelText);
 			window.Draw(realTimeText);
@@ -306,8 +335,14 @@ namespace TetrisDotnet.Code.Scenes
 			else
 			{
 				grid.MovePiece(activePiece, Vector2iUtils.flat);
-
 				statsTextBlock.AddToCounter(activePiece.type);
+
+				if (aiPlaying)
+				{
+					State currentState = new State(activePiece, grid.GetBoolGrid(), holdManager.currentPiece);
+					Action action = evaluator.GetBestPlacement(currentState);
+					controller.PlanPath(action);
+				}
 			}
 		}
 

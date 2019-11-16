@@ -4,6 +4,6 @@ namespace TetrisDotnet.Code.Scenes
 	{
 		Game,
 		MainMenu,
-		PauseMenu
+		OptionsMenu
 	}
 }
