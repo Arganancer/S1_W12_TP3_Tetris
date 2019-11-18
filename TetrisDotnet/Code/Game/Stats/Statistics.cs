@@ -42,6 +42,7 @@ namespace TetrisDotnet.Code.Game.Stats
 		{
 			Application.EventSystem.Subscribe(EventType.PiecePlaced, OnPiecePlaced);
 			Application.EventSystem.Subscribe(EventType.PieceDropped, OnPieceDropped);
+			IncreaseLevel();
 		}
 
 		~Statistics()

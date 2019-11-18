@@ -30,5 +30,6 @@ namespace TetrisDotnet.Code.Events
         NewHeldPiece,
         UpdatedPieceQueue,
         GridUpdated,
+        GamePauseToggled,
     }
 }

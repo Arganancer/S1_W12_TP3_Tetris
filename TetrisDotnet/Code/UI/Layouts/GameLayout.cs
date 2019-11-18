@@ -12,7 +12,6 @@ namespace TetrisDotnet.Code.UI.Layouts
 		private RealTimeText realTimeText;
 		private StatsTextBlock statsTextBlock;
 		private readonly ControlsText controlsText;
-		private readonly PauseText pauseText = new PauseText();
 		private readonly HeldPieceUI heldPieceUi;
 		private PieceQueueUI pieceQueueUi;
 
@@ -26,6 +25,7 @@ namespace TetrisDotnet.Code.UI.Layouts
 			heldPieceUi = new HeldPieceUI();
 			pieceQueueUi = new PieceQueueUI();
 			statsTextBlock = new StatsTextBlock();
+			Elements.Add(new PauseText());
 			
 			AssetPool.DrawGridSprite.Position = new Vector2f(GridUI.Position.X - AssetPool.BlockSize.X * 1.5f,
 				GridUI.Position.Y - AssetPool.BlockSize.Y * 2f);
@@ -44,8 +44,6 @@ namespace TetrisDotnet.Code.UI.Layouts
 			window.Draw(AssetPool.HoldSprite);
 			window.Draw(AssetPool.QueueSprite);
 			window.Draw(AssetPool.DrawGridSprite);
-			
-			base.Draw(window);
 			gridUi.Draw(window);
 			heldPieceUi.Draw(window);
 			pieceQueueUi.Draw(window);
@@ -59,11 +57,8 @@ namespace TetrisDotnet.Code.UI.Layouts
 			{
 				window.Draw(statTextBlock);
 			}
-
-//			if (isPaused)
-//			{
-//				window.Draw(pauseText);
-//			}
+			
+			base.Draw(window);
 		}
 	}
 }

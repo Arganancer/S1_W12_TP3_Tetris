@@ -173,6 +173,8 @@ namespace TetrisDotnet.Code.Game.World
 			{
 				grid[block.X, block.Y] = new BlockInfo(piece.Type, PieceState.Active);
 			}
+			
+			Application.EventSystem.QueueEvent(EventType.GridUpdated, true, new GridUpdatedEventData(this));
 		}
 
 		public void MovePiece(Piece piece, Vector2i newPosition)
@@ -184,9 +186,6 @@ namespace TetrisDotnet.Code.Game.World
 
 				AddPiece(piece, newPosition);
 				PlaceGhostPiece(piece);
-			
-				Application.EventSystem.QueueEvent(EventType.GridUpdated, true, new GridUpdatedEventData(this));
-				
 			}
 		}
 
@@ -300,7 +299,7 @@ namespace TetrisDotnet.Code.Game.World
 			return true;
 		}
 
-		private int CheckLowestPossiblePosition(Piece piece)
+		private int FindLowestValidVerticalOffset(Piece piece)
 		{
 			int lowestDownPosition = 0;
 
@@ -313,7 +312,7 @@ namespace TetrisDotnet.Code.Game.World
 
 		private void PlaceGhostPiece(Piece piece)
 		{
-			int ghostPiecePos = CheckLowestPossiblePosition(piece);
+			int ghostPiecePos = FindLowestValidVerticalOffset(piece);
 			foreach (Vector2i block in piece.GetGlobalBlocks)
 			{
 				Vector2i finalPosition = new Vector2i(block.X, block.Y + ghostPiecePos);
@@ -322,13 +321,15 @@ namespace TetrisDotnet.Code.Game.World
 					grid[finalPosition.X, finalPosition.Y].PieceType = PieceType.Ghost;
 				}
 			}
+			
+			Application.EventSystem.QueueEvent(EventType.GridUpdated, true, new GridUpdatedEventData(this));
 		}
 		
 		public int DetermineDropdownPosition(Piece piece)
 		{
 			RemoveGhostPiece(piece);
 			RemovePiece(piece);
-			int dropDownPos = CheckLowestPossiblePosition(piece);
+			int dropDownPos = FindLowestValidVerticalOffset(piece);
 			return dropDownPos;
 		}
 
@@ -344,6 +345,8 @@ namespace TetrisDotnet.Code.Game.World
 					}
 				}
 			}
+			
+			Application.EventSystem.QueueEvent(EventType.GridUpdated, true, new GridUpdatedEventData(this));
 		}
 	}
 }

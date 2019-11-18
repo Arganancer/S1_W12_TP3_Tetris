@@ -1,21 +1,35 @@
-using SFML.Graphics;
-using SFML.System;
-using TetrisDotnet.Code.Game.World;
+using System.Diagnostics;
+using TetrisDotnet.Code.Events;
+using TetrisDotnet.Code.Events.EventData;
+using TetrisDotnet.Code.UI.Base;
 
 namespace TetrisDotnet.Code.UI.Elements
 {
-	public class PauseText : Text
+	public class PauseText : TextElement
 	{
-		public PauseText()
+		public PauseText() : base(0.5f, 0.5f, 0.5f, 0.5f)
 		{
 			DisplayedString = "Paused";
 			Font = AssetPool.Font;
 			CharacterSize = 40;
+			Hidden = true;
+
+			Application.EventSystem.Subscribe(EventType.GamePauseToggled, OnGamePauseToggled);
+		}
+
+		~PauseText()
+		{
 			
-			FloatRect localRect = GetLocalBounds();
-			Origin = new Vector2f(localRect.Left + localRect.Width *0.5f,
-				localRect.Top + localRect.Height / 0.5f);
-			Position = new Vector2f(Application.WindowWidth * 0.5f, Application.WindowHeight * 0.5f);
+			Application.EventSystem.Unsubscribe(EventType.GamePauseToggled, OnGamePauseToggled);
+		}
+
+		private void OnGamePauseToggled(EventData eventData)
+		{
+			GamePauseToggledEventData gamePauseToggledEventData = eventData as GamePauseToggledEventData;
+			
+			Debug.Assert(gamePauseToggledEventData != null, nameof(gamePauseToggledEventData) + " != null");
+			
+			Hidden = !gamePauseToggledEventData.IsPaused;
 		}
 	}
 }

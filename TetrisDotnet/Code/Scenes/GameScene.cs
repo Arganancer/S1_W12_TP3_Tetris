@@ -22,8 +22,8 @@ namespace TetrisDotnet.Code.Scenes
 		private Piece activePiece;
 		private readonly Hold holdManager = new Hold();
 		private SceneType nextScene;
-		private bool isPaused = true;
-		private Statistics statistics = new Statistics();
+		private bool isPaused = false;
+		private readonly Statistics statistics = new Statistics();
 
 		private float timeUntilNextDrop = 0;
 		private const float PieceLockDelay = 0.5f;
@@ -39,6 +39,7 @@ namespace TetrisDotnet.Code.Scenes
 		public GameScene() : base(SceneType.Game, new GameLayout())
 		{
 			nextScene = SceneType;
+			Application.EventSystem.Subscribe(EventType.InputPause, OnInputPause);
 			SubscribeToInputs();
 			StartNewGame();
 		}
@@ -46,6 +47,7 @@ namespace TetrisDotnet.Code.Scenes
 		~GameScene()
 		{
 			UnsubscribeFromInputs();
+			Application.EventSystem.Unsubscribe(EventType.InputPause, OnInputPause);
 		}
 
 		private void SubscribeToInputs()
@@ -57,7 +59,6 @@ namespace TetrisDotnet.Code.Scenes
 			Application.EventSystem.Subscribe(EventType.InputRight, OnInputRight);
 			Application.EventSystem.Subscribe(EventType.InputHold, OnInputHold);
 			Application.EventSystem.Subscribe(EventType.InputHardDrop, OnInputHardDrop);
-			Application.EventSystem.Subscribe(EventType.InputPause, OnInputPause);
 		}
 
 		private void UnsubscribeFromInputs()
@@ -69,7 +70,6 @@ namespace TetrisDotnet.Code.Scenes
 			Application.EventSystem.Unsubscribe(EventType.InputRight, OnInputRight);
 			Application.EventSystem.Unsubscribe(EventType.InputHold, OnInputHold);
 			Application.EventSystem.Unsubscribe(EventType.InputHardDrop, OnInputHardDrop);
-			Application.EventSystem.Unsubscribe(EventType.InputPause, OnInputPause);
 		}
 
 		public override void Resume()
@@ -112,6 +112,7 @@ namespace TetrisDotnet.Code.Scenes
 				}
 			}
 
+			base.Update(deltaTime);
 			return nextScene;
 		}
 
@@ -190,6 +191,10 @@ namespace TetrisDotnet.Code.Scenes
 			Application.EventSystem.ProcessEvent(EventType.PieceDropped, new PieceDroppedEventData(Drop.HardDrop, spacesMoved));
 
 			grid.MovePiece(activePiece, Vector2iUtils.down * spacesMoved);
+			
+			grid.KillPiece(activePiece);
+			CheckFullRows();
+			NewPiece();
 		}
 
 		private void OnInputPause(EventData eventData)
@@ -203,6 +208,8 @@ namespace TetrisDotnet.Code.Scenes
 			{
 				SubscribeToInputs();;
 			}
+			
+			Application.EventSystem.ProcessEvent(EventType.GamePauseToggled, new GamePauseToggledEventData(isPaused));
 		}
 
 		private void InitializeGame()
