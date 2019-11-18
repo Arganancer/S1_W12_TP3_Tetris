@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using SFML.Graphics;
 using SFML.System;
 using TetrisDotnet.Code.AI;
 using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.Game;
+using TetrisDotnet.Code.Game.Stats;
 using TetrisDotnet.Code.Game.World;
-using TetrisDotnet.Code.UI;
-using TetrisDotnet.Code.UI.Elements;
 using TetrisDotnet.Code.UI.Layouts;
 using TetrisDotnet.Code.Utils;
 using TetrisDotnet.Code.Utils.Enums;
@@ -24,45 +22,24 @@ namespace TetrisDotnet.Code.Scenes
 		private Piece activePiece;
 		private readonly Hold holdManager = new Hold();
 		private SceneType nextScene;
-		private bool isPaused;
-		private float dropTime;
+		private bool isPaused = true;
+		private Statistics statistics = new Statistics();
+
+		private float timeUntilNextDrop = 0;
+		private const float PieceLockDelay = 0.5f;
+		private float timeUntilPieceLock = PieceLockDelay;
 		
 		// AI Elements
-		private readonly Evaluator evaluator;
-		private readonly Controller controller;
+		private readonly Evaluator evaluator = new Evaluator();
+		private readonly Controller controller = new Controller();
 		private const float AiTickInterval = 0.0001f;
 		private float lastAiTick;
 		private bool aiPlaying = false;
 
-		// UI Elements
-		private readonly GridUI gridUi = new GridUI();
-		private ScoreText scoreText;
-		private LevelText levelText;
-		private RealTimeText realTimeText;
-		private StatsTextBlock statsTextBlock;
-		private readonly ControlsText controlsText;
-		private readonly PauseText pauseText = new PauseText();
-		private readonly HeldPieceUI heldPieceUi;
-		private QueuedPiecesUI queuedPiecesUi;
-
 		public GameScene() : base(SceneType.Game, new GameLayout())
 		{
-			isPaused = true;
 			nextScene = SceneType;
-
-			evaluator = new Evaluator();
-			controller = new Controller();
-
 			SubscribeToInputs();
-
-			scoreText = new ScoreText();
-			levelText = new LevelText();
-			realTimeText = new RealTimeText();
-			controlsText = new ControlsText();
-
-			heldPieceUi = new HeldPieceUI();
-			queuedPiecesUi = new QueuedPiecesUI();
-
 			StartNewGame();
 		}
 
@@ -73,26 +50,26 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void SubscribeToInputs()
 		{
-			Application.eventSystem.Subscribe(EventType.InputRotateClockwise, OnInputRotateClockwise);
-			Application.eventSystem.Subscribe(EventType.InputRotateCounterClockwise, OnInputRotateCounterClockwise);
-			Application.eventSystem.Subscribe(EventType.InputDown, OnInputDown);
-			Application.eventSystem.Subscribe(EventType.InputLeft, OnInputLeft);
-			Application.eventSystem.Subscribe(EventType.InputRight, OnInputRight);
-			Application.eventSystem.Subscribe(EventType.InputHold, OnInputHold);
-			Application.eventSystem.Subscribe(EventType.InputHardDrop, OnInputHardDrop);
-			Application.eventSystem.Subscribe(EventType.InputPause, OnInputPause);
+			Application.EventSystem.Subscribe(EventType.InputRotateClockwise, OnInputRotateClockwise);
+			Application.EventSystem.Subscribe(EventType.InputRotateCounterClockwise, OnInputRotateCounterClockwise);
+			Application.EventSystem.Subscribe(EventType.InputDown, OnInputDown);
+			Application.EventSystem.Subscribe(EventType.InputLeft, OnInputLeft);
+			Application.EventSystem.Subscribe(EventType.InputRight, OnInputRight);
+			Application.EventSystem.Subscribe(EventType.InputHold, OnInputHold);
+			Application.EventSystem.Subscribe(EventType.InputHardDrop, OnInputHardDrop);
+			Application.EventSystem.Subscribe(EventType.InputPause, OnInputPause);
 		}
 
 		private void UnsubscribeFromInputs()
 		{
-			Application.eventSystem.Unsubscribe(EventType.InputRotateClockwise, OnInputRotateClockwise);
-			Application.eventSystem.Unsubscribe(EventType.InputRotateCounterClockwise, OnInputRotateCounterClockwise);
-			Application.eventSystem.Unsubscribe(EventType.InputDown, OnInputDown);
-			Application.eventSystem.Unsubscribe(EventType.InputLeft, OnInputLeft);
-			Application.eventSystem.Unsubscribe(EventType.InputRight, OnInputRight);
-			Application.eventSystem.Unsubscribe(EventType.InputHold, OnInputHold);
-			Application.eventSystem.Unsubscribe(EventType.InputHardDrop, OnInputHardDrop);
-			Application.eventSystem.Unsubscribe(EventType.InputPause, OnInputPause);
+			Application.EventSystem.Unsubscribe(EventType.InputRotateClockwise, OnInputRotateClockwise);
+			Application.EventSystem.Unsubscribe(EventType.InputRotateCounterClockwise, OnInputRotateCounterClockwise);
+			Application.EventSystem.Unsubscribe(EventType.InputDown, OnInputDown);
+			Application.EventSystem.Unsubscribe(EventType.InputLeft, OnInputLeft);
+			Application.EventSystem.Unsubscribe(EventType.InputRight, OnInputRight);
+			Application.EventSystem.Unsubscribe(EventType.InputHold, OnInputHold);
+			Application.EventSystem.Unsubscribe(EventType.InputHardDrop, OnInputHardDrop);
+			Application.EventSystem.Unsubscribe(EventType.InputPause, OnInputPause);
 		}
 
 		public override void Resume()
@@ -105,12 +82,11 @@ namespace TetrisDotnet.Code.Scenes
 			if (isPaused)
 				return nextScene;
 
-			dropTime += deltaTime;
-			realTimeText.RealTime += deltaTime;
+			timeUntilNextDrop += deltaTime;
 
-			if (dropTime > levelText.dropSpeed)
+			if (timeUntilNextDrop > statistics.DropSpeed)
 			{
-				dropTime = 0;
+				timeUntilNextDrop = 0;
 
 				if (grid.CanPlacePiece(activePiece, Vector2iUtils.down))
 				{
@@ -131,7 +107,7 @@ namespace TetrisDotnet.Code.Scenes
 				{
 					int nbOfTicks = (int) (lastAiTick / AiTickInterval);
 					lastAiTick = 0;
-					controller.RunCommands(new State(activePiece, grid.GetBoolGrid(), holdManager.currentPiece),
+					controller.RunCommands(new State(activePiece, grid.GetBoolGrid(), holdManager.CurrentPiece),
 						nbOfTicks);
 				}
 			}
@@ -139,56 +115,11 @@ namespace TetrisDotnet.Code.Scenes
 			return nextScene;
 		}
 
-		public override void Draw(RenderWindow window)
-		{
-			window.Draw(AssetPool.backDrop);
-			window.Draw(AssetPool.holdSprite);
-			window.Draw(AssetPool.queueSprite);
-			window.Draw(AssetPool.drawGridSprite);
-
-			// TODO: This whole bit of code should go.
-			for (int x = 0; x < Grid.GridWidth; x++)
-			{
-				for (int y = 0; y < Grid.VisibleGridHeight; y++)
-				{
-					//Update the textures except dead pieces, since we want them to keep their original colors
-					PieceType block = grid.GetBlock(x, y + 2);
-					if (block != PieceType.Dead)
-					{
-						//Associated the blockTextures with the same indexes as the Enum
-						//Look at both and you will understand
-						gridUi.DrawableGrid[x, y].Texture = AssetPool.blockTextures[(int) block];
-					}
-
-					//Finally draw to the screen the final results
-					window.Draw(gridUi.DrawableGrid[x, y]);
-				}
-			}
-
-			heldPieceUi.Draw(window, holdManager);
-			queuedPiecesUi.Draw(window, pieceQueue);
-			window.Draw(scoreText);
-			window.Draw(levelText);
-			window.Draw(realTimeText);
-			window.Draw(controlsText);
-			window.Draw(AssetPool.statsSprite);
-
-			foreach (Text statTextBlock in statsTextBlock.GetDrawable())
-			{
-				window.Draw(statTextBlock);
-			}
-
-			if (isPaused)
-			{
-				window.Draw(pauseText);
-			}
-		}
-
 		private void OnInputRotateClockwise(EventData eventData)
 		{
 			if (grid.RotatePiece(activePiece, Rotation.Clockwise))
 			{
-				dropTime -= levelText.sideMoveSpeed;
+				timeUntilPieceLock = PieceLockDelay;
 			}
 		}
 
@@ -196,7 +127,7 @@ namespace TetrisDotnet.Code.Scenes
 		{
 			if (grid.RotatePiece(activePiece, Rotation.CounterClockwise))
 			{
-				dropTime -= levelText.sideMoveSpeed;
+				timeUntilPieceLock = PieceLockDelay;
 			}
 		}
 
@@ -205,66 +136,60 @@ namespace TetrisDotnet.Code.Scenes
 			if (grid.CanPlacePiece(activePiece, Vector2iUtils.down))
 			{
 				grid.MovePiece(activePiece, Vector2iUtils.down);
-				scoreText.AddScore(1);
+				Application.EventSystem.ProcessEvent(EventType.PieceDropped, new PieceDroppedEventData(Drop.SoftDrop, 1));
 			}
 			else
 			{
-				dropTime = 1;
+				timeUntilNextDrop = statistics.DropSpeed;
 			}
 		}
 
 		private void OnInputLeft(EventData eventData)
 		{
-			if (!grid.CanPlacePiece(activePiece, Vector2iUtils.down))
+			if (grid.CanPlacePiece(activePiece, Vector2iUtils.left))
 			{
-				dropTime -= levelText.sideMoveSpeed;
+				timeUntilPieceLock = PieceLockDelay;
+				grid.MovePiece(activePiece, Vector2iUtils.left);
 			}
-
-			grid.MovePiece(activePiece, Vector2iUtils.left);
 		}
 
 		private void OnInputRight(EventData eventData)
 		{
-			if (!grid.CanPlacePiece(activePiece, Vector2iUtils.down))
+			if (grid.CanPlacePiece(activePiece, Vector2iUtils.right))
 			{
-				dropTime -= levelText.sideMoveSpeed;
+				timeUntilPieceLock = PieceLockDelay;
+				grid.MovePiece(activePiece, Vector2iUtils.right);
 			}
-
-			grid.MovePiece(activePiece, Vector2iUtils.right);
 		}
 
 		private void OnInputHold(EventData eventData)
 		{
-			if (holdManager.canSwap)
+			if (holdManager.CanSwap)
 			{
-				PieceType oldPiece = activePiece.type;
+				PieceType oldPiece = activePiece.Type;
 
 				grid.RemovePiece(activePiece);
 
-				if (holdManager.currentPiece == PieceType.Empty)
+				if (holdManager.CurrentPiece == PieceType.Empty)
 				{
 					NewPiece();
 				}
 				else
 				{
-					NewPiece(holdManager.currentPiece);
+					NewPiece(holdManager.CurrentPiece);
 				}
 
-				holdManager.currentPiece = oldPiece;
-				holdManager.canSwap = false;
+				holdManager.CurrentPiece = oldPiece;
+				holdManager.CanSwap = false;
 			}
 		}
 
 		private void OnInputHardDrop(EventData eventData)
 		{
 			int spacesMoved = grid.DetermineDropdownPosition(activePiece);
-			scoreText.AddScore(2 * spacesMoved);
+			Application.EventSystem.ProcessEvent(EventType.PieceDropped, new PieceDroppedEventData(Drop.HardDrop, spacesMoved));
 
-			grid.MovePiece(activePiece, Vector2iUtils.down * (spacesMoved));
-
-			dropTime = levelText.dropSpeed;
-
-			DrawActivePieceHardDrop();
+			grid.MovePiece(activePiece, Vector2iUtils.down * spacesMoved);
 		}
 
 		private void OnInputPause(EventData eventData)
@@ -282,28 +207,8 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void InitializeGame()
 		{
-			scoreText = new ScoreText();
-
-			levelText = new LevelText();
-
-			realTimeText = new RealTimeText();
-
-			AssetPool.statsSprite.Position = new Vector2f(AssetPool.holdSprite.Position.X,
-				realTimeText.Position.Y + AssetPool.blockSize.Y);
-
-			statsTextBlock = new StatsTextBlock();
-
-			controlsText.Position = new Vector2f(AssetPool.queueSprite.Position.X,
-				AssetPool.queueSprite.Position.Y + AssetPool.queueTexture.Size.Y + AssetPool.blockSize.Y);
-
 			//Select a new active piece
 			NewPiece();
-
-			//Add the piece to the grid, with a movement of 0,0
-			grid.AddPiece(activePiece, new Vector2i(0, 0));
-
-			AssetPool.drawGridSprite.Position = new Vector2f(GridUI.position.X - AssetPool.blockSize.X * 1.5f,
-				GridUI.position.Y - AssetPool.blockSize.Y * 2f);
 		}
 
 		private void StartNewGame()
@@ -313,18 +218,12 @@ namespace TetrisDotnet.Code.Scenes
 			GC.WaitForPendingFinalizers();
 		}
 
-		private void DrawActivePieceHardDrop()
-		{
-			foreach (Vector2i block in activePiece.getGlobalBlocks)
-			{
-				gridUi.DrawableGrid[block.X, Math.Max(0, block.Y - 2)].Texture =
-					AssetPool.blockTextures[(int) activePiece.type];
-			}
-		}
-
 		private void NewPiece(PieceType type = PieceType.Empty)
 		{
-			holdManager.canSwap = true;
+			timeUntilPieceLock = PieceLockDelay;
+			timeUntilNextDrop = statistics.DropSpeed;
+			
+			holdManager.CanSwap = true;
 
 			activePiece = type == PieceType.Empty ? new Piece(pieceQueue.GrabNext()) : new Piece(type);
 
@@ -335,11 +234,10 @@ namespace TetrisDotnet.Code.Scenes
 			else
 			{
 				grid.MovePiece(activePiece, Vector2iUtils.flat);
-				statsTextBlock.AddToCounter(activePiece.type);
 
 				if (aiPlaying)
 				{
-					State currentState = new State(activePiece, grid.GetBoolGrid(), holdManager.currentPiece);
+					State currentState = new State(activePiece, grid.GetBoolGrid(), holdManager.CurrentPiece);
 					Action action = evaluator.GetBestPlacement(currentState);
 					controller.PlanPath(action);
 				}
@@ -349,8 +247,13 @@ namespace TetrisDotnet.Code.Scenes
 		private void CheckFullRows()
 		{
 			List<int> idxRowFull = grid.GetFullRows();
-
-			scoreText.CountScore(idxRowFull, levelText);
+			
+			List<Move> moves = new List<Move>();
+			moves.Add(MoveUtils.GetLinesCleared(idxRowFull.Count));
+			
+			// TODO: Add TSpin modifier.
+			// TODO: This should not be called here.
+			Application.EventSystem.ProcessEvent(EventType.PiecePlaced, new PiecePlacedEventData(moves));
 
 			RemoveRows(idxRowFull);
 		}
@@ -360,20 +263,6 @@ namespace TetrisDotnet.Code.Scenes
 			foreach (int rowIdx in fullRows)
 			{
 				grid.RemoveRow(rowIdx);
-
-				PieceType[,] drawableGrid = grid.GetDrawable();
-
-				for (int y = rowIdx - 2; y > 0; y--)
-				{
-					for (int x = 0; x < Grid.GridWidth; x++)
-					{
-						//Only move "Dead" textures since the rest gets sorted out
-						if (drawableGrid[x, y] == PieceType.Dead)
-						{
-							gridUi.DrawableGrid[x, y].Texture = gridUi.DrawableGrid[x, y - 1].Texture;
-						}
-					}
-				}
 			}
 		}
 	}

@@ -40,7 +40,7 @@ namespace TetrisDotnet.Code.AI
 
 			private float GetLinesClearedWeight()
 			{
-				switch (Piece.type)
+				switch (Piece.Type)
 				{
 					case PieceType.I:
 						switch (LinesCleared)
@@ -137,7 +137,7 @@ namespace TetrisDotnet.Code.AI
 					if ((y == Grid.GridHeight - 1 || state.GetBlock(x, y + 1)) &&
 					    !state.GetBlock(x, y) || originalPiece.ContainsPoint(new Vector2i(x, y)))
 					{
-						for (int i = 0; i < originalPiece.type.PossibleRotations(); i++)
+						for (int i = 0; i < originalPiece.Type.PossibleRotations(); i++)
 						{
 							Piece piece = new Piece(originalPiece);
 							for (int j = 0; j < i; j++)
@@ -145,7 +145,7 @@ namespace TetrisDotnet.Code.AI
 								piece.Rotate(Rotation.Clockwise);
 							}
 
-							for (int anchor = 0; anchor < piece.blocks.Count; anchor++)
+							for (int anchor = 0; anchor < piece.Blocks.Count; anchor++)
 							{
 								if (PositionIsValid(state, new Piece(piece), anchor, new Vector2i(x, y),
 									out FinalPiece newFinalPiece))
@@ -192,7 +192,7 @@ namespace TetrisDotnet.Code.AI
 					LinesCleared = GetLinesCleared(state, adjustedPiece),
 					bumpiness = CalculateBumpiness(state, adjustedPiece),
 					AggregateHeight = GetAggregateHeight(state, adjustedPiece),
-					TopHeight = adjustedPiece.getGlobalBlocks.Max(pos => pos.Y)
+					TopHeight = adjustedPiece.GetGlobalBlocks.Max(pos => pos.Y)
 				};
 				return true;
 			}
@@ -202,7 +202,7 @@ namespace TetrisDotnet.Code.AI
 
 		private int GetLinesCleared(State state, Piece piece)
 		{
-			List<Vector2i> blocks = piece.getGlobalBlocks;
+			List<Vector2i> blocks = piece.GetGlobalBlocks;
 			int topRow = blocks.Max(pos => pos.Y);
 			int bottomRow = blocks.Min(pos => pos.Y);
 
@@ -278,18 +278,18 @@ namespace TetrisDotnet.Code.AI
 		private Piece AdjustPieceToPosition(Piece piece, Vector2i position, int anchor)
 		{
 			Vector2i positionModifier = GetBlockOffset(piece, position, anchor);
-			piece.position = positionModifier;
+			piece.Position = positionModifier;
 			return piece;
 		}
 
 		private Vector2i GetBlockOffset(Piece piece, Vector2i position, int anchor)
 		{
-			return position - piece.blocks[anchor];
+			return position - piece.Blocks[anchor];
 		}
 
 		private bool PieceIsValid(State state, Piece piece)
 		{
-			foreach (var point in piece.getGlobalBlocks)
+			foreach (var point in piece.GetGlobalBlocks)
 			{
 				if (point.X < 0 || point.X > Grid.GridWidth - 1 || point.Y < 2 || point.Y > Grid.GridHeight - 1)
 				{

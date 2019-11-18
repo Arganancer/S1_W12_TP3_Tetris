@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TetrisDotnet.Code.Events
 {
@@ -7,6 +8,8 @@ namespace TetrisDotnet.Code.Events
     public class EventSystem
     {
         private readonly SortedDictionary<EventType, List<OnEvent>> subscribers = new SortedDictionary<EventType, List<OnEvent>>();
+        
+        private readonly SortedDictionary<EventType, List<EventData.EventData>> queuedEvents = new SortedDictionary<EventType, List<EventData.EventData>>();
 
         public bool Subscribe(EventType eventType, OnEvent onEvent)
         {
@@ -43,6 +46,39 @@ namespace TetrisDotnet.Code.Events
                     eventSubscriber(eventData);
                 }
             }
+        }
+
+        public void ProcessQueuedEvents()
+        {
+            foreach ((EventType eventType, List<EventData.EventData> eventDataList) in queuedEvents)
+            {
+                foreach (EventData.EventData eventData in eventDataList)
+                {
+                    ProcessEvent(eventType, eventData);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Queued events are processed after all updates, just before the draw call.
+        /// </summary>
+        /// <param name="isUnique">If true, the event will replace all events of the same type already in the list.</param>
+        public void QueueEvent(EventType eventType, bool isUnique, EventData.EventData eventData = null)
+        {
+            if (queuedEvents.TryGetValue(eventType, out List<EventData.EventData> eventDataList))
+            {
+                if (isUnique && eventDataList.Count > 0)
+                {
+                    eventDataList.Clear();
+                }
+            }
+            else
+            {
+                eventDataList = new List<EventData.EventData>();
+                queuedEvents.Add(eventType, eventDataList);
+            }
+
+            eventDataList.Add(eventData);
         }
     }
 }

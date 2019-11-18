@@ -42,7 +42,7 @@ namespace TetrisDotnet.Code.UI.Layouts
 					longestWord = menuItems[i];
 				}
 
-				Text text = new Text(menuItems[i], AssetPool.font)
+				Text text = new Text(menuItems[i], AssetPool.Font)
 				{
 					FillColor = Color.Green,
 					CharacterSize = charSize
@@ -63,7 +63,7 @@ namespace TetrisDotnet.Code.UI.Layouts
 
 			cursorPos = 0;
 
-			cursor = new Text(">", AssetPool.font) {CharacterSize = charSize};
+			cursor = new Text(">", AssetPool.Font) {CharacterSize = charSize};
 
 
 			FloatRect cursorRect = cursor.GetLocalBounds();

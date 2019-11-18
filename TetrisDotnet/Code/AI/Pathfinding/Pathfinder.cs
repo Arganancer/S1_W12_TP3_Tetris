@@ -25,7 +25,7 @@ namespace TetrisDotnet.Code.AI.Pathfinding
 
 		private bool PositionIsValid(State state, Piece piece)
 		{
-			foreach (Vector2i point in piece.getGlobalBlocks)
+			foreach (Vector2i point in piece.GetGlobalBlocks)
 			{
 				if (point.X < 0 || point.X > Grid.GridWidth - 1 || point.Y < 0 || point.Y > Grid.GridHeight - 1)
 				{
@@ -44,7 +44,7 @@ namespace TetrisDotnet.Code.AI.Pathfinding
 		private IEnumerable<Vector2i> GetNeighbors(State state, Piece endPiece, Vector2i currentCell)
 		{
 			return validDirections.Select(dir => dir + currentCell).Where(final =>
-				PositionIsValid(state, new Piece(endPiece) {position = final}));
+				PositionIsValid(state, new Piece(endPiece) {Position = final}));
 		}
 
 		public Stack<PathNode> FindPath(State state, Piece startPiece, Piece endPiece)
@@ -52,13 +52,13 @@ namespace TetrisDotnet.Code.AI.Pathfinding
 			openList.Clear();
 			closedHashSet.Clear();
 			
-			openList.Add(new PathNode(startPiece.position));
+			openList.Add(new PathNode(startPiece.Position));
 
 			while (openList.Count > 0)
 			{
 				PathNode currentNode = openList.Pop();
 
-				if (currentNode.Position == endPiece.position)
+				if (currentNode.Position == endPiece.Position)
 				{
 					return ReconstructPath(currentNode, endPiece);
 				}
@@ -79,7 +79,7 @@ namespace TetrisDotnet.Code.AI.Pathfinding
 						continue;
 					}
 
-					float hValue = GetH(neighbor, endPiece.position);
+					float hValue = GetH(neighbor, endPiece.Position);
 
 					PathNode currentNeighbor = new PathNode(neighbor)
 					{
@@ -113,7 +113,7 @@ namespace TetrisDotnet.Code.AI.Pathfinding
 
 					isRemovingLastStraightForDropdown = false;
 				}
-				current.Rotation = endPiece.rotationIndex;
+				current.Rotation = endPiece.RotationIndex;
 				path.Push(current);
 				current = current.Parent;
 			}

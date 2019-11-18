@@ -13,7 +13,7 @@ namespace TetrisDotnet.Code.UI.Layouts
 			Elements = new List<UiElement>();
 		}
 
-		public void Update()
+		public virtual void Update(float deltaTime)
 		{
 			foreach (UiElement element in Elements)
 			{
@@ -21,7 +21,7 @@ namespace TetrisDotnet.Code.UI.Layouts
 			}
 		}
 
-		public void Draw(RenderWindow window)
+		public virtual void Draw(RenderWindow window)
 		{
 			foreach (UiElement element in Elements)
 			{

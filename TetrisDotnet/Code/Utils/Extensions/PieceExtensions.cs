@@ -10,14 +10,14 @@ namespace TetrisDotnet.Code.Utils.Extensions
 	{
 		public static bool ContainsPoint(this Piece piece, Vector2i point)
 		{
-			return piece.getGlobalBlocks.Contains(point);
+			return piece.GetGlobalBlocks.Contains(point);
 		}
 
 		public static List<Vector2i> GetLowestPointsOfPiece(this Piece piece)
 		{
 			Dictionary<int, Vector2i> highest = new Dictionary<int, Vector2i>();
 
-			foreach (var block in piece.getGlobalBlocks)
+			foreach (var block in piece.GetGlobalBlocks)
 			{
 				if (highest.ContainsKey(block.X))
 				{
@@ -39,7 +39,7 @@ namespace TetrisDotnet.Code.Utils.Extensions
 		{
 			Dictionary<int, Vector2i> highest = new Dictionary<int, Vector2i>();
 
-			foreach (var block in piece.getGlobalBlocks)
+			foreach (var block in piece.GetGlobalBlocks)
 			{
 				if (highest.ContainsKey(block.X))
 				{
@@ -61,7 +61,7 @@ namespace TetrisDotnet.Code.Utils.Extensions
 		{
 			Dictionary<int, Vector2i> highest = new Dictionary<int, Vector2i>();
 
-			foreach (var block in piece.getGlobalBlocks)
+			foreach (var block in piece.GetGlobalBlocks)
 			{
 				if (highest.ContainsKey(block.Y))
 				{
@@ -83,7 +83,7 @@ namespace TetrisDotnet.Code.Utils.Extensions
 		{
 			Dictionary<int, Vector2i> highest = new Dictionary<int, Vector2i>();
 
-			foreach (var block in piece.getGlobalBlocks)
+			foreach (var block in piece.GetGlobalBlocks)
 			{
 				if (highest.ContainsKey(block.Y))
 				{

@@ -13,11 +13,11 @@ namespace TetrisDotnet.Code.UI.Elements
 		public ScoreText()
 		{
 			DisplayedString = "Score: 0";
-			Font = AssetPool.font;
+			Font = AssetPool.Font;
 			CharacterSize = 16;
 			FillColor = Color.Green;
-			Position = new Vector2f(AssetPool.holdSprite.Position.X,
-				AssetPool.holdSprite.Position.Y + AssetPool.holdTexture.Size.Y + 1);
+			Position = new Vector2f(AssetPool.HoldSprite.Position.X,
+				AssetPool.HoldSprite.Position.Y + AssetPool.HoldTexture.Size.Y + 1);
 
 			score = 0;
 		}

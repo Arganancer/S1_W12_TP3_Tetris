@@ -43,7 +43,7 @@ namespace TetrisDotnet.Code.UI.Layouts
 			{
 				for (int j = 0; j < menuItems[i].Length; j++)
 				{
-					Text text = new Text(menuItems[i][j], AssetPool.font, CharSize);
+					Text text = new Text(menuItems[i][j], AssetPool.Font, CharSize);
 					text.Color = Color.Green;
 
 					FloatRect textRect = text.GetLocalBounds();

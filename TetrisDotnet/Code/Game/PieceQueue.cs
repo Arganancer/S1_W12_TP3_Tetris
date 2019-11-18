@@ -1,32 +1,35 @@
 ﻿using System.Collections.Generic;
+using TetrisDotnet.Code.Events;
+using TetrisDotnet.Code.Events.EventData;
 
 namespace TetrisDotnet.Code.Game
 {
 	class PieceQueue
 	{
-		private readonly Queue<PieceType> pieceList;
+		private readonly Queue<PieceType> pieceQueue;
 		private readonly Bag bag;
 
 		public PieceQueue()
 		{
 			bag = new Bag();
-			pieceList = new Queue<PieceType>();
+			pieceQueue = new Queue<PieceType>();
 			for (int i = 0; i < 3; i++)
 			{
-				pieceList.Enqueue(bag.Next());
+				pieceQueue.Enqueue(bag.Next());
 			}
 		}
 
 		public PieceType GrabNext()
 		{
-			pieceList.Enqueue(bag.Next());
-
-			return pieceList.Dequeue();
+			pieceQueue.Enqueue(bag.Next());
+			PieceType pieceType = pieceQueue.Dequeue();
+			Application.EventSystem.ProcessEvent(EventType.UpdatedPieceQueue, new UpdatedPieceQueueEventData(pieceQueue));
+			return pieceType;
 		}
 
 		public IEnumerable<PieceType> Get()
 		{
-			return pieceList;
+			return pieceQueue;
 		}
 	}
 }

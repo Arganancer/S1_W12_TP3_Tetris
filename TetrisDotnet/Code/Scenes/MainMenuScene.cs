@@ -14,7 +14,7 @@ namespace TetrisDotnet.Code.Scenes
 		
 		public override SceneType Update(float deltaTime)
 		{
-			uiLayout.Update();
+			uiLayout.Update(deltaTime);
 			return SceneType.MainMenu;
 		}
 

@@ -1,10 +1,24 @@
-﻿namespace TetrisDotnet.Code.Game
+﻿using TetrisDotnet.Code.Events;
+using TetrisDotnet.Code.Events.EventData;
+
+namespace TetrisDotnet.Code.Game
 {
 	class Hold
 	{
-		public PieceType currentPiece { get; set; }
+		private PieceType currentPiece;
+		public PieceType CurrentPiece
+		{
+			get => currentPiece;
+			set
+			{
+				if (currentPiece != value)
+				{
+					currentPiece = value;
+					Application.EventSystem.ProcessEvent(EventType.NewHeldPiece, new PieceTypeEventData(currentPiece));
+				}
+			}}
 
-		public bool canSwap { get; set; }
+		public bool CanSwap { get; set; }
 
 		public Hold(PieceType piece = PieceType.Empty)
 		{

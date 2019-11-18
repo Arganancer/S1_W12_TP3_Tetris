@@ -9,7 +9,7 @@ namespace TetrisDotnet.Code.UI.Elements
 		public PauseText()
 		{
 			DisplayedString = "Paused";
-			Font = AssetPool.font;
+			Font = AssetPool.Font;
 			CharacterSize = 40;
 			
 			FloatRect localRect = GetLocalBounds();

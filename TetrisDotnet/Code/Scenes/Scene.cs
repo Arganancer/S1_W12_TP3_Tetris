@@ -24,7 +24,7 @@ namespace TetrisDotnet.Code.Scenes
 
 		public virtual SceneType Update(float deltaTime)
 		{
-			Layout.Update();
+			Layout.Update(deltaTime);
 			return SceneType;
 		}
 

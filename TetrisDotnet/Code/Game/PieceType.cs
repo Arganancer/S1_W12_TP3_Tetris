@@ -15,8 +15,14 @@ namespace TetrisDotnet.Code.Game
 		J = 5,
 		L = 6,
 		Empty = 7,
-		Ghost = 8,
-		Dead = 9
+		Ghost = 8
+	}
+
+	public enum PieceState
+	{
+		Active,
+		Dead,
+		None,
 	}
 
 	public static class PieceTypeUtils

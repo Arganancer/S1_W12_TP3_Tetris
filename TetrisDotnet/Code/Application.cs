@@ -15,10 +15,10 @@ namespace TetrisDotnet.Code
 		public const int WindowHeight = 768;
 		public const int WindowWidth = 1024;
 
-		public static EventSystem eventSystem { get; } = new EventSystem();
-		public static GameClock gameClock { get; } = new GameClock();
+		public static EventSystem EventSystem { get; } = new EventSystem();
+		public static GameClock GameClock { get; } = new GameClock();
 		
-		private InputManager inputManager { get; } = new InputManager();
+		private InputManager InputManager { get; } = new InputManager();
 		
 		private readonly RenderWindow window;
 		private readonly SceneManager sceneManager;
@@ -29,8 +29,8 @@ namespace TetrisDotnet.Code
 
 			sceneManager = new SceneManager();
 			
-			window.KeyPressed += inputManager.OnKeyPressed;
-			eventSystem.Subscribe(EventType.InputEscape, OnQuit);
+			window.KeyPressed += InputManager.OnKeyPressed;
+			EventSystem.Subscribe(EventType.InputEscape, OnQuit);
 			window.Closed += OnWindowClosed;
 
 			window.SetKeyRepeatEnabled(false);
@@ -41,7 +41,7 @@ namespace TetrisDotnet.Code
 
 		~Application()
 		{
-			eventSystem.Unsubscribe(EventType.InputEscape, OnQuit);
+			EventSystem.Unsubscribe(EventType.InputEscape, OnQuit);
 		}
 		
 		public void Run()
@@ -50,9 +50,10 @@ namespace TetrisDotnet.Code
 
 			while (window.IsOpen)
 			{
-				gameClock.Update();
+				GameClock.Update();
 				window.DispatchEvents();
-				sceneManager.Update(gameClock.deltaTime.AsSeconds());
+				sceneManager.Update(GameClock.deltaTime.AsSeconds());
+				EventSystem.ProcessQueuedEvents();
 				Draw();
 			}
 		}

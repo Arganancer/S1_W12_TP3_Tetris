@@ -24,21 +24,21 @@ namespace TetrisDotnet.Code.AI
 			{
 				if (currentAction.actionType == ActionType.Place)
 				{
-					if (state.currentPiece.rotationIndex != currentPathNodeAction.Rotation)
+					if (state.currentPiece.RotationIndex != currentPathNodeAction.Rotation)
 					{
-						Application.eventSystem.ProcessEvent(EventType.InputRotateClockwise);
+						Application.EventSystem.ProcessEvent(EventType.InputRotateClockwise);
 						continue;
 					}
 
-					Vector2i currentMove = currentPathNodeAction.Position - state.currentPiece.position;
+					Vector2i currentMove = currentPathNodeAction.Position - state.currentPiece.Position;
 
 					if (currentMove.X == 0 && currentMove.Y <= 0)
 					{
 						if (currentAction.path.Count == 0)
 						{
-							if (state.currentPiece.rotationIndex == currentPathNodeAction.Rotation)
+							if (state.currentPiece.RotationIndex == currentPathNodeAction.Rotation)
 							{
-								Application.eventSystem.ProcessEvent(EventType.InputHardDrop);
+								Application.EventSystem.ProcessEvent(EventType.InputHardDrop);
 							}
 
 							return;
@@ -51,11 +51,11 @@ namespace TetrisDotnet.Code.AI
 					{
 						if (currentMove.X < 0)
 						{
-							Application.eventSystem.ProcessEvent(EventType.InputLeft);
+							Application.EventSystem.ProcessEvent(EventType.InputLeft);
 						}
 						else
 						{
-							Application.eventSystem.ProcessEvent(EventType.InputRight);
+							Application.EventSystem.ProcessEvent(EventType.InputRight);
 						}
 
 						continue;
@@ -63,12 +63,12 @@ namespace TetrisDotnet.Code.AI
 
 					if (currentMove.Y > 0)
 					{
-						Application.eventSystem.ProcessEvent(EventType.InputDown);
+						Application.EventSystem.ProcessEvent(EventType.InputDown);
 					}
 				}
 				else if (currentAction.actionType == ActionType.Hold)
 				{
-					Application.eventSystem.ProcessEvent(EventType.InputHold);
+					Application.EventSystem.ProcessEvent(EventType.InputHold);
 				}
 			}
 		}

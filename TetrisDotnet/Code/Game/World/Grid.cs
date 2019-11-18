@@ -1,44 +1,46 @@
 ﻿using System.Collections.Generic;
 using SFML.System;
+using TetrisDotnet.Code.Events;
+using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.Utils;
 using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code.Game.World
 {
-	class Grid
+	public class Grid
 	{
 		public const int GridHeight = 22;
 		public const int GridWidth = 10;
 		public const int VisibleGridHeight = GridHeight - 2;
 
-		private readonly PieceType[,] grid;
+		public class BlockInfo
+		{
+			public PieceType PieceType;
+			public PieceState PieceState;
 
-		public PieceType GetBlock(int x, int y)
+			public BlockInfo(PieceType pieceType, PieceState pieceState)
+			{
+				PieceState = pieceState;
+				PieceType = pieceType;
+			}
+
+			public static BlockInfo Empty()
+			{
+				return new BlockInfo(PieceType.Empty, PieceState.None);
+			}
+		}
+
+		private readonly BlockInfo[,] grid;
+
+		public BlockInfo GetBlock(int x, int y)
 		{
 			return grid[x, y];
 		}
 
 		public Grid()
 		{
-			grid = new PieceType[GridWidth, GridHeight];
+			grid = new BlockInfo[GridWidth, GridHeight];
 			InitializeGrid();
-		}
-
-		// TODO: Fuck this function.
-		public PieceType[,] GetDrawable()
-		{
-			PieceType[,] visibleArray = new PieceType[GridWidth, VisibleGridHeight];
-
-			for (int x = 0; x < GridWidth; x++)
-			{
-				for (int y = 0; y < VisibleGridHeight; y++)
-				{
-					//i + 2 since we only want the grid where we actually see the pieces
-					visibleArray[x, y] = grid[x, y + 2];
-				}
-			}
-
-			return visibleArray;
 		}
 
 		public bool[,] GetBoolGrid()
@@ -49,7 +51,7 @@ namespace TetrisDotnet.Code.Game.World
 			{
 				for (int y = 0; y < GridHeight; y++)
 				{
-					boolGrid[x, y] = grid[x, y] == PieceType.Dead;
+					boolGrid[x, y] = grid[x, y].PieceState == PieceState.Dead;
 				}
 			}
 
@@ -66,7 +68,7 @@ namespace TetrisDotnet.Code.Game.World
 
 				for (int x = 0; x < GridWidth; x++)
 				{
-					if (grid[x, y] == PieceType.Dead) continue;
+					if (grid[x, y].PieceState == PieceState.Dead) continue;
 					isFull = false;
 					break;
 				}
@@ -86,7 +88,7 @@ namespace TetrisDotnet.Code.Game.World
 			{
 				for (int x = 0; x < GridWidth; x++)
 				{
-					if (grid[x, y] == PieceType.Dead)
+					if (grid[x, y].PieceState == PieceState.Dead)
 					{
 						return true;
 					}
@@ -102,39 +104,29 @@ namespace TetrisDotnet.Code.Game.World
 			{
 				for (int y = 0; y < GridHeight; y++)
 				{
-					grid[x, y] = PieceType.Empty;
+					grid[x, y] = BlockInfo.Empty();
 				}
 			}
+			
+			Application.EventSystem.QueueEvent(EventType.GridUpdated, true, new GridUpdatedEventData(this));
 		}
 
 		public void KillPiece(Piece piece)
 		{
-			for (int x = 0; x < 4; x++)
+			foreach (Vector2i pos in piece.GetGlobalBlocks)
 			{
-				for (int y = 0; y < 4; y++)
-				{
-					if (!OutOfRange(new Vector2i(piece.position.X + x, piece.position.Y + y)) &&
-					    grid[piece.position.X + x, piece.position.Y + y] == piece.type)
-					{
-						grid[piece.position.X + x, piece.position.Y + y] = PieceType.Dead;
-					}
-				}
+				grid[pos.X, pos.Y].PieceState = PieceState.Dead;
 			}
 		}
 
 		public void RemovePiece(Piece piece)
 		{
-			for (int x = 0; x < 4; x++)
+			foreach (Vector2i pos in piece.GetGlobalBlocks)
 			{
-				for (int y = 0; y < 4; y++)
-				{
-					if (!OutOfRange(new Vector2i(piece.position.X + x, piece.position.Y + y)) &&
-					    grid[piece.position.X + x, piece.position.Y + y] == piece.type)
-					{
-						grid[piece.position.X + x, piece.position.Y + y] = PieceType.Empty;
-					}
-				}
+				grid[pos.X, pos.Y] = BlockInfo.Empty();
 			}
+			
+			Application.EventSystem.QueueEvent(EventType.GridUpdated, true, new GridUpdatedEventData(this));
 		}
 
 		private static bool OutOfRange(Vector2i position)
@@ -149,21 +141,23 @@ namespace TetrisDotnet.Code.Game.World
 			{
 				for (int x = 0; x < GridWidth; x++)
 				{
-					if (grid[x, y] == PieceType.Dead || grid[x, y] == PieceType.Empty)
+					if (grid[x, y].PieceState == PieceState.Dead || grid[x, y].PieceType == PieceType.Empty)
 					{
 						grid[x, y] = grid[x, y - 1];
 					}
 				}
 			}
+			
+			Application.EventSystem.QueueEvent(EventType.GridUpdated, true, new GridUpdatedEventData(this));
 		}
 
 		public bool CanPlacePiece(Piece piece, Vector2i position)
 		{
-			foreach (Vector2i block in piece.getGlobalBlocks)
+			foreach (Vector2i block in piece.GetGlobalBlocks)
 			{
 				Vector2i newPosition = block + position;
 
-				if (OutOfRange(newPosition) || grid[newPosition.X, newPosition.Y] == PieceType.Dead)
+				if (OutOfRange(newPosition) || grid[newPosition.X, newPosition.Y].PieceState == PieceState.Dead)
 				{
 					return false;
 				}
@@ -172,12 +166,12 @@ namespace TetrisDotnet.Code.Game.World
 			return true;
 		}
 
-		public void AddPiece(Piece piece, Vector2i position)
+		private void AddPiece(Piece piece, Vector2i position)
 		{
-			piece.position += position;
-			foreach (Vector2i block in piece.getGlobalBlocks)
+			piece.Position += position;
+			foreach (Vector2i block in piece.GetGlobalBlocks)
 			{
-				grid[block.X, block.Y] = piece.type;
+				grid[block.X, block.Y] = new BlockInfo(piece.Type, PieceState.Active);
 			}
 		}
 
@@ -190,6 +184,9 @@ namespace TetrisDotnet.Code.Game.World
 
 				AddPiece(piece, newPosition);
 				PlaceGhostPiece(piece);
+			
+				Application.EventSystem.QueueEvent(EventType.GridUpdated, true, new GridUpdatedEventData(this));
+				
 			}
 		}
 
@@ -214,19 +211,22 @@ namespace TetrisDotnet.Code.Game.World
 				RemovePiece(piece);
 				AddRotatedPiece(piece, backPosition, rotation);
 				PlaceGhostPiece(piece);
+				
+				Application.EventSystem.QueueEvent(EventType.GridUpdated, true, new GridUpdatedEventData(this));
+				
 				return true;
 			}
 
 			return false;
 		}
 
-		public void AddRotatedPiece(Piece piece, Vector2i backPosition, Rotation rotation)
+		private void AddRotatedPiece(Piece piece, Vector2i backPosition, Rotation rotation)
 		{
 			piece.Rotate(rotation);
-			piece.position += backPosition;
-			foreach (Vector2i block in piece.getGlobalBlocks)
+			piece.Position += backPosition;
+			foreach (Vector2i block in piece.GetGlobalBlocks)
 			{
-				grid[block.X, block.Y] = piece.type;
+				grid[block.X, block.Y] = new BlockInfo(piece.Type, PieceState.Active);
 			}
 		}
 
@@ -249,11 +249,11 @@ namespace TetrisDotnet.Code.Game.World
 			{
 				backPosition = BackDown;
 			}
-			else if (piece.type == PieceType.T && CheckPiecePositionValid(piece, blocks, DiagLeft))
+			else if (piece.Type == PieceType.T && CheckPiecePositionValid(piece, blocks, DiagLeft))
 			{
 				backPosition = DiagLeft;
 			}
-			else if (piece.type == PieceType.T && CheckPiecePositionValid(piece, blocks, DiagRight))
+			else if (piece.Type == PieceType.T && CheckPiecePositionValid(piece, blocks, DiagRight))
 			{
 				backPosition = DiagRight;
 			}
@@ -261,19 +261,19 @@ namespace TetrisDotnet.Code.Game.World
 			{
 				backPosition = BackUp;
 			}
-			else if (piece.type == PieceType.I && CheckPiecePositionValid(piece, blocks, LineToRight))
+			else if (piece.Type == PieceType.I && CheckPiecePositionValid(piece, blocks, LineToRight))
 			{
 				backPosition = LineToRight;
 			}
-			else if (piece.type == PieceType.I && CheckPiecePositionValid(piece, blocks, LineToLeft))
+			else if (piece.Type == PieceType.I && CheckPiecePositionValid(piece, blocks, LineToLeft))
 			{
 				backPosition = LineToLeft;
 			}
-			else if (piece.type == PieceType.I && CheckPiecePositionValid(piece, blocks, LineDown))
+			else if (piece.Type == PieceType.I && CheckPiecePositionValid(piece, blocks, LineDown))
 			{
 				backPosition = LineDown;
 			}
-			else if (piece.type == PieceType.I && CheckPiecePositionValid(piece, blocks, LineUp))
+			else if (piece.Type == PieceType.I && CheckPiecePositionValid(piece, blocks, LineUp))
 			{
 				backPosition = LineUp;
 			}
@@ -290,8 +290,8 @@ namespace TetrisDotnet.Code.Game.World
 		{
 			foreach (Vector2i block in blocks)
 			{
-				Vector2i finalPosition = piece.position + block + backPosition;
-				if (OutOfRange(finalPosition) || grid[finalPosition.X, finalPosition.Y] == PieceType.Dead)
+				Vector2i finalPosition = piece.Position + block + backPosition;
+				if (OutOfRange(finalPosition) || grid[finalPosition.X, finalPosition.Y].PieceState == PieceState.Dead)
 				{
 					return false;
 				}
@@ -299,8 +299,8 @@ namespace TetrisDotnet.Code.Game.World
 
 			return true;
 		}
-		
-		public int CheckLowestPossiblePosition(Piece piece)
+
+		private int CheckLowestPossiblePosition(Piece piece)
 		{
 			int lowestDownPosition = 0;
 
@@ -310,16 +310,16 @@ namespace TetrisDotnet.Code.Game.World
 
 			return lowestDownPosition - 1;
 		}
-		
-		public void PlaceGhostPiece(Piece piece)
+
+		private void PlaceGhostPiece(Piece piece)
 		{
 			int ghostPiecePos = CheckLowestPossiblePosition(piece);
-			foreach (Vector2i block in piece.getGlobalBlocks)
+			foreach (Vector2i block in piece.GetGlobalBlocks)
 			{
 				Vector2i finalPosition = new Vector2i(block.X, block.Y + ghostPiecePos);
-				if (grid[finalPosition.X, finalPosition.Y] == PieceType.Empty)
+				if (grid[finalPosition.X, finalPosition.Y].PieceType == PieceType.Empty)
 				{
-					grid[finalPosition.X, finalPosition.Y] = PieceType.Ghost;
+					grid[finalPosition.X, finalPosition.Y].PieceType = PieceType.Ghost;
 				}
 			}
 		}
@@ -331,16 +331,16 @@ namespace TetrisDotnet.Code.Game.World
 			int dropDownPos = CheckLowestPossiblePosition(piece);
 			return dropDownPos;
 		}
-		
-		public void RemoveGhostPiece(Piece piece)
+
+		private void RemoveGhostPiece(Piece piece)
 		{
 			for (int x = 0; x < GridWidth; x++)
 			{
 				for (int y = 0; y < GridHeight; y++)
 				{
-					if (grid[x, y] == PieceType.Ghost)
+					if (grid[x, y].PieceType == PieceType.Ghost)
 					{
-						grid[x, y] = PieceType.Empty;
+						grid[x, y].PieceType = PieceType.Empty;
 					}
 				}
 			}
