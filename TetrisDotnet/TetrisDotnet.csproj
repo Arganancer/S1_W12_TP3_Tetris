@@ -14,26 +14,108 @@
 
   <ItemGroup>
     <None Remove="consola.ttf" />
-    <Content Include="Assets\Art\background_img.png" />
-    <Content Include="Assets\Art\Blocks\placeholder_empty.png" />
-    <Content Include="Assets\Art\Blocks\placeholder_ghost.png" />
-    <Content Include="Assets\Art\Blocks\placeholder_I.png" />
-    <Content Include="Assets\Art\Blocks\placeholder_J.png" />
-    <Content Include="Assets\Art\Blocks\placeholder_L.png" />
-    <Content Include="Assets\Art\Blocks\placeholder_O.png" />
-    <Content Include="Assets\Art\Blocks\placeholder_S.png" />
-    <Content Include="Assets\Art\Blocks\placeholder_T.png" />
-    <Content Include="Assets\Art\Blocks\placeholder_Z.png" />
-    <Content Include="Assets\Art\gridbox_Frame.png" />
-    <Content Include="Assets\Art\holdbox_Frame.png" />
-    <Content Include="Assets\Art\icon.png" />
-    <Content Include="Assets\Art\queuebox_Frame.png" />
-    <Content Include="Assets\Art\stats.png" />
+    <Content Include="Assets\Art\background_img.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Art\Blocks\placeholder_empty.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Art\Blocks\placeholder_ghost.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Art\Blocks\placeholder_I.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Art\Blocks\placeholder_J.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Art\Blocks\placeholder_L.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Art\Blocks\placeholder_O.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Art\Blocks\placeholder_S.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Art\Blocks\placeholder_T.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Art\Blocks\placeholder_Z.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Art\gridbox_Frame.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Art\holdbox_Frame.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Art\icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Art\queuebox_Frame.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Art\stats.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="consola.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Remove="Assets\Art\sprite_sheet\**" />
     <None Remove="Assets\Art\blocks\Archive20x20\**" />
+    <None Remove="Assets\Fonts\BalooBhaijaan-Regular.ttf" />
+    <Content Include="Assets\Fonts\BalooBhaijaan-Regular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Fonts\Audiowide-Regular.ttf" />
+    <Content Include="Assets\Fonts\Audiowide-Regular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Fonts\BowlbyOneSC-Regular.ttf" />
+    <Content Include="Assets\Fonts\BowlbyOneSC-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Fonts\Bungee-Regular.ttf" />
+    <Content Include="Assets\Fonts\Bungee-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Fonts\DoHyeon-Regular.ttf" />
+    <Content Include="Assets\Fonts\DoHyeon-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Fonts\Electrolize-Regular.ttf" />
+    <Content Include="Assets\Fonts\Electrolize-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Fonts\Graduate-Regular.ttf" />
+    <Content Include="Assets\Fonts\Graduate-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Fonts\Gruppo-Regular.ttf" />
+    <Content Include="Assets\Fonts\Gruppo-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Fonts\Kanit-Regular.ttf" />
+    <Content Include="Assets\Fonts\Kanit-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Fonts\Lalezar-Regular.ttf" />
+    <Content Include="Assets\Fonts\Lalezar-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Fonts\OdibeeSans-Regular.ttf" />
+    <Content Include="Assets\Fonts\OdibeeSans-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Fonts\RussoOne-Regular.ttf" />
+    <Content Include="Assets\Fonts\RussoOne-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Assets\Fonts\SquadaOne-Regular.ttf" />
+    <Content Include="Assets\Fonts\SquadaOne-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

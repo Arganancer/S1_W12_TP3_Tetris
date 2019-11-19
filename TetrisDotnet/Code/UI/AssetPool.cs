@@ -68,6 +68,6 @@ namespace TetrisDotnet.Code.UI
 			{FontFamily.Squada_One, new Font("Assets/Fonts/SquadaOne-Regular.ttf")},
 		};
 
-		public static Font Font { get; } = Fonts[FontFamily.Audiowide];
+		public static Font Font { get; } = Fonts[FontFamily.Do_Hyeon];
 	}
 }

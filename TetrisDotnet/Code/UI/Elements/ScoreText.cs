@@ -13,7 +13,7 @@ namespace TetrisDotnet.Code.UI.Elements
 	{
 		public ScoreText()
 		{
-			DisplayedString = "Score: 0";
+			DisplayedString = "Score: 0123456789";
 			Font = AssetPool.Font;
 			CharacterSize = 16;
 			FillColor = Color.Green;

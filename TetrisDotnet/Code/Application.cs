@@ -36,7 +36,7 @@ namespace TetrisDotnet.Code
 			window.SetKeyRepeatEnabled(false);
 			window.SetMouseCursorVisible(false);
 
-			window.SetIcon(48, 48, IconGenerator.IconToBytes("Art/icon.png"));
+			window.SetIcon(48, 48, IconGenerator.IconToBytes("Assets/Art/icon.png"));
 		}
 
 		~Application()
