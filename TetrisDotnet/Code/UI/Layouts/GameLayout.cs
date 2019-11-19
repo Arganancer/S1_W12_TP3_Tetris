@@ -19,6 +19,9 @@ namespace TetrisDotnet.Code.UI.Layouts
 			{
 				Orientation = Orientation.Vertical,
 				Spacing = 5.0f,
+				LeftPadding = 25.0f,
+				TopPadding = 25.0f,
+				BottomPadding = 25.0f,
 			};
 			leftSection.AddChild(leftSectionContainer);
 

@@ -25,9 +25,8 @@ namespace TetrisDotnet.Code.UI.Elements
 		{
 			SpriteElement background = new SpriteElement
 			{
-				LeftAnchor = 0.5f,
-				RightAnchor = 0.5f,
-				LeftWidth = -AssetPool.HoldTexture.Size.X * 0.5f,
+				LeftAnchor = 0.0f,
+				RightAnchor = 1.0f,
 				Texture = AssetPool.HoldTexture,
 				StretchToFit = false,
 				TopPadding = AssetPool.BlockSize.Y * 2.5f,

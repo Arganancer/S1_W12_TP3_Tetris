@@ -244,7 +244,9 @@ namespace TetrisDotnet.Code.UI.Base
 		{
 			if (parent != null)
 			{
-				Rectangle.Top = Parent.Rectangle.Top - TopHeight + Parent.Height * topAnchor + Parent.topPadding;
+				float parentInnerHeight = Parent.Height - Parent.TopPadding - Parent.BottomPadding;
+				float parentInnerTop = Parent.Rectangle.Top + Parent.TopPadding;
+				Rectangle.Top = parentInnerTop - TopHeight + parentInnerHeight * topAnchor;
 			}
 			else
 			{
@@ -256,11 +258,13 @@ namespace TetrisDotnet.Code.UI.Base
 		{
 			if (parent != null)
 			{
-				Rectangle.Left = Parent.Rectangle.Left + LeftWidth + Parent.Width * leftAnchor + Parent.LeftPadding;
+				float parentInnerWidth = Parent.Width - Parent.LeftPadding - Parent.RightPadding;
+				float parentInnerLeft = Parent.Rectangle.Left + Parent.LeftPadding;
+				Rectangle.Left = parentInnerLeft - LeftWidth + parentInnerWidth * leftAnchor;
 			}
 			else
 			{
-				Rectangle.Left = Math.Max(LeftWidth + Application.WindowWidth * leftAnchor, 0.0f);
+				Rectangle.Left = Math.Max(-LeftWidth + Application.WindowWidth * leftAnchor, 0.0f);
 			}
 		}
 
@@ -268,7 +272,9 @@ namespace TetrisDotnet.Code.UI.Base
 		{
 			if (parent != null)
 			{
-				Rectangle.Height = Parent.Rectangle.Top + Parent.Height * bottomAnchor + bottomHeight - Rectangle.Top - Parent.BottomPadding;
+				float parentInnerHeight = Parent.Height - Parent.TopPadding - Parent.BottomPadding;
+				float parentInnerTop = Parent.Rectangle.Top + Parent.TopPadding;
+				Rectangle.Height = parentInnerTop + parentInnerHeight * bottomAnchor + bottomHeight - Rectangle.Top;
 			}
 			else
 			{
@@ -281,7 +287,9 @@ namespace TetrisDotnet.Code.UI.Base
 		{
 			if (parent != null)
 			{
-				Rectangle.Width = Parent.Rectangle.Left + Parent.Width * rightAnchor - rightWidth - Rectangle.Left - Parent.RightPadding;
+				float parentInnerWidth = Parent.Width - Parent.LeftPadding - Parent.RightPadding;
+				float parentInnerLeft = Parent.Rectangle.Left + Parent.LeftPadding;
+				Rectangle.Width = parentInnerLeft + parentInnerWidth * rightAnchor - rightWidth - Rectangle.Left;
 			}
 			else
 			{

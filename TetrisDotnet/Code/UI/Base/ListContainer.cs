@@ -53,7 +53,7 @@ namespace TetrisDotnet.Code.UI.Base
 
 		private void VerticalAlign()
 		{
-			float nextTopAnchor = Spacing / Rectangle.Height;
+			float nextTopAnchor = Spacing / (Rectangle.Height - TopPadding - BottomPadding);
 			foreach (UiElement child in Children)
 			{
 				if (child.Dirty)
@@ -66,7 +66,7 @@ namespace TetrisDotnet.Code.UI.Base
 				child.TopAnchor = nextTopAnchor;
 				child.BottomAnchor = nextTopAnchor;
 
-				nextTopAnchor += (Spacing + height) / Rectangle.Height;
+				nextTopAnchor += (Spacing + height) / (Rectangle.Height - TopPadding - BottomPadding);
 			}
 		}
 

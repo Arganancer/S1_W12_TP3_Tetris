@@ -13,78 +13,41 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Art\backdrop.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\backdrop2.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\background_img.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\blocks\Archive20x20\Empty.png" />
-    <Content Include="Art\blocks\Archive20x20\Ghost.png" />
-    <Content Include="Art\blocks\Archive20x20\I.png" />
-    <Content Include="Art\blocks\Archive20x20\J.png" />
-    <Content Include="Art\blocks\Archive20x20\L.png" />
-    <Content Include="Art\blocks\Archive20x20\NoTexture.png" />
-    <Content Include="Art\blocks\Archive20x20\O.png" />
-    <Content Include="Art\blocks\Archive20x20\S.png" />
-    <Content Include="Art\blocks\Archive20x20\T.png" />
-    <Content Include="Art\blocks\Archive20x20\Z.png" />
-    <Content Include="Art\blocks\placeholder_empty.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\blocks\placeholder_ghost.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\blocks\placeholder_I.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\blocks\placeholder_J.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\blocks\placeholder_L.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\blocks\placeholder_O.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\blocks\placeholder_S.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\blocks\placeholder_T.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\blocks\placeholder_Z.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\gridbox_Frame.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\holdbox_Frame.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\menu_backdrop.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\queuebox_Frame.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Art\stats.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Remove="consola.ttf" />
+    <Content Include="Assets\Art\background_img.png" />
+    <Content Include="Assets\Art\Blocks\placeholder_empty.png" />
+    <Content Include="Assets\Art\Blocks\placeholder_ghost.png" />
+    <Content Include="Assets\Art\Blocks\placeholder_I.png" />
+    <Content Include="Assets\Art\Blocks\placeholder_J.png" />
+    <Content Include="Assets\Art\Blocks\placeholder_L.png" />
+    <Content Include="Assets\Art\Blocks\placeholder_O.png" />
+    <Content Include="Assets\Art\Blocks\placeholder_S.png" />
+    <Content Include="Assets\Art\Blocks\placeholder_T.png" />
+    <Content Include="Assets\Art\Blocks\placeholder_Z.png" />
+    <Content Include="Assets\Art\gridbox_Frame.png" />
+    <Content Include="Assets\Art\holdbox_Frame.png" />
+    <Content Include="Assets\Art\icon.png" />
+    <Content Include="Assets\Art\queuebox_Frame.png" />
+    <Content Include="Assets\Art\stats.png" />
     <Content Include="consola.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Remove="Assets\Art\sprite_sheet\**" />
+    <None Remove="Assets\Art\blocks\Archive20x20\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Art\sprite_sheet" />
+    <Folder Include="Assets\Fonts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Assets\Art\sprite_sheet\**" />
+    <Compile Remove="Assets\Art\blocks\Archive20x20\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Assets\Art\sprite_sheet\**" />
+    <EmbeddedResource Remove="Assets\Art\blocks\Archive20x20\**" />
   </ItemGroup>
 
 </Project>

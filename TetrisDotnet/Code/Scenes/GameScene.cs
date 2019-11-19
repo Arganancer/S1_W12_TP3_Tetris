@@ -25,9 +25,9 @@ namespace TetrisDotnet.Code.Scenes
 		private bool isPaused;
 		private readonly Statistics statistics = new Statistics();
 
-		private float timeUntilNextDrop = 0;
+		private float timeUntilNextDrop;
 		private const float PieceLockDelay = 0.5f;
-		private float timeUntilPieceLock = PieceLockDelay;
+		private float timeUntilPieceLock;
 		
 		// AI Elements
 		private readonly Evaluator evaluator = new Evaluator();
@@ -84,20 +84,30 @@ namespace TetrisDotnet.Code.Scenes
 
 			timeUntilNextDrop += deltaTime;
 
-			if (timeUntilNextDrop > statistics.DropSpeed)
+			if (timeUntilNextDrop >= statistics.DropSpeed)
 			{
-				timeUntilNextDrop = 0;
+				timeUntilNextDrop = 0.0f;
 
 				if (grid.CanPlacePiece(activePiece, Vector2iUtils.down))
 				{
 					grid.MovePiece(activePiece, Vector2iUtils.down);
 				}
-				else
+			}
+			
+			if (!grid.CanPlacePiece(activePiece, Vector2iUtils.down))
+			{
+				timeUntilPieceLock += deltaTime;
+				if (timeUntilPieceLock >= PieceLockDelay)
 				{
+					timeUntilPieceLock = 0.0f;
 					grid.KillPiece(activePiece);
 					CheckFullRows();
 					NewPiece();
 				}
+			}
+			else
+			{
+				timeUntilPieceLock = 0.0f;
 			}
 
 			if (aiPlaying)
@@ -120,7 +130,7 @@ namespace TetrisDotnet.Code.Scenes
 		{
 			if (grid.RotatePiece(activePiece, Rotation.Clockwise))
 			{
-				timeUntilPieceLock = PieceLockDelay;
+				timeUntilPieceLock = 0.0f;
 			}
 		}
 
@@ -128,7 +138,7 @@ namespace TetrisDotnet.Code.Scenes
 		{
 			if (grid.RotatePiece(activePiece, Rotation.CounterClockwise))
 			{
-				timeUntilPieceLock = PieceLockDelay;
+				timeUntilPieceLock = 0.0f;
 			}
 		}
 
@@ -138,10 +148,7 @@ namespace TetrisDotnet.Code.Scenes
 			{
 				grid.MovePiece(activePiece, Vector2iUtils.down);
 				Application.EventSystem.ProcessEvent(EventType.PieceDropped, new PieceDroppedEventData(Drop.SoftDrop, 1));
-			}
-			else
-			{
-				timeUntilNextDrop = statistics.DropSpeed;
+				timeUntilNextDrop = 0.0f;
 			}
 		}
 
@@ -149,7 +156,7 @@ namespace TetrisDotnet.Code.Scenes
 		{
 			if (grid.CanPlacePiece(activePiece, Vector2iUtils.left))
 			{
-				timeUntilPieceLock = PieceLockDelay;
+				timeUntilPieceLock = 0.0f;
 				grid.MovePiece(activePiece, Vector2iUtils.left);
 			}
 		}
@@ -158,7 +165,7 @@ namespace TetrisDotnet.Code.Scenes
 		{
 			if (grid.CanPlacePiece(activePiece, Vector2iUtils.right))
 			{
-				timeUntilPieceLock = PieceLockDelay;
+				timeUntilPieceLock = 0.0f;
 				grid.MovePiece(activePiece, Vector2iUtils.right);
 			}
 		}
@@ -227,8 +234,8 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void NewPiece(PieceType type = PieceType.Empty)
 		{
-			timeUntilPieceLock = PieceLockDelay;
-			timeUntilNextDrop = statistics.DropSpeed;
+			timeUntilPieceLock = 0.0f;
+			timeUntilNextDrop = 0.0f;
 			
 			holdManager.CanSwap = true;
 

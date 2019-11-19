@@ -5,6 +5,7 @@ using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.Game;
 using TetrisDotnet.Code.UI.Base;
+using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code.UI.Elements
 {
@@ -26,11 +27,11 @@ namespace TetrisDotnet.Code.UI.Elements
 		{
 			SpriteElement background = new SpriteElement(0.0f, 1.0f, 0.0f, 1.0f)
 			{				
-				LeftAnchor = 0.5f,
-				RightAnchor = 0.5f,
-				LeftWidth = -AssetPool.HoldTexture.Size.X * 0.5f,
+				LeftAnchor = 0.0f,
+				RightAnchor = 1.0f,
 				Texture = AssetPool.QueueTexture,
 				StretchToFit = false,
+				SpriteHorizontalAlignment = HorizontalAlignment.Left,
 				TopPadding = AssetPool.BlockSize.Y * 1.5f,
 				BottomPadding = AssetPool.BlockSize.Y * 1,
 				LeftPadding = AssetPool.BlockSize.X * 1,

@@ -82,8 +82,7 @@ namespace TetrisDotnet.Code.UI.Base
 				}
 			}
 		}
-
-
+		
 		private HorizontalAlignment textHorizontalAlignment;
 		public HorizontalAlignment TextHorizontalAlignment
 		{
