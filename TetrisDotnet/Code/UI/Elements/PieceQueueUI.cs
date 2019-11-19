@@ -1,24 +1,52 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using SFML.Graphics;
-using SFML.System;
+using System.Linq;
 using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.Game;
-using TetrisDotnet.Code.Game.World;
+using TetrisDotnet.Code.UI.Base;
 
 namespace TetrisDotnet.Code.UI.Elements
 {
 	// ReSharper disable once InconsistentNaming
-	public class PieceQueueUI
+	public sealed class PieceQueueUI : UiElement
 	{
-		private List<Sprite> queuedPieceBlocks = new List<Sprite>();
-		
+		private readonly PieceDisplay[] pieceDisplays;
+
 		public PieceQueueUI()
 		{
-			AssetPool.QueueSprite.Position =
-				new Vector2f(GridUI.Position.X + AssetPool.BlockSize.X * (Grid.GridWidth + 2.25f), GridUI.Position.Y);
+			pieceDisplays = new PieceDisplay[3];
+
 			Application.EventSystem.Subscribe(EventType.UpdatedPieceQueue, OnUpdatedPieceQueue);
+			
+			InitializeChildren();
+		}
+
+		private void InitializeChildren()
+		{
+			SpriteElement background = new SpriteElement(0.0f, 1.0f, 0.0f, 1.0f)
+			{				
+				LeftAnchor = 0.5f,
+				RightAnchor = 0.5f,
+				LeftWidth = -AssetPool.HoldTexture.Size.X * 0.5f,
+				Texture = AssetPool.QueueTexture,
+				StretchToFit = false,
+				TopPadding = AssetPool.BlockSize.Y * 1.5f,
+				BottomPadding = AssetPool.BlockSize.Y * 1,
+				LeftPadding = AssetPool.BlockSize.X * 1,
+				RightPadding = AssetPool.BlockSize.X * 1
+			};
+			AddChild(background);
+			
+			ListContainer container = new ListContainer {Orientation = Orientation.Vertical, Spacing = 0};
+			background.AddChild(container);
+
+			for (int i = 0; i < pieceDisplays.Length; i++)
+			{
+				pieceDisplays[i] = new PieceDisplay(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, AssetPool.BlockSize.Y * 3.0f, 0.0f,
+					AssetPool.BlockSize.X * 3.0f);
+				container.AddChild(pieceDisplays[i]);
+			}
 		}
 
 		~PieceQueueUI()
@@ -29,45 +57,17 @@ namespace TetrisDotnet.Code.UI.Elements
 		private void OnUpdatedPieceQueue(EventData eventData)
 		{
 			UpdatedPieceQueueEventData updatedPieceQueueEventData = eventData as UpdatedPieceQueueEventData;
-			
+
 			Debug.Assert(updatedPieceQueueEventData != null, nameof(updatedPieceQueueEventData) + " != null");
-			
-			ReplaceQueuedBlockSprites(updatedPieceQueueEventData.PieceTypes);
+
+			ReplaceQueuedBlockSprites(updatedPieceQueueEventData.PieceTypes.ToArray());
 		}
 
-		private void ReplaceQueuedBlockSprites(IEnumerable<PieceType> pieceTypes)
+		private void ReplaceQueuedBlockSprites(IReadOnlyList<PieceType> pieceTypes)
 		{
-			float yHeightModifier = 0;
-			
-			queuedPieceBlocks = new List<Sprite>();
-			
-			foreach (PieceType pieceType in pieceTypes)
+			for (int i = 0; i < pieceDisplays.Length; i++)
 			{
-				float xOffset = pieceType == PieceType.I ? 1.5f : pieceType == PieceType.O ? 1.5f : 2.0f;
-				float yOffset = pieceType == PieceType.I ? 3.0f : 2.5f;
-				
-				foreach (Vector2i position in PieceTypeUtils.GetPieceTypeBlocks(pieceType))
-				{
-					Sprite sprite = new Sprite
-					{
-						Texture = AssetPool.BlockTextures[(int) pieceType],
-						Position = new Vector2f(
-							AssetPool.QueueSprite.Position.X + AssetPool.BlockSize.X * (position.X + xOffset),
-							AssetPool.QueueSprite.Position.Y + AssetPool.BlockSize.Y * (position.Y + yOffset) +
-							yHeightModifier)
-					};
-					queuedPieceBlocks.Add(sprite);
-				}
-
-				yHeightModifier += AssetPool.BlockSize.Y * 3;
-			}
-		}
-
-		public void Draw(RenderWindow window)
-		{
-			foreach (Sprite queuedPieceBlock in queuedPieceBlocks)
-			{
-				window.Draw(queuedPieceBlock);
+				pieceDisplays[i].UpdateDisplayedPiece(pieceTypes[i]);
 			}
 		}
 	}

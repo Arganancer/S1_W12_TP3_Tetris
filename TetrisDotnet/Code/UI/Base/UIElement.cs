@@ -13,6 +13,8 @@ namespace TetrisDotnet.Code.UI.Base
 
 		public void SetDirty()
 		{
+			if (Dirty) return;
+			
 			Dirty = true;
 
 			foreach (UiElement child in Children)
@@ -91,7 +93,6 @@ namespace TetrisDotnet.Code.UI.Base
 
 		// Anchors
 		private float topAnchor;
-
 		public float TopAnchor
 		{
 			get => topAnchor;
@@ -103,7 +104,6 @@ namespace TetrisDotnet.Code.UI.Base
 		}
 
 		private float bottomAnchor;
-
 		public float BottomAnchor
 		{
 			get => bottomAnchor;
@@ -115,7 +115,6 @@ namespace TetrisDotnet.Code.UI.Base
 		}
 
 		private float leftAnchor;
-
 		public float LeftAnchor
 		{
 			get => leftAnchor;
@@ -127,7 +126,6 @@ namespace TetrisDotnet.Code.UI.Base
 		}
 
 		private float rightAnchor;
-
 		public float RightAnchor
 		{
 			get => rightAnchor;
@@ -140,7 +138,6 @@ namespace TetrisDotnet.Code.UI.Base
 
 		// Size
 		private float topHeight;
-
 		public float TopHeight
 		{
 			get => topHeight;
@@ -152,7 +149,6 @@ namespace TetrisDotnet.Code.UI.Base
 		}
 
 		private float bottomHeight;
-
 		public float BottomHeight
 		{
 			get => bottomHeight;
@@ -164,7 +160,6 @@ namespace TetrisDotnet.Code.UI.Base
 		}
 
 		private float leftWidth;
-
 		public float LeftWidth
 		{
 			get => leftWidth;
@@ -176,13 +171,56 @@ namespace TetrisDotnet.Code.UI.Base
 		}
 
 		private float rightWidth;
-
 		public float RightWidth
 		{
 			get => rightWidth;
 			set
 			{
 				rightWidth = value;
+				SetDirty();
+			}
+		}
+
+		private float topPadding;
+		public float TopPadding
+		{
+			get => topPadding;
+			set
+			{
+				topPadding = value;
+				SetDirty();
+			}
+		}
+
+		private float bottomPadding;
+		public float BottomPadding
+		{
+			get => bottomPadding;
+			set
+			{
+				bottomPadding = value;
+				SetDirty();
+			}
+		}
+
+		private float leftPadding;
+		public float LeftPadding
+		{
+			get => leftPadding;
+			set
+			{
+				leftPadding = value;
+				SetDirty();
+			}
+		}
+
+		private float rightPadding;
+		public float RightPadding
+		{
+			get => rightPadding;
+			set
+			{
+				rightPadding = value;
 				SetDirty();
 			}
 		}
@@ -206,7 +244,7 @@ namespace TetrisDotnet.Code.UI.Base
 		{
 			if (parent != null)
 			{
-				Rectangle.Top = Parent.Rectangle.Top - TopHeight + Parent.Height * topAnchor;
+				Rectangle.Top = Parent.Rectangle.Top - TopHeight + Parent.Height * topAnchor + Parent.topPadding;
 			}
 			else
 			{
@@ -218,7 +256,7 @@ namespace TetrisDotnet.Code.UI.Base
 		{
 			if (parent != null)
 			{
-				Rectangle.Left = Parent.Rectangle.Left + LeftWidth + Parent.Width * leftAnchor;
+				Rectangle.Left = Parent.Rectangle.Left + LeftWidth + Parent.Width * leftAnchor + Parent.LeftPadding;
 			}
 			else
 			{
@@ -230,7 +268,7 @@ namespace TetrisDotnet.Code.UI.Base
 		{
 			if (parent != null)
 			{
-				Rectangle.Height = Parent.Rectangle.Top + Parent.Height * bottomAnchor + bottomHeight - Rectangle.Top;
+				Rectangle.Height = Parent.Rectangle.Top + Parent.Height * bottomAnchor + bottomHeight - Rectangle.Top - Parent.BottomPadding;
 			}
 			else
 			{
@@ -243,7 +281,7 @@ namespace TetrisDotnet.Code.UI.Base
 		{
 			if (parent != null)
 			{
-				Rectangle.Width = Parent.Rectangle.Left + Parent.Width * rightAnchor - rightWidth - Rectangle.Left;
+				Rectangle.Width = Parent.Rectangle.Left + Parent.Width * rightAnchor - rightWidth - Rectangle.Left - Parent.RightPadding;
 			}
 			else
 			{

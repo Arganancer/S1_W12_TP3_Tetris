@@ -1,88 +1,39 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using SFML.Graphics;
 using SFML.System;
+using TetrisDotnet.Code.Events;
+using TetrisDotnet.Code.Events.EventData;
+using TetrisDotnet.Code.UI.Base;
 using TetrisDotnet.Code.Utils;
 
 namespace TetrisDotnet.Code.UI.Elements
 {
-	// TODO: Separate UI from Logic.
-	class ScoreText : Text
+	class ScoreText : TextElement
 	{
-		private readonly List<int> scoreList = new List<int>();
-
 		public ScoreText()
 		{
 			DisplayedString = "Score: 0";
 			Font = AssetPool.Font;
 			CharacterSize = 16;
 			FillColor = Color.Green;
-			Position = new Vector2f(AssetPool.HoldSprite.Position.X,
-				AssetPool.HoldSprite.Position.Y + AssetPool.HoldTexture.Size.Y + 1);
+			Hidden = false;
 
-			score = 0;
+			Application.EventSystem.Subscribe(EventType.ScoreUpdated, OnScoreUpdated);
 		}
 
-		public void AddScore(int scoreToAdd)
+		~ScoreText()
 		{
-			score += scoreToAdd;
-
-			DisplayedString = $"Score: {score.ToString()}";
+			Application.EventSystem.Unsubscribe(EventType.ScoreUpdated, OnScoreUpdated);
 		}
 
-		public void CountScore(List<int> fullRows, LevelText levelText)
+		private void OnScoreUpdated(EventData eventData)
 		{
-			scoreList.Clear();
+			IntEventData scoreUpdatedEventData = eventData as IntEventData;
 
-			int currentScoreLevel = 1;
-
-			int last = -1;
-
-			for (int i = 0; i < fullRows.Count; i++)
-			{
-				if (last == -1)
-				{
-					last = fullRows[i];
-				}
-				else if (last != fullRows[i] - 1)
-				{
-					scoreList.Add(currentScoreLevel);
-
-					currentScoreLevel = 1;
-				}
-				else
-				{
-					last = fullRows[i];
-
-					currentScoreLevel++;
-				}
-			}
-
-			if (last != -1)
-			{
-				scoreList.Add(currentScoreLevel);
-			}
-
-			for (int i = 0; i < scoreList.Count; i++)
-			{
-				switch (scoreList[i])
-				{
-					case 1:
-						AddScore(40 * (levelText.level + 1));
-						break;
-					case 2:
-						AddScore(100 * (levelText.level + 1));
-						break;
-					case 3:
-						AddScore(300 * (levelText.level + 1));
-						break;
-					case 4:
-						AddScore(1200 * (levelText.level + 1));
-						levelText.LevelUp();
-						break;
-				}
-			}
+			Debug.Assert(scoreUpdatedEventData != null, nameof(scoreUpdatedEventData) + " != null");
+			
+			DisplayedString = $"Score: {scoreUpdatedEventData.Value.ToString()}";
 		}
-
-		public int score { get; private set; }
 	}
 }

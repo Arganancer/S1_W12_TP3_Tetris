@@ -1,63 +1,86 @@
 using SFML.Graphics;
 using SFML.System;
+using TetrisDotnet.Code.UI.Base;
 using TetrisDotnet.Code.UI.Elements;
+using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code.UI.Layouts
 {
 	public class GameLayout : UiLayout
 	{
 		private readonly GridUI gridUi = new GridUI();
-		private ScoreText scoreText;
-		private LevelText levelText;
-		private RealTimeText realTimeText;
-		private StatsTextBlock statsTextBlock;
-		private readonly ControlsText controlsText;
-		private readonly HeldPieceUI heldPieceUi;
-		private PieceQueueUI pieceQueueUi;
 
 		public GameLayout()
 		{
-			scoreText = new ScoreText();
-			levelText = new LevelText();
-			realTimeText = new RealTimeText();
-			controlsText = new ControlsText();
+			// Left Section
+			UiElement leftSection = new UiElement(0.0f, 1.0f, 0.0f, 0.3f);
+			Elements.Add(leftSection);
+			ListContainer leftSectionContainer = new ListContainer(0.0f, 1.0f, 0.0f, 1.0f)
+			{
+				Orientation = Orientation.Vertical,
+				Spacing = 5.0f,
+			};
+			leftSection.AddChild(leftSectionContainer);
 
-			heldPieceUi = new HeldPieceUI();
-			pieceQueueUi = new PieceQueueUI();
-			statsTextBlock = new StatsTextBlock();
-			Elements.Add(new PauseText());
+			leftSectionContainer.AddChild(new HeldPieceUI
+			{
+				TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f,
+				BottomHeight = AssetPool.HoldTexture.Size.Y,
+			});
+
+			leftSectionContainer.AddChild(new ScoreText
+				{TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, BottomHeight = 16});
+
+			leftSectionContainer.AddChild(new TextElement
+			{
+				DisplayedString = "Test 1", Font = AssetPool.Font, CharacterSize = 16, TopAnchor = 0.0f,
+				BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, BottomHeight = 16, TextHorizontalAlignment = HorizontalAlignment.Left
+			});
 			
+			leftSectionContainer.AddChild(new TextElement
+			{
+				DisplayedString = "Test 2 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", 
+				Font = AssetPool.Font, CharacterSize = 16, TopAnchor = 0.0f,
+				BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, BottomHeight = 16, TextHorizontalAlignment = HorizontalAlignment.Left, TextVerticalAlignment = VerticalAlignment.Top, Wrap = true
+			});
+			
+			leftSectionContainer.AddChild(new TextElement
+			{
+				DisplayedString = "Test 3", Font = AssetPool.Font, CharacterSize = 16, TopAnchor = 0.0f,
+				BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, BottomHeight = 16, TextHorizontalAlignment = HorizontalAlignment.Right
+			});
+
+//			levelText = new LevelText();
+//			realTimeText = new RealTimeText();
+//			controlsText = new ControlsText();
+
+			// Center Section
+
+			// Right Section
+			UiElement rightSection = new UiElement(0.0f, 1.0f, 0.7f, 1.0f);
+			Elements.Add(rightSection);
+			rightSection.AddChild(new PieceQueueUI());
+
+//			statsTextBlock = new StatsTextBlock();
+
+			// Overlays
+			Elements.Add(new PauseText());
+
 			AssetPool.DrawGridSprite.Position = new Vector2f(GridUI.Position.X - AssetPool.BlockSize.X * 1.5f,
 				GridUI.Position.Y - AssetPool.BlockSize.Y * 2f);
-
 		}
 
 		public override void Update(float deltaTime)
 		{
-			realTimeText.RealTime += deltaTime;
 			base.Update(deltaTime);
 		}
 
 		public override void Draw(RenderWindow window)
-		{			
+		{
 			window.Draw(AssetPool.BackDrop);
-			window.Draw(AssetPool.HoldSprite);
-			window.Draw(AssetPool.QueueSprite);
 			window.Draw(AssetPool.DrawGridSprite);
 			gridUi.Draw(window);
-			heldPieceUi.Draw(window);
-			pieceQueueUi.Draw(window);
-			window.Draw(scoreText);
-			window.Draw(levelText);
-			window.Draw(realTimeText);
-			window.Draw(controlsText);
-			window.Draw(AssetPool.StatsSprite);
-			
-			foreach (Text statTextBlock in statsTextBlock.GetDrawable())
-			{
-				window.Draw(statTextBlock);
-			}
-			
+
 			base.Draw(window);
 		}
 	}

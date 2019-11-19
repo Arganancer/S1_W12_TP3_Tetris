@@ -117,8 +117,7 @@ namespace TetrisDotnet.Code.Game
 						new Vector2i(2, 1)
 					};
 				default:
-					throw new ArgumentOutOfRangeException(nameof(pieceType), pieceType,
-						$"Invalid Piece Type does not contain blocks: {Enum.GetName(typeof(PieceType), pieceType)}");
+					return new List<Vector2i>();
 			}
 		}
 	}

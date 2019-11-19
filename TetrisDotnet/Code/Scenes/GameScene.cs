@@ -22,7 +22,7 @@ namespace TetrisDotnet.Code.Scenes
 		private Piece activePiece;
 		private readonly Hold holdManager = new Hold();
 		private SceneType nextScene;
-		private bool isPaused = false;
+		private bool isPaused;
 		private readonly Statistics statistics = new Statistics();
 
 		private float timeUntilNextDrop = 0;
