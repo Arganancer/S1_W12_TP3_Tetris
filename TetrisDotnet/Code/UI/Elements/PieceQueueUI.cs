@@ -19,14 +19,14 @@ namespace TetrisDotnet.Code.UI.Elements
 			pieceDisplays = new PieceDisplay[3];
 
 			Application.EventSystem.Subscribe(EventType.UpdatedPieceQueue, OnUpdatedPieceQueue);
-			
+
 			InitializeChildren();
 		}
 
 		private void InitializeChildren()
 		{
 			SpriteElement background = new SpriteElement(0.0f, 1.0f, 0.0f, 1.0f)
-			{				
+			{
 				LeftAnchor = 0.0f,
 				RightAnchor = 1.0f,
 				Texture = AssetPool.QueueTexture,
@@ -38,7 +38,7 @@ namespace TetrisDotnet.Code.UI.Elements
 				RightPadding = AssetPool.BlockSize.X * 1
 			};
 			AddChild(background);
-			
+
 			ListContainer container = new ListContainer {Orientation = Orientation.Vertical, Spacing = 0};
 			background.AddChild(container);
 

@@ -6,6 +6,8 @@ namespace TetrisDotnet.Code.UI
 {
 	public enum FontFamily
 	{
+		// ReSharper disable IdentifierTypo
+		// ReSharper disable InconsistentNaming
 		Audiowide,
 		Baloo_Bhaijaan,
 		Bowlby_One_Sc,
@@ -19,6 +21,8 @@ namespace TetrisDotnet.Code.UI
 		Odibee_Sans,
 		Russo_One,
 		Squada_One,
+		// ReSharper restore IdentifierTypo
+		// ReSharper restore InconsistentNaming
 	}
 	
 	public static class AssetPool
@@ -51,8 +55,9 @@ namespace TetrisDotnet.Code.UI
 		public static Sprite DrawGridSprite { get; } = new Sprite(DrawGridBackgroundTexture);
 		public static Sprite StatsSprite { get; } = new Sprite(StatsTexture);
 
-		public static SortedDictionary<FontFamily, Font> Fonts = new SortedDictionary<FontFamily, Font>
+		public static readonly SortedDictionary<FontFamily, Font> Fonts = new SortedDictionary<FontFamily, Font>
 		{
+			// ReSharper disable StringLiteralTypo
 			{FontFamily.Audiowide, new Font("Assets/Fonts/Audiowide-Regular.ttf")},
 			{FontFamily.Baloo_Bhaijaan, new Font("Assets/Fonts/BalooBhaijaan-Regular.ttf")},
 			{FontFamily.Bowlby_One_Sc, new Font("Assets/Fonts/BowlbyOneSc-Regular.ttf")},
@@ -66,6 +71,7 @@ namespace TetrisDotnet.Code.UI
 			{FontFamily.Odibee_Sans, new Font("Assets/Fonts/OdibeeSans-Regular.ttf")},
 			{FontFamily.Russo_One, new Font("Assets/Fonts/RussoOne-Regular.ttf")},
 			{FontFamily.Squada_One, new Font("Assets/Fonts/SquadaOne-Regular.ttf")},
+			// ReSharper restore StringLiteralTypo
 		};
 
 		public static Font Font { get; } = Fonts[FontFamily.Do_Hyeon];

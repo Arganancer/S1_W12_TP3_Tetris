@@ -25,11 +25,13 @@ namespace TetrisDotnet.Code.Events
         LevelUp,
         ScoreUpdated,
         ComboUpdated,
+        PiecesPlacedUpdated,
         
         // Logic
         NewHeldPiece,
         UpdatedPieceQueue,
         GridUpdated,
         GamePauseToggled,
+        TimeUpdated,
     }
 }

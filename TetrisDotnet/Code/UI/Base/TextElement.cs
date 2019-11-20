@@ -176,7 +176,7 @@ namespace TetrisDotnet.Code.UI.Base
 			{
 				BottomHeight = Texts.Count * (characterSize + spacingBetweenLines) - spacingBetweenLines;
 			}
-			
+
 			RecalculateRectangleTop();
 			RecalculateRectangleHeight();
 

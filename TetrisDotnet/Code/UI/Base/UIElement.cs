@@ -289,11 +289,11 @@ namespace TetrisDotnet.Code.UI.Base
 			{
 				float parentInnerWidth = Parent.Width - Parent.LeftPadding - Parent.RightPadding;
 				float parentInnerLeft = Parent.Rectangle.Left + Parent.LeftPadding;
-				Rectangle.Width = parentInnerLeft + parentInnerWidth * rightAnchor - rightWidth - Rectangle.Left;
+				Rectangle.Width = parentInnerLeft + parentInnerWidth * rightAnchor + rightWidth - Rectangle.Left;
 			}
 			else
 			{
-				Rectangle.Width = Math.Min(Application.WindowWidth * rightAnchor - rightWidth - Rectangle.Left,
+				Rectangle.Width = Math.Min(Application.WindowWidth * rightAnchor + rightWidth - Rectangle.Left,
 					Application.WindowWidth);
 			}
 		}

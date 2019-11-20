@@ -72,15 +72,20 @@ namespace TetrisDotnet.Code.UI.Base
 
 		private void HorizontalAlign()
 		{
-			float nextLeftAnchor = Spacing / Rectangle.Width;
+			float nextLeftAnchor = Spacing / (Rectangle.Width - LeftPadding - RightPadding);
 			foreach (UiElement child in Children)
 			{
+				if (child.Dirty)
+				{
+					child.ForceRefresh();
+				}
+				
 				float width = child.Width;
 
 				child.LeftAnchor = nextLeftAnchor;
 				child.RightAnchor = nextLeftAnchor;
 
-				nextLeftAnchor += (Spacing + width) / Rectangle.Width;
+				nextLeftAnchor += (Spacing + width) / (Rectangle.Width - LeftPadding - RightPadding);
 			}
 		}
 	}

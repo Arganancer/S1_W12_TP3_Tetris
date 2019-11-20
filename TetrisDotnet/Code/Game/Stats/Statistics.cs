@@ -7,15 +7,25 @@ namespace TetrisDotnet.Code.Game.Stats
 	public class Statistics
 	{
 		public float DropSpeed { get; private set; }
-		public int Level { get; private set; }
+		private int level;
 		private int linesUntilNextLevel;
+		
+		private int nbOfPiecesPlayed;
+		private int NbOfPiecesPlayed
+		{
+			get => nbOfPiecesPlayed;
+			set
+			{
+				nbOfPiecesPlayed = value;
+				Application.EventSystem.ProcessEvent(EventType.PiecesPlacedUpdated, new IntEventData(nbOfPiecesPlayed));
+			}
+		}
 
 		private int score;
-
-		public int Score
+		private int Score
 		{
 			get => score;
-			private set
+			set
 			{
 				if (score == value) return;
 				score = value;
@@ -24,11 +34,10 @@ namespace TetrisDotnet.Code.Game.Stats
 		}
 
 		private int combo;
-
-		public int Combo
+		private int Combo
 		{
 			get => combo;
-			private set
+			set
 			{
 				if (combo == value) return;
 				combo = value;
@@ -36,13 +45,14 @@ namespace TetrisDotnet.Code.Game.Stats
 			}
 		}
 
-		public int BackToBackChain { get; private set; }
-
+		private int BackToBackChain { get; set; }
+		
 		public Statistics()
 		{
 			Application.EventSystem.Subscribe(EventType.PiecePlaced, OnPiecePlaced);
 			Application.EventSystem.Subscribe(EventType.PieceDropped, OnPieceDropped);
 			IncreaseLevel();
+			CalculateLinesUntilNextLevel();
 		}
 
 		~Statistics()
@@ -53,6 +63,8 @@ namespace TetrisDotnet.Code.Game.Stats
 
 		private void OnPiecePlaced(EventData eventData)
 		{
+			++NbOfPiecesPlayed;
+			
 			PiecePlacedEventData piecePlaced = eventData as PiecePlacedEventData;
 
 			Debug.Assert(piecePlaced != null, nameof(piecePlaced) + " != null");
@@ -110,14 +122,14 @@ namespace TetrisDotnet.Code.Game.Stats
 
 		private void IncreaseLevel()
 		{
-			++Level;
-			DropSpeed = 0.8f - (Level - 1) * 0.007f;
-			Application.EventSystem.ProcessEvent(EventType.LevelUp, new IntEventData(Level));
+			++level;
+			DropSpeed = 0.8f - (level - 1) * 0.007f;
+			Application.EventSystem.ProcessEvent(EventType.LevelUp, new IntEventData(level));
 		}
 
 		private void CalculateLinesUntilNextLevel()
 		{
-			linesUntilNextLevel = 5 * Level;
+			linesUntilNextLevel = 5 * level;
 		}
 
 		private void OnPieceDropped(EventData eventData)
@@ -133,7 +145,7 @@ namespace TetrisDotnet.Code.Game.Stats
 
 		public void AddScore(params Move[] moves)
 		{
-			Score += moves.CountPoints(Level, Combo, BackToBackChain);
+			Score += moves.CountPoints(level, Combo, BackToBackChain);
 		}
 	}
 }

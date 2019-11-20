@@ -4,6 +4,7 @@ using SFML.Window;
 using TetrisDotnet.Code.Controls;
 using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
+using TetrisDotnet.Code.Game;
 using TetrisDotnet.Code.Scenes;
 using TetrisDotnet.Code.Utils;
 using EventType = TetrisDotnet.Code.Events.EventType;
@@ -52,7 +53,7 @@ namespace TetrisDotnet.Code
 			{
 				GameClock.Update();
 				window.DispatchEvents();
-				sceneManager.Update(GameClock.deltaTime.AsSeconds());
+				sceneManager.Update(GameClock.DeltaTime.AsSeconds());
 				EventSystem.ProcessQueuedEvents();
 				Draw();
 			}

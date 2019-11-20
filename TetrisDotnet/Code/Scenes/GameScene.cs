@@ -23,7 +23,7 @@ namespace TetrisDotnet.Code.Scenes
 		private readonly Hold holdManager = new Hold();
 		private SceneType nextScene;
 		private bool isPaused;
-		private readonly Statistics statistics = new Statistics();
+		private readonly Statistics statistics;
 
 		private float timeUntilNextDrop;
 		private const float PieceLockDelay = 0.5f;
@@ -32,15 +32,16 @@ namespace TetrisDotnet.Code.Scenes
 		// AI Elements
 		private readonly Evaluator evaluator = new Evaluator();
 		private readonly Controller controller = new Controller();
-		private const float AiTickInterval = 0.0001f;
+		private const float AiTickInterval = 0.002f;
 		private float lastAiTick;
-		private bool aiPlaying = false;
+		private bool aiPlaying = true;
 
 		public GameScene() : base(SceneType.Game, new GameLayout())
 		{
 			nextScene = SceneType;
 			Application.EventSystem.Subscribe(EventType.InputPause, OnInputPause);
 			SubscribeToInputs();
+			statistics = new Statistics();
 			StartNewGame();
 		}
 

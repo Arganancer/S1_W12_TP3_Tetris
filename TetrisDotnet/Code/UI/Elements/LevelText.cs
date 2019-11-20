@@ -1,40 +1,58 @@
-﻿using SFML.Graphics;
-using SFML.System;
-using TetrisDotnet.Code.Utils;
+﻿using System.Diagnostics;
+using SFML.Graphics;
+using TetrisDotnet.Code.Events;
+using TetrisDotnet.Code.Events.EventData;
+using TetrisDotnet.Code.UI.Base;
+using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code.UI.Elements
 {
-	class LevelText : Text
+	public sealed class LevelText : UiElement
 	{
+		private readonly TextElement levelText;
+
 		public LevelText()
 		{
-			DisplayedString = "Level: 0";
-			Font = AssetPool.Font;
-			Position = new Vector2f(AssetPool.HoldSprite.Position.X,
-				AssetPool.HoldSprite.Position.Y + AssetPool.HoldTexture.Size.Y + 26);
-			FillColor = Color.Green;
-			CharacterSize = 16;
+			TextElement label = new TextElement
+			{
+				DisplayedString = "Level:",
+				Font = AssetPool.Font,
+				FillColor = Color.Green,
+				CharacterSize = 16,
+				TopAnchor = 0.0f,
+				LeftAnchor = 0.0f,
+				RightAnchor = 0.4f,
+				RightWidth = -10.0f,
+				TextHorizontalAlignment = HorizontalAlignment.Right
+			};
+			AddChild(label);
 
-			level = 0;
-			dropSpeed = 1f;
-			sideMoveSpeed = 0.05f;
+			levelText = new TextElement
+			{
+				DisplayedString = "0",
+				Font = AssetPool.Font,
+				FillColor = Color.Green,
+				CharacterSize = 16,
+				TopAnchor = 0.0f,
+				LeftAnchor = 0.4f,
+				RightAnchor = 1.0f,
+			};
+			AddChild(levelText);
+
+
+			Application.EventSystem.Subscribe(EventType.LevelUp, OnLevelUp);
 		}
 
-		public void LevelUp()
+		~LevelText()
 		{
-			level++;
-
-			DisplayedString = $"Level: {level.ToString()}";
-
-			dropSpeed -= dropSpeed * 0.1f;
-
-			sideMoveSpeed -= sideMoveSpeed / 3;
+			Application.EventSystem.Unsubscribe(EventType.LevelUp, OnLevelUp);
 		}
-		
-		public float dropSpeed { get; set; }
 
-		public float sideMoveSpeed { get; set; }
-
-		public int level { get; set; }
+		private void OnLevelUp(EventData eventData)
+		{
+			IntEventData levelUpEventData = eventData as IntEventData;
+			Debug.Assert(levelUpEventData != null, nameof(levelUpEventData) + " != null");
+			levelText.DisplayedString = $"{levelUpEventData.Value}";
+		}
 	}
 }

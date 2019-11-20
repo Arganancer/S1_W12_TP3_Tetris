@@ -1,36 +1,57 @@
 ﻿using System;
+using System.Diagnostics;
 using SFML.Graphics;
-using SFML.System;
-using TetrisDotnet.Code.Utils;
+using TetrisDotnet.Code.Events;
+using TetrisDotnet.Code.Events.EventData;
+using TetrisDotnet.Code.UI.Base;
+using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code.UI.Elements
 {
-	class RealTimeText : Text
+	public sealed class RealTimeText : UiElement
 	{
-		private float realTime;
-		public float RealTime {
-			get => realTime;
-			set
-			{
-				realTime = value;
-				UpdateTimeString();
-			} }
+		private readonly TextElement realTimeText;
 
 		public RealTimeText()
 		{
-			DisplayedString = "Time:  00:00:00";
-			Font = AssetPool.Font;
-			CharacterSize = 16;
-			FillColor = Color.Green;
-			Position = new Vector2f(AssetPool.HoldSprite.Position.X,
-				AssetPool.HoldSprite.Position.Y + AssetPool.HoldTexture.Size.Y + 51);
+			TextElement label = new TextElement
+			{
+				DisplayedString = "Time:",
+				Font = AssetPool.Font,
+				CharacterSize = 16,
+				FillColor = Color.Green,
+				TopAnchor = 0.0f,
+				LeftAnchor = 0.0f,
+				RightAnchor = 0.4f,
+				RightWidth = -10.0f,
+				TextHorizontalAlignment = HorizontalAlignment.Right
+			};
+			AddChild(label);
+			realTimeText = new TextElement
+			{
+				DisplayedString = "00:00:00",
+				Font = AssetPool.Font,
+				CharacterSize = 16,
+				FillColor = Color.Green,
+				TopAnchor = 0.0f,
+				LeftAnchor = 0.4f,
+				RightAnchor = 1.0f,
+			};
+			AddChild(realTimeText);
 
-			realTime = 0;
+			Application.EventSystem.Subscribe(EventType.TimeUpdated, OnRealTimeUpdated);
 		}
 
-		public void UpdateTimeString()
+		~RealTimeText()
 		{
-			DisplayedString = $"Time:  {TimeSpan.FromSeconds(realTime):hh\\:mm\\:ss}";
+			Application.EventSystem.Unsubscribe(EventType.TimeUpdated, OnRealTimeUpdated);
+		}
+
+		private void OnRealTimeUpdated(EventData eventData)
+		{
+			FloatEventData currentTimeInSeconds = eventData as FloatEventData;
+			Debug.Assert(currentTimeInSeconds != null, nameof(currentTimeInSeconds) + " != null");
+			realTimeText.DisplayedString = $"{TimeSpan.FromSeconds(currentTimeInSeconds.Value):hh\\:mm\\:ss}";
 		}
 	}
 }
