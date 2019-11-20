@@ -5,7 +5,7 @@ using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.UI.Base;
 using TetrisDotnet.Code.Utils.Enums;
 
-namespace TetrisDotnet.Code.UI.Elements
+namespace TetrisDotnet.Code.UI.SealedElements
 {
 	public sealed class LevelText : UiElement
 	{

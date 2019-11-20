@@ -2,6 +2,7 @@ using SFML.Graphics;
 using SFML.System;
 using TetrisDotnet.Code.UI.Base;
 using TetrisDotnet.Code.UI.Elements;
+using TetrisDotnet.Code.UI.SealedElements;
 using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code.UI.Layouts

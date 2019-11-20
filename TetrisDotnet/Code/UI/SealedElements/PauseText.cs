@@ -3,7 +3,7 @@ using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.UI.Base;
 
-namespace TetrisDotnet.Code.UI.Elements
+namespace TetrisDotnet.Code.UI.SealedElements
 {
 	public class PauseText : TextElement
 	{

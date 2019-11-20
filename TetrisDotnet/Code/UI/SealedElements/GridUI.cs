@@ -6,7 +6,7 @@ using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.Game;
 using TetrisDotnet.Code.Game.World;
 
-namespace TetrisDotnet.Code.UI.Elements
+namespace TetrisDotnet.Code.UI.SealedElements
 {
 	// ReSharper disable once InconsistentNaming
 	public class GridUI

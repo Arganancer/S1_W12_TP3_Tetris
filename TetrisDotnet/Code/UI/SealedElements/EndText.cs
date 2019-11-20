@@ -1,7 +1,7 @@
 using SFML.Graphics;
 using SFML.System;
 
-namespace TetrisDotnet.Code.UI.Elements
+namespace TetrisDotnet.Code.UI.SealedElements
 {
 	public class EndText : Text
 	{

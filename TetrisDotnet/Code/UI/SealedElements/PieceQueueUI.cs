@@ -5,9 +5,10 @@ using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.Game;
 using TetrisDotnet.Code.UI.Base;
+using TetrisDotnet.Code.UI.Elements;
 using TetrisDotnet.Code.Utils.Enums;
 
-namespace TetrisDotnet.Code.UI.Elements
+namespace TetrisDotnet.Code.UI.SealedElements
 {
 	// ReSharper disable once InconsistentNaming
 	public sealed class PieceQueueUI : UiElement

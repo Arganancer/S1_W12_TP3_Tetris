@@ -3,9 +3,8 @@ using System.Linq;
 using SFML.Graphics;
 using SFML.System;
 using TetrisDotnet.Code.Game;
-using TetrisDotnet.Code.Utils;
 
-namespace TetrisDotnet.Code.UI.Elements
+namespace TetrisDotnet.Code.UI.SealedElements
 {
 	class StatsTextBlock
 	{
