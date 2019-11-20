@@ -2,7 +2,8 @@ using System.Diagnostics;
 using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.UI.Base;
-using TetrisDotnet.Code.UI.Elements;
+using TetrisDotnet.Code.UI.Generics;
+using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code.UI.SealedElements
 {
@@ -10,11 +11,11 @@ namespace TetrisDotnet.Code.UI.SealedElements
 	public sealed class HeldPieceUI : UiElement
 	{
 		private PieceDisplay heldPieceDisplay;
-		
+
 		public HeldPieceUI()
 		{
 			Application.EventSystem.Subscribe(EventType.NewHeldPiece, OnNewHeldPiece);
-			
+
 			InitializeUiElements();
 		}
 
@@ -27,14 +28,20 @@ namespace TetrisDotnet.Code.UI.SealedElements
 				Texture = AssetPool.HoldTexture,
 				StretchToFit = false,
 				TopPadding = AssetPool.BlockSize.Y * 2.5f,
-				BottomPadding = AssetPool.BlockSize.Y * 1.0f,
+				BottomPadding = AssetPool.BlockSize.Y * 2.5f,
 				LeftPadding = AssetPool.BlockSize.X * 1.0f,
-				RightPadding = AssetPool.BlockSize.X * 1.0f
+				RightPadding = AssetPool.BlockSize.X * 1.0f,
+				SpriteHorizontalAlignment = HorizontalAlignment.Center,
+				SpriteVerticalAlignment = VerticalAlignment.Center,
 			};
-			
+
 			AddChild(background);
-			
-			heldPieceDisplay = new PieceDisplay(0.0f, 1.0f, 0.0f, 1.0f);
+
+			heldPieceDisplay = new PieceDisplay(0.0f, 1.0f, 0.0f, 1.0f)
+			{
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+			};
 			background.AddChild(heldPieceDisplay);
 		}
 
@@ -46,9 +53,7 @@ namespace TetrisDotnet.Code.UI.SealedElements
 		private void OnNewHeldPiece(EventData eventData)
 		{
 			PieceTypeEventData pieceTypeEventData = eventData as PieceTypeEventData;
-			
 			Debug.Assert(pieceTypeEventData != null, nameof(pieceTypeEventData) + " != null");
-			
 			heldPieceDisplay.UpdateDisplayedPiece(pieceTypeEventData.PieceType);
 		}
 	}

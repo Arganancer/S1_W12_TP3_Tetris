@@ -31,7 +31,7 @@ namespace TetrisDotnet.Code.Game.Stats
 	{
 		public static bool IsDifficult(this Move[] moves)
 		{
-			return moves.ContainsTSpin() && moves.LinesCleared() != Move.None;
+			return moves.LinesCleared() == Move.Tetris || moves.ContainsTSpin() && moves.LinesCleared() != Move.None;
 		}
 		
 		public static bool ContainsTSpin(this Move[] moves)

@@ -1,4 +1,6 @@
+using SFML.System;
 using SFML.Window;
+using TetrisDotnet.Code.Events.EventData;
 using EventType = TetrisDotnet.Code.Events.EventType;
 
 namespace TetrisDotnet.Code.Controls
@@ -42,6 +44,23 @@ namespace TetrisDotnet.Code.Controls
 					Application.EventSystem.ProcessEvent(EventType.InputPause);
 					break;
 			}
+		}
+
+		public void OnMouseMoved(object sender, MouseMoveEventArgs e)
+		{
+			Application.EventSystem.ProcessEvent(EventType.MouseMove, new MouseMovedEventData(new Vector2i(e.X, e.Y)));
+		}
+
+		public void OnMouseButtonPressed(object sender, MouseButtonEventArgs e)
+		{
+			Application.EventSystem.ProcessEvent(EventType.MouseButton,
+				new MouseButtonEventData(true, new Vector2i(e.X, e.Y), e.Button));
+		}
+
+		public void OnMouseButtonReleased(object sender, MouseButtonEventArgs e)
+		{
+			Application.EventSystem.ProcessEvent(EventType.MouseButton,
+				new MouseButtonEventData(false, new Vector2i(e.X, e.Y), e.Button));
 		}
 	}
 }

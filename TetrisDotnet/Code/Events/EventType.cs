@@ -14,10 +14,8 @@ namespace TetrisDotnet.Code.Events
         InputEscape,
         
         // UI Input Events
-        MouseEnter,
-        MouseLeave,
-        GainFocus,
-        LoseFocus,
+        MouseMove,
+        MouseButton,
         
         // Scoring
         PiecePlaced,
@@ -33,5 +31,8 @@ namespace TetrisDotnet.Code.Events
         GridUpdated,
         GamePauseToggled,
         TimeUpdated,
+        
+        // Window Events
+        WindowResized,
     }
 }

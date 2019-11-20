@@ -17,7 +17,7 @@ namespace TetrisDotnet.Code.AI
 			public Piece Piece;
 			public int NbOfHoles;
 			public int LinesCleared;
-			public float bumpiness;
+			public float Bumpiness;
 			public float AggregateHeight;
 			public int TopHeight;
 
@@ -25,13 +25,13 @@ namespace TetrisDotnet.Code.AI
 			{
 				NbOfHoles = 0;
 				LinesCleared = 0;
-				bumpiness = 0;
+				Bumpiness = 0;
 				AggregateHeight = 0;
 			}
 
 			public float GetWeight()
 			{
-				return bumpiness * 0.3f +
+				return Bumpiness * 0.3f +
 				       NbOfHoles * 1.8f +
 				       TopHeight * -0.18f +
 				       AggregateHeight * 0.4f +
@@ -190,7 +190,7 @@ namespace TetrisDotnet.Code.AI
 					Piece = adjustedPiece,
 					NbOfHoles = holes,
 					LinesCleared = GetLinesCleared(state, adjustedPiece),
-					bumpiness = CalculateBumpiness(state, adjustedPiece),
+					Bumpiness = CalculateBumpiness(state, adjustedPiece),
 					AggregateHeight = GetAggregateHeight(state, adjustedPiece),
 					TopHeight = adjustedPiece.GetGlobalBlocks.Max(pos => pos.Y)
 				};

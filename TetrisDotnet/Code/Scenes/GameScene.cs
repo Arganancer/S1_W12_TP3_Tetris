@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using SFML.System;
 using TetrisDotnet.Code.AI;
 using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
@@ -32,7 +31,7 @@ namespace TetrisDotnet.Code.Scenes
 		// AI Elements
 		private readonly Evaluator evaluator = new Evaluator();
 		private readonly Controller controller = new Controller();
-		private const float AiTickInterval = 0.002f;
+		private const float AiTickInterval = 0.05f;
 		private float lastAiTick;
 		private bool aiPlaying = true;
 

@@ -2,6 +2,7 @@ using System.Diagnostics;
 using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.UI.Base;
+using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code.UI.SealedElements
 {
@@ -13,6 +14,8 @@ namespace TetrisDotnet.Code.UI.SealedElements
 			Font = AssetPool.Font;
 			CharacterSize = 40;
 			Hidden = true;
+			TextHorizontalAlignment = HorizontalAlignment.Center;
+			TextVerticalAlignment = VerticalAlignment.Center;
 
 			Application.EventSystem.Subscribe(EventType.GamePauseToggled, OnGamePauseToggled);
 		}

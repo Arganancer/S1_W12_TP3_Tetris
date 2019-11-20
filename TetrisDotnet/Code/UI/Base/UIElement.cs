@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using SFML.Graphics;
+using TetrisDotnet.Code.Events;
+using TetrisDotnet.Code.Events.EventData;
 
 namespace TetrisDotnet.Code.UI.Base
 {
@@ -21,6 +23,56 @@ namespace TetrisDotnet.Code.UI.Base
 			{
 				child.SetDirty();
 			}
+		}
+
+		private bool capturesMouseMoveEvents;
+		protected bool CapturesMouseMoveEvents
+		{
+			get => capturesMouseMoveEvents;
+			set
+			{
+				if (value != capturesMouseMoveEvents)
+				{
+					capturesMouseMoveEvents = value;
+					if (capturesMouseMoveEvents)
+					{
+						Application.EventSystem.Subscribe(EventType.MouseMove, OnMouseMove);
+					}
+					else
+					{
+						Application.EventSystem.Unsubscribe(EventType.MouseMove, OnMouseMove);
+					}
+				}
+			}
+		}
+
+		private bool capturesMouseClickEvents;
+		protected bool CapturesMouseClickEvents
+		{
+			get => capturesMouseClickEvents;
+			set
+			{
+				if (value != capturesMouseClickEvents)
+				{
+					capturesMouseClickEvents = value;
+					if (capturesMouseClickEvents)
+					{
+						Application.EventSystem.Subscribe(EventType.MouseButton, OnMouseClick);
+					}
+					else
+					{
+						Application.EventSystem.Unsubscribe(EventType.MouseButton, OnMouseClick);
+					}
+				}
+			}
+		}		
+		
+		protected virtual void OnMouseMove(EventData eventData)
+		{
+		}
+		
+		protected virtual void OnMouseClick(EventData eventData)
+		{
 		}
 
 		public UiElement Parent
@@ -79,6 +131,19 @@ namespace TetrisDotnet.Code.UI.Base
 			this.rightWidth = rightWidth;
 
 			SetDirty();
+		}
+
+		~UiElement()
+		{
+			if (capturesMouseMoveEvents)
+			{
+				Application.EventSystem.Unsubscribe(EventType.MouseMove, OnMouseMove);
+			}
+
+			if (capturesMouseClickEvents)
+			{
+				Application.EventSystem.Unsubscribe(EventType.MouseButton, OnMouseClick);
+			}
 		}
 
 		public virtual void AddChild(UiElement child)

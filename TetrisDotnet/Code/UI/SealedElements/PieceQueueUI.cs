@@ -5,7 +5,7 @@ using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.Game;
 using TetrisDotnet.Code.UI.Base;
-using TetrisDotnet.Code.UI.Elements;
+using TetrisDotnet.Code.UI.Generics;
 using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code.UI.SealedElements
@@ -32,11 +32,11 @@ namespace TetrisDotnet.Code.UI.SealedElements
 				RightAnchor = 1.0f,
 				Texture = AssetPool.QueueTexture,
 				StretchToFit = false,
-				SpriteHorizontalAlignment = HorizontalAlignment.Left,
+				SpriteHorizontalAlignment = HorizontalAlignment.Center,
 				TopPadding = AssetPool.BlockSize.Y * 1.5f,
-				BottomPadding = AssetPool.BlockSize.Y * 1,
+				BottomPadding = AssetPool.BlockSize.Y * 1.5f,
 				LeftPadding = AssetPool.BlockSize.X * 1,
-				RightPadding = AssetPool.BlockSize.X * 1
+				RightPadding = AssetPool.BlockSize.X * 1,
 			};
 			AddChild(background);
 
@@ -45,8 +45,10 @@ namespace TetrisDotnet.Code.UI.SealedElements
 
 			for (int i = 0; i < pieceDisplays.Length; i++)
 			{
-				pieceDisplays[i] = new PieceDisplay(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, AssetPool.BlockSize.Y * 3.0f, 0.0f,
-					AssetPool.BlockSize.X * 3.0f);
+				pieceDisplays[i] = new PieceDisplay(0.0f, 0.0f, 0.0f, 1.0f, 0.0f, AssetPool.BlockSize.Y * 3.0f, 0.0f, 0.0f)
+				{
+					HorizontalAlignment = HorizontalAlignment.Center,
+				};
 				container.AddChild(pieceDisplays[i]);
 			}
 		}

@@ -1,4 +1,6 @@
 using SFML.Graphics;
+using TetrisDotnet.Code.Events;
+using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.UI.Layouts;
 
 namespace TetrisDotnet.Code.Scenes
