@@ -16,13 +16,13 @@ namespace TetrisDotnet.Code.Scenes
 	public class GameScene : Scene
 	{
 		// Logic Elements
-		private readonly Grid grid = new Grid();
+		private Grid grid = new Grid();
 		private readonly PieceQueue pieceQueue = new PieceQueue();
 		private Piece activePiece;
 		private readonly Hold holdManager = new Hold();
 		private SceneType nextScene;
 		private bool isPaused;
-		private readonly Statistics statistics;
+		private Statistics statistics;
 
 		private float timeUntilNextDrop;
 		private const float PieceLockDelay = 0.5f;
@@ -231,6 +231,8 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void StartNewGame()
 		{
+			grid = new Grid();
+			statistics.Reset();
 			NewPiece();
 		}
 

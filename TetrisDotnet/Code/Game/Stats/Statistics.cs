@@ -6,6 +6,23 @@ namespace TetrisDotnet.Code.Game.Stats
 {
 	public class Statistics
 	{
+		public struct PieceScore
+		{
+			public int SoftDropScore;
+			public int HardDropScore;
+			public int ComboScore;
+			public int LinesClearedScore;
+			public float DifficultyScoreMultiplier;
+
+			public int GetScore()
+			{
+				return SoftDropScore +
+				       HardDropScore +
+				       ComboScore +
+				       (int) (LinesClearedScore * DifficultyScoreMultiplier);
+			}
+		}
+		
 		public float DropSpeed { get; private set; }
 		private int level;
 		private int linesUntilNextLevel;
@@ -20,6 +37,8 @@ namespace TetrisDotnet.Code.Game.Stats
 				Application.EventSystem.ProcessEvent(EventType.PiecesPlacedUpdated, new IntEventData(nbOfPiecesPlayed));
 			}
 		}
+
+		private PieceScore currentPieceScore;
 
 		private int score;
 		private int Score
@@ -61,6 +80,16 @@ namespace TetrisDotnet.Code.Game.Stats
 			Application.EventSystem.Unsubscribe(EventType.PieceDropped, OnPieceDropped);
 		}
 
+		public void Reset()
+		{
+			NbOfPiecesPlayed = 0;
+			Score = 0;
+			Combo = 0;
+			BackToBackChain = 0;
+			level = 0;
+			IncreaseLevel();
+		}
+
 		private void OnPiecePlaced(EventData eventData)
 		{
 			++NbOfPiecesPlayed;
@@ -74,7 +103,6 @@ namespace TetrisDotnet.Code.Game.Stats
 			if (moves.LinesCleared() != Move.None)
 			{
 				++Combo;
-				AddScore(moves);
 
 				if (moves.IsDifficult())
 				{
@@ -91,6 +119,8 @@ namespace TetrisDotnet.Code.Game.Stats
 			{
 				Combo = 0;
 			}
+			
+			AddScore(moves);
 		}
 
 		private void UpdateLinesUntilNextLevel(Move lines)
@@ -137,15 +167,27 @@ namespace TetrisDotnet.Code.Game.Stats
 			PieceDroppedEventData pieceDropped = eventData as PieceDroppedEventData;
 
 			Debug.Assert(pieceDropped != null, nameof(pieceDropped) + " != null");
-
-			int multiplier = pieceDropped.DropType == Drop.HardDrop ? 2 : 1;
-
-			Score += pieceDropped.DistanceDropped * multiplier;
+			if (pieceDropped.DropType == Drop.HardDrop)
+			{
+				currentPieceScore.HardDropScore += pieceDropped.DistanceDropped * 2;
+			}
+			else
+			{
+				currentPieceScore.SoftDropScore += pieceDropped.DistanceDropped;
+			}
 		}
 
-		public void AddScore(params Move[] moves)
+		private void AddScore(params Move[] moves)
 		{
-			Score += moves.CountPoints(level, Combo, BackToBackChain);
+			currentPieceScore.ComboScore = 50 * combo * level;
+			currentPieceScore.DifficultyScoreMultiplier = BackToBackChain >= 2 ? 1.5f : 1.0f;
+			currentPieceScore.LinesClearedScore += moves.CountPoints();
+			
+			Application.EventSystem.ProcessEvent(EventType.PieceScore, new PieceScoreEventData(currentPieceScore));
+			
+			Score += currentPieceScore.GetScore();
+			
+			currentPieceScore = new PieceScore();
 		}
 	}
 }

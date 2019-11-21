@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace TetrisDotnet.Code.UI.Base
 {
 	public enum Orientation
@@ -35,6 +37,7 @@ namespace TetrisDotnet.Code.UI.Base
 			RecalculateRectangleWidth();
 
 			Align();
+			
 			Dirty = false;
 		}
 
@@ -79,7 +82,7 @@ namespace TetrisDotnet.Code.UI.Base
 				{
 					child.ForceRefresh();
 				}
-				
+
 				float width = child.Width;
 
 				child.LeftAnchor = nextLeftAnchor;

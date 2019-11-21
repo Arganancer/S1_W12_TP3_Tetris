@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using SFML.Graphics;
 using SFML.System;
 using TetrisDotnet.Code.Utils.Enums;
@@ -245,6 +246,27 @@ namespace TetrisDotnet.Code.UI.Base
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
+		}
+
+		protected override void FitToChildren()
+		{
+			bool wasDirty = Dirty;
+			
+			if (AutoWidth)
+			{
+				float lastChildRight = Texts.Select(text => text.GetGlobalBounds().Left + text.GetGlobalBounds().Width).Max();
+				RightWidth = lastChildRight - Rectangle.Left;
+				RecalculateRectangleWidth();
+			}
+
+			if (AutoHeight)
+			{
+				float lastChildBottom = Texts.Select(text => text.GetGlobalBounds().Top + text.GetGlobalBounds().Height).Max();
+				BottomHeight = lastChildBottom - Rectangle.Top;
+				RecalculateRectangleHeight();
+			}
+
+			Dirty = wasDirty;
 		}
 
 		private List<Text> GetWrappedTextElements()

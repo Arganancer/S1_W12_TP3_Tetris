@@ -24,24 +24,22 @@ namespace TetrisDotnet.Code.UI.Layouts
 				Spacing = 8.0f,
 				LeftPadding = 25.0f,
 				TopPadding = 25.0f,
-				BottomPadding = 25.0f
+				BottomPadding = 25.0f,
 			};
 			leftSection.AddChild(leftSectionContainer);
-
 			leftSectionContainer.AddChild(new HeldPieceUI
 			{
 				TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f,
 				BottomHeight = AssetPool.HoldTexture.Size.Y,
 			});
-
 			leftSectionContainer.AddChild(new ScoreText
-				{TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, BottomHeight = 16});
+				{TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, AutoHeight = true});
 			leftSectionContainer.AddChild(new LevelText
-				{TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, BottomHeight = 16});
+				{TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, AutoHeight = true});
 			leftSectionContainer.AddChild(new RealTimeText
-				{TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, BottomHeight = 16});
+				{TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, AutoHeight = true});
 			leftSectionContainer.AddChild(new PiecesPlacedText
-				{TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, BottomHeight = 16});
+				{TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, AutoHeight = true});
 
 			// Right Section
 			UiElement rightSection = new UiElement(0.0f, 1.0f, 0.7f, 1.0f);
@@ -64,6 +62,10 @@ namespace TetrisDotnet.Code.UI.Layouts
 			{
 				TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.2f, RightAnchor = 0.8f, BottomHeight = 24,
 				DisplayedString = "Ai is On"
+			});
+			rightSectionContainer.AddChild(new PieceScoreElement
+			{
+				TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f,
 			});
 
 			// Center Section

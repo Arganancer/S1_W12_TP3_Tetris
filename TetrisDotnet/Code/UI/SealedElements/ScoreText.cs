@@ -20,10 +20,12 @@ namespace TetrisDotnet.Code.UI.SealedElements
 				CharacterSize = 16,
 				FillColor = Color.Green,
 				TopAnchor = 0.0f,
+				BottomAnchor = 0.0f,
 				LeftAnchor = 0.0f,
 				RightAnchor = 0.4f,
 				RightWidth = -10.0f,
-				TextHorizontalAlignment = HorizontalAlignment.Right
+				TextHorizontalAlignment = HorizontalAlignment.Right,
+				AutoHeight = true,
 			};
 			AddChild(label);
 			scoreText = new TextElement
@@ -33,8 +35,10 @@ namespace TetrisDotnet.Code.UI.SealedElements
 				CharacterSize = 16,
 				FillColor = Color.Green,
 				TopAnchor = 0.0f,
+				BottomAnchor = 0.0f,
 				LeftAnchor = 0.4f,
 				RightAnchor = 1.0f,
+				AutoHeight = true,
 			};
 			AddChild(scoreText);
 

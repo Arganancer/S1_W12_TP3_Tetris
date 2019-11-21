@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using SFML.Graphics;
 using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
@@ -294,7 +295,8 @@ namespace TetrisDotnet.Code.UI.Base
 
 		public void ForceRefresh()
 		{
-			Refresh();
+			Dirty = true;
+			Update();
 		}
 
 		protected virtual void Refresh()
@@ -303,7 +305,7 @@ namespace TetrisDotnet.Code.UI.Base
 			RecalculateRectangleHeight();
 			RecalculateRectangleLeft();
 			RecalculateRectangleWidth();
-
+			
 			Dirty = false;
 		}
 
@@ -375,15 +377,65 @@ namespace TetrisDotnet.Code.UI.Base
 
 		public virtual void Update()
 		{
+			bool fitToChildren = false;
 			if (Dirty)
 			{
 				Refresh();
+				fitToChildren = true;
 			}
 
 			foreach (UiElement child in Children)
 			{
 				child.Update();
 			}
+
+			if (fitToChildren)
+			{
+				FitToChildren();
+			}
+		}
+		
+		private bool autoHeight;
+		public bool AutoHeight
+		{
+			get => autoHeight;
+			set
+			{
+				autoHeight = value;
+				SetDirty();
+			}
+		}
+
+		private bool autoWidth;
+		public bool AutoWidth
+		{
+			get => autoWidth;
+			set
+			{
+				autoWidth = value;
+				SetDirty();
+			}
+		}
+		
+		protected virtual void FitToChildren()
+		{
+			bool wasDirty = Dirty;
+			
+			if (autoWidth)
+			{
+				float lastChildRight = Children.Select(child => child.Rectangle.Left + child.Width).Max();
+				RightWidth = lastChildRight - Rectangle.Left;
+				RecalculateRectangleWidth();
+			}
+
+			if (autoHeight)
+			{
+				float lastChildBottom = Children.Select(child => child.Rectangle.Top + child.Height).Max();
+				BottomHeight = lastChildBottom - Rectangle.Top;
+				RecalculateRectangleHeight();
+			}
+
+			Dirty = wasDirty;
 		}
 	}
 }

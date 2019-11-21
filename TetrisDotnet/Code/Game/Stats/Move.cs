@@ -77,10 +77,9 @@ namespace TetrisDotnet.Code.Game.Stats
 			return !moves.ContainsTSpin() && moves.LinesCleared() > 0 && !moves.Contains(Move.Tetris);
 		}
 
-		public static int CountPoints(this Move[] moves, int level, int combo, int backToBackChain)
+		public static int CountPoints(this Move[] moves)
 		{
 			int points = 0;
-			float backToBackMultiplier = backToBackChain > 0 && !moves.BreaksBackToBackChain() ? 1.5f : 1.0f;
 
 			Move TSpin = moves.GetTSpin();
 			Move LinesCleared = moves.LinesCleared();
@@ -137,7 +136,7 @@ namespace TetrisDotnet.Code.Game.Stats
 					break;
 			}
 
-			return (int) (points * backToBackMultiplier) + 50 * combo * level;
+			return points;
 		}
 	}
 }

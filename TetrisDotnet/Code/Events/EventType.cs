@@ -24,6 +24,7 @@ namespace TetrisDotnet.Code.Events
         ScoreUpdated,
         ComboUpdated,
         PiecesPlacedUpdated,
+        PieceScore,
         
         // Logic
         NewHeldPiece,
