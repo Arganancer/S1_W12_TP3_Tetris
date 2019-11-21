@@ -1,4 +1,5 @@
 using TetrisDotnet.Code.UI.Base;
+using TetrisDotnet.Code.UI.Generics;
 using TetrisDotnet.Code.UI.SealedElements;
 
 namespace TetrisDotnet.Code.UI.Layouts
@@ -20,7 +21,7 @@ namespace TetrisDotnet.Code.UI.Layouts
 			ListContainer leftSectionContainer = new ListContainer(0.0f, 1.0f, 0.0f, 1.0f)
 			{
 				Orientation = Orientation.Vertical,
-				Spacing = 5.0f,
+				Spacing = 8.0f,
 				LeftPadding = 25.0f,
 				TopPadding = 25.0f,
 				BottomPadding = 25.0f
@@ -41,11 +42,29 @@ namespace TetrisDotnet.Code.UI.Layouts
 				{TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, BottomHeight = 16});
 			leftSectionContainer.AddChild(new PiecesPlacedText
 				{TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, BottomHeight = 16});
-			
+
 			// Right Section
 			UiElement rightSection = new UiElement(0.0f, 1.0f, 0.7f, 1.0f);
 			Elements.Add(rightSection);
-			rightSection.AddChild(new PieceQueueUI());
+			ListContainer rightSectionContainer = new ListContainer(0.0f, 1.0f, 0.0f, 1.0f)
+			{
+				Orientation = Orientation.Vertical,
+				Spacing = 8.0f,
+				LeftPadding = 25.0f,
+				TopPadding = 25.0f,
+				BottomPadding = 25.0f
+			};
+			rightSection.AddChild(rightSectionContainer);
+			rightSectionContainer.AddChild(new PieceQueueUI
+			{
+				TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f,
+				BottomHeight = AssetPool.QueueTexture.Size.Y,
+			});
+			rightSectionContainer.AddChild(new TextButtonElement
+			{
+				TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.2f, RightAnchor = 0.8f, BottomHeight = 24,
+				DisplayedString = "Ai is On"
+			});
 
 			// Center Section
 			Elements.Add(new GridUI

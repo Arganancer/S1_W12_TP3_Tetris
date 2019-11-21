@@ -8,6 +8,7 @@ namespace TetrisDotnet.Code.UI.Base
 	public class ButtonElement : UiElement
 	{
 		private bool mouseInside;
+
 		public bool MouseInside
 		{
 			get => mouseInside;
@@ -28,14 +29,32 @@ namespace TetrisDotnet.Code.UI.Base
 			}
 		}
 
-		private bool waitingForMouseReleaseInside;
+		private bool buttonDown;
+
+		public bool ButtonDown
+		{
+			get => buttonDown;
+			set
+			{
+				if (buttonDown && !value)
+				{
+					OnButtonReleased();
+				}
+				else if (!buttonDown && value)
+				{
+					OnButtonDown();
+				}
+
+				buttonDown = value;
+			}
+		}
 
 		public ButtonElement()
 		{
 			CapturesMouseClickEvents = true;
 			CapturesMouseMoveEvents = true;
 		}
-		
+
 		protected override void OnMouseMove(EventData eventData)
 		{
 			MouseMovedEventData mouseMovedEventData = eventData as MouseMovedEventData;
@@ -48,22 +67,33 @@ namespace TetrisDotnet.Code.UI.Base
 		{
 			MouseButtonEventData mouseButtonEventData = eventData as MouseButtonEventData;
 			Debug.Assert(mouseButtonEventData != null, nameof(mouseButtonEventData) + " != null");
-			if (Rectangle.Contains(mouseButtonEventData.MousePosition) && mouseButtonEventData.MouseButton == Mouse.Button.Left)
+			if (Rectangle.Contains(mouseButtonEventData.MousePosition) &&
+			    mouseButtonEventData.MouseButton == Mouse.Button.Left)
 			{
 				if (mouseButtonEventData.IsPressed)
 				{
-					waitingForMouseReleaseInside = true;
+					ButtonDown = true;
 				}
-				else if(waitingForMouseReleaseInside)
+				else if (ButtonDown)
 				{
 					OnButtonPressed();
+					ButtonDown = false;
 				}
 			}
-			else
+			else if (ButtonDown)
 			{
-				waitingForMouseReleaseInside = false;
+				ButtonDown = false;
 			}
+
 			base.OnMouseClick(eventData);
+		}
+
+		protected virtual void OnButtonReleased()
+		{
+		}
+
+		protected virtual void OnButtonDown()
+		{
 		}
 
 		protected virtual void OnButtonPressed()

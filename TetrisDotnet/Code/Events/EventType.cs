@@ -31,6 +31,7 @@ namespace TetrisDotnet.Code.Events
         GridUpdated,
         GamePauseToggled,
         TimeUpdated,
+        ToggleAi,
         
         // Window Events
         WindowResized,

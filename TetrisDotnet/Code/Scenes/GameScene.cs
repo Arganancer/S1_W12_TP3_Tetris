@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using TetrisDotnet.Code.AI;
 using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
@@ -42,12 +42,15 @@ namespace TetrisDotnet.Code.Scenes
 			SubscribeToInputs();
 			statistics = new Statistics();
 			StartNewGame();
+
+			Application.EventSystem.Subscribe(EventType.ToggleAi, OnAiToggled);
 		}
 
 		~GameScene()
 		{
 			UnsubscribeFromInputs();
 			Application.EventSystem.Unsubscribe(EventType.InputPause, OnInputPause);
+			Application.EventSystem.Unsubscribe(EventType.ToggleAi, OnAiToggled);
 		}
 
 		private void SubscribeToInputs()
@@ -124,6 +127,13 @@ namespace TetrisDotnet.Code.Scenes
 
 			base.Update(deltaTime);
 			return nextScene;
+		}
+		
+		private void OnAiToggled(EventData eventData)
+		{
+			ToggleEventData toggleEventData = eventData as ToggleEventData;
+			Debug.Assert(toggleEventData != null, nameof(toggleEventData) + " != null");
+			aiPlaying = toggleEventData.IsOn;
 		}
 
 		private void OnInputRotateClockwise(EventData eventData)
@@ -219,17 +229,9 @@ namespace TetrisDotnet.Code.Scenes
 			Application.EventSystem.ProcessEvent(EventType.GamePauseToggled, new GamePauseToggledEventData(isPaused));
 		}
 
-		private void InitializeGame()
-		{
-			//Select a new active piece
-			NewPiece();
-		}
-
 		private void StartNewGame()
 		{
-			InitializeGame();
-			GC.Collect();
-			GC.WaitForPendingFinalizers();
+			NewPiece();
 		}
 
 		private void NewPiece(PieceType type = PieceType.Empty)
@@ -261,10 +263,9 @@ namespace TetrisDotnet.Code.Scenes
 		private void CheckFullRows()
 		{
 			List<int> idxRowFull = grid.GetFullRows();
-			
-			List<Move> moves = new List<Move>();
-			moves.Add(MoveUtils.GetLinesCleared(idxRowFull.Count));
-			
+
+			List<Move> moves = new List<Move> {MoveUtils.GetLinesCleared(idxRowFull.Count)};
+
 			// TODO: Add TSpin modifier.
 			// TODO: This should not be called here.
 			Application.EventSystem.ProcessEvent(EventType.PiecePlaced, new PiecePlacedEventData(moves));
@@ -272,7 +273,7 @@ namespace TetrisDotnet.Code.Scenes
 			RemoveRows(idxRowFull);
 		}
 
-		private void RemoveRows(List<int> fullRows)
+		private void RemoveRows(IEnumerable<int> fullRows)
 		{
 			foreach (int rowIdx in fullRows)
 			{

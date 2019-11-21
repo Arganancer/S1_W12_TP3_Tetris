@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using SFML.Graphics;
 using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
@@ -148,6 +149,7 @@ namespace TetrisDotnet.Code.UI.Base
 
 		public virtual void AddChild(UiElement child)
 		{
+			Debug.Assert(child != this, $"UiElement ({child.GetType()}) added itself as its own child. This is not allowed as it would create an infinite recursion of calls.");
 			child.parent = this;
 			Children.Add(child);
 		}
