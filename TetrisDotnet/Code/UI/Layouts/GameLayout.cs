@@ -1,4 +1,5 @@
 using TetrisDotnet.Code.UI.Base;
+using TetrisDotnet.Code.UI.Base.BaseElement;
 using TetrisDotnet.Code.UI.Generics;
 using TetrisDotnet.Code.UI.SealedElements;
 
@@ -9,17 +10,27 @@ namespace TetrisDotnet.Code.UI.Layouts
 		public GameLayout()
 		{
 			// Background
-			Elements.Add(new SpriteElement()
+			Elements.Add(new SpriteElement
 			{
 				Texture = AssetPool.BackDropTexture,
 				StretchToFit = true
 			});
 
 			// Left Section
-			UiElement leftSection = new UiElement(0.0f, 1.0f, 0.0f, 0.3f);
-			Elements.Add(leftSection);
-			ListContainer leftSectionContainer = new ListContainer(0.0f, 1.0f, 0.0f, 1.0f)
+			UiElement leftSection = new UiElement
 			{
+				TopAnchor = 0.0f,
+				BottomAnchor = 1.0f,
+				LeftAnchor = 0.0f,
+				RightAnchor = 0.3f,
+			};
+			Elements.Add(leftSection);
+			ListContainer leftSectionContainer = new ListContainer
+			{
+				TopAnchor = 0.0f,
+				BottomAnchor = 1.0f,
+				LeftAnchor = 0.0f,
+				RightAnchor = 1.0f,
 				Orientation = Orientation.Vertical,
 				Spacing = 8.0f,
 				LeftPadding = 25.0f,
@@ -42,10 +53,20 @@ namespace TetrisDotnet.Code.UI.Layouts
 				{TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, AutoHeight = true});
 
 			// Right Section
-			UiElement rightSection = new UiElement(0.0f, 1.0f, 0.7f, 1.0f);
-			Elements.Add(rightSection);
-			ListContainer rightSectionContainer = new ListContainer(0.0f, 1.0f, 0.0f, 1.0f)
+			UiElement rightSection = new UiElement
 			{
+				TopAnchor = 0.0f,
+				BottomAnchor = 1.0f,
+				LeftAnchor = 0.7f,
+				RightAnchor = 1.0f,
+			};
+			Elements.Add(rightSection);
+			ListContainer rightSectionContainer = new ListContainer
+			{
+				TopAnchor = 0.0f,
+				BottomAnchor = 1.0f,
+				LeftAnchor = 0.0f,
+				RightAnchor = 1.0f,
 				Orientation = Orientation.Vertical,
 				Spacing = 8.0f,
 				LeftPadding = 25.0f,

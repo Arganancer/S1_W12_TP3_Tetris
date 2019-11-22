@@ -8,14 +8,18 @@ namespace TetrisDotnet.Code.UI.SealedElements
 {
 	public class PauseText : TextElement
 	{
-		public PauseText() : base(0.5f, 0.5f, 0.5f, 0.5f)
+		public PauseText()
 		{
+			TopAnchor = 0.5f;
+			BottomAnchor = 0.5f;
+			LeftAnchor = 0.5f;
+			RightAnchor = 0.5f;
 			DisplayedString = "Paused";
 			Font = AssetPool.Font;
 			CharacterSize = 40;
 			Hidden = true;
-			TextHorizontalAlignment = HorizontalAlignment.Center;
-			TextVerticalAlignment = VerticalAlignment.Center;
+			HorizontalAlignment = HorizontalAlignment.Center;
+			VerticalAlignment = VerticalAlignment.Center;
 
 			Application.EventSystem.Subscribe(EventType.GamePauseToggled, OnGamePauseToggled);
 		}

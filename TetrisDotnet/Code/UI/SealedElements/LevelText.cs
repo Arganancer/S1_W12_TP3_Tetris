@@ -3,6 +3,7 @@ using SFML.Graphics;
 using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.UI.Base;
+using TetrisDotnet.Code.UI.Base.BaseElement;
 using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code.UI.SealedElements
@@ -24,7 +25,7 @@ namespace TetrisDotnet.Code.UI.SealedElements
 				LeftAnchor = 0.0f,
 				RightAnchor = 0.4f,
 				RightWidth = -10.0f,
-				TextHorizontalAlignment = HorizontalAlignment.Right,
+				HorizontalAlignment = HorizontalAlignment.Right,
 				AutoHeight = true,
 			};
 			AddChild(label);

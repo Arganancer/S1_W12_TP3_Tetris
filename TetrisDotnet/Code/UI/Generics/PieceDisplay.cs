@@ -4,6 +4,7 @@ using SFML.Graphics;
 using SFML.System;
 using TetrisDotnet.Code.Game;
 using TetrisDotnet.Code.UI.Base;
+using TetrisDotnet.Code.UI.Base.BaseElement;
 using TetrisDotnet.Code.Utils.Enums;
 using TetrisDotnet.Code.Utils.Extensions;
 
@@ -40,24 +41,6 @@ namespace TetrisDotnet.Code.UI.Generics
 
 		public PieceDisplay()
 		{
-			InitializePieceDisplay();
-		}
-
-		public PieceDisplay(float topAnchor, float bottomAnchor, float leftAnchor, float rightAnchor) : base(topAnchor,
-			bottomAnchor, leftAnchor, rightAnchor)
-		{
-			InitializePieceDisplay();
-		}
-
-		public PieceDisplay(float topAnchor, float bottomAnchor, float leftAnchor, float rightAnchor, float topHeight,
-			float bottomHeight, float leftWidth, float rightWidth) : base(topAnchor, bottomAnchor, leftAnchor,
-			rightAnchor, topHeight, bottomHeight, leftWidth, rightWidth)
-		{
-			InitializePieceDisplay();
-		}
-
-		private void InitializePieceDisplay()
-		{
 			pieceBlocks = new List<Sprite>();
 			pieceType = PieceType.Empty;
 		}
@@ -83,7 +66,7 @@ namespace TetrisDotnet.Code.UI.Generics
 			{
 				case VerticalAlignment.Top:
 					origin = new Vector2f(0, 0);
-					position = new Vector2f(0, Rectangle.Top);
+					position = new Vector2f(0, Top);
 					break;
 				case VerticalAlignment.Center:
 					origin = new Vector2f(0, AssetPool.BlockSize.Y * 0.5f);
@@ -91,7 +74,7 @@ namespace TetrisDotnet.Code.UI.Generics
 					break;
 				case VerticalAlignment.Bottom:
 					origin = new Vector2f(0, AssetPool.BlockSize.Y);
-					position = new Vector2f(0, Rectangle.Top + Rectangle.Height);
+					position = new Vector2f(0, Top + Height);
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
@@ -101,7 +84,7 @@ namespace TetrisDotnet.Code.UI.Generics
 			{
 				case HorizontalAlignment.Left:
 					origin = new Vector2f(0, origin.Y);
-					position = new Vector2f(Rectangle.Left, position.Y);
+					position = new Vector2f(Left, position.Y);
 					break;
 				case HorizontalAlignment.Center:
 					origin = new Vector2f(AssetPool.BlockSize.X * 0.5f, origin.Y);
@@ -109,7 +92,7 @@ namespace TetrisDotnet.Code.UI.Generics
 					break;
 				case HorizontalAlignment.Right:
 					origin = new Vector2f(AssetPool.BlockSize.X, origin.Y);
-					position = new Vector2f(Rectangle.Left + Rectangle.Width, position.Y);
+					position = new Vector2f(Left + Width, position.Y);
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
@@ -164,14 +147,14 @@ namespace TetrisDotnet.Code.UI.Generics
 			return offset;
 		}
 
-		public override void Draw(RenderWindow window)
+		protected override void SelfDraw(RenderWindow window)
 		{
 			foreach (Sprite pieceBlock in pieceBlocks)
 			{
 				window.Draw(pieceBlock);
 			}
 
-			base.Draw(window);
+			base.SelfDraw(window);
 		}
 	}
 }

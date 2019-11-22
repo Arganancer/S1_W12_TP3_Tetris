@@ -6,7 +6,7 @@ namespace TetrisDotnet.Code.AI
 {
 	class Controller
 	{
-		private Action currentAction;
+		private Action currentAction = null;
 		private PathNode currentPathNodeAction;
 
 		public void PlanPath(Action action)
@@ -18,30 +18,33 @@ namespace TetrisDotnet.Code.AI
 			}
 		}
 
-		public void RunCommands(State state, int nbOfTicks)
+		public bool RunCommands(State state, int nbOfTicks)
 		{
-			for (int i = 0; i < nbOfTicks; i++)
+			if (currentAction == null) return false;
+			
+			if (currentAction.actionType == ActionType.Place)
 			{
-				if (currentAction.actionType == ActionType.Place)
+				for (int i = 0; i < nbOfTicks; i++)
 				{
-					if (state.currentPiece.RotationIndex != currentPathNodeAction.Rotation)
+					if (state.CurrentPiece.RotationIndex != currentPathNodeAction.Rotation)
 					{
 						Application.EventSystem.ProcessEvent(EventType.InputRotateClockwise);
 						continue;
 					}
 
-					Vector2i currentMove = currentPathNodeAction.Position - state.currentPiece.Position;
+					Vector2i currentMove = currentPathNodeAction.Position - state.CurrentPiece.Position;
 
 					if (currentMove.X == 0 && currentMove.Y <= 0)
 					{
 						if (currentAction.path.Count == 0)
 						{
-							if (state.currentPiece.RotationIndex == currentPathNodeAction.Rotation)
+							if (state.CurrentPiece.RotationIndex == currentPathNodeAction.Rotation)
 							{
 								Application.EventSystem.ProcessEvent(EventType.InputHardDrop);
 							}
 
-							return;
+							currentAction = null;
+							return true;
 						}
 
 						currentPathNodeAction = currentAction.path.Pop();
@@ -49,14 +52,9 @@ namespace TetrisDotnet.Code.AI
 
 					if (currentMove.X != 0)
 					{
-						if (currentMove.X < 0)
-						{
-							Application.EventSystem.ProcessEvent(EventType.InputLeft);
-						}
-						else
-						{
-							Application.EventSystem.ProcessEvent(EventType.InputRight);
-						}
+						Application.EventSystem.ProcessEvent(currentMove.X < 0
+							? EventType.InputLeft
+							: EventType.InputRight);
 
 						continue;
 					}
@@ -66,11 +64,13 @@ namespace TetrisDotnet.Code.AI
 						Application.EventSystem.ProcessEvent(EventType.InputDown);
 					}
 				}
-				else if (currentAction.actionType == ActionType.Hold)
-				{
-					Application.EventSystem.ProcessEvent(EventType.InputHold);
-				}
 			}
+			else if (currentAction.actionType == ActionType.Hold)
+			{
+				Application.EventSystem.ProcessEvent(EventType.InputHold);
+			}
+
+			return true;
 		}
 	}
 }

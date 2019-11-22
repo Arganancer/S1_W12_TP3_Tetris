@@ -2,6 +2,7 @@ using System.Diagnostics;
 using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.UI.Base;
+using TetrisDotnet.Code.UI.Base.BaseElement;
 using TetrisDotnet.Code.UI.Generics;
 using TetrisDotnet.Code.Utils.Enums;
 
@@ -31,14 +32,18 @@ namespace TetrisDotnet.Code.UI.SealedElements
 				BottomPadding = AssetPool.BlockSize.Y * 2.5f,
 				LeftPadding = AssetPool.BlockSize.X * 1.0f,
 				RightPadding = AssetPool.BlockSize.X * 1.0f,
-				SpriteHorizontalAlignment = HorizontalAlignment.Center,
-				SpriteVerticalAlignment = VerticalAlignment.Center,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
 			};
 
 			AddChild(background);
 
-			heldPieceDisplay = new PieceDisplay(0.0f, 1.0f, 0.0f, 1.0f)
-			{
+			heldPieceDisplay = new PieceDisplay
+			{				
+				TopAnchor = 0.0f,
+				BottomAnchor = 1.0f,
+				LeftAnchor = 0.0f,
+				RightAnchor = 1.0f,
 				HorizontalAlignment = HorizontalAlignment.Center,
 				VerticalAlignment = VerticalAlignment.Center,
 			};

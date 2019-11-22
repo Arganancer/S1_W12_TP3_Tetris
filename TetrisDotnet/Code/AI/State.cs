@@ -5,25 +5,27 @@ namespace TetrisDotnet.Code.AI
 {
 	class State
 	{
-		public Piece currentPiece { get; }
-		public PieceType currentHeldPiece { get; }
-		public bool[,] grid { get; }
+		public Piece CurrentPiece { get; }
+		public PieceType CurrentHeldPiece { get; }
+		public bool CanSwap { get; }
+		public bool[,] Grid { get; }
 
-		public State(Piece currentPiece, bool[,] grid, PieceType currentHeldPiece)
+		public State(Piece currentPiece, bool[,] grid, PieceType currentHeldPiece, bool canSwap)
 		{
-			this.currentPiece = currentPiece;
-			this.grid = grid;
-			this.currentHeldPiece = currentHeldPiece;
+			CurrentPiece = currentPiece;
+			Grid = grid;
+			CurrentHeldPiece = currentHeldPiece;
+			CanSwap = canSwap;
 		}
 
 		public bool GetBlock(int x, int y)
 		{
-			return grid[x, y];
+			return Grid[x, y];
 		}
 
 		public bool GetBlock(Vector2i pos)
 		{
-			return grid[pos.X, pos.Y];
+			return Grid[pos.X, pos.Y];
 		}
 	}
 }

@@ -32,7 +32,7 @@ namespace TetrisDotnet.Code.AI.Pathfinding
 					return false;
 				}
 
-				if (state.GetBlock(point.X, point.Y) && !state.currentPiece.ContainsPoint(point))
+				if (state.GetBlock(point.X, point.Y) && !state.CurrentPiece.ContainsPoint(point))
 				{
 					return false;
 				}

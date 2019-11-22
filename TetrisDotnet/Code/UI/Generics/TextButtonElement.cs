@@ -1,55 +1,62 @@
 using SFML.Graphics;
-using SFML.System;
 using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
+using TetrisDotnet.Code.UI.Animations;
+using TetrisDotnet.Code.UI.Animations.ElementAnimations;
 using TetrisDotnet.Code.UI.Base;
 using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code.UI.Generics
 {
-	public sealed class TextButtonElement : ButtonElement
+	public sealed class TextButtonElement : RectangleElement
 	{
-		private readonly RectangleShape background;
+		private readonly Color lightColor = new Color(69, 240, 31);
+		private readonly Color mediumColor = new Color(29, 158, 0);
+		private readonly Color darkColor = new Color(19, 107, 0);
 
-		private Color lightColor = new Color(38, 209, 0);
-		private Color mediumColor = new Color(29, 158, 0);
-		private Color darkColor = new Color(20, 107, 0);
-
-		private readonly Color lightFadeColor = new Color(169, 204, 161);
-		private readonly Color mediumFadeColor = new Color(116, 148, 111);
-		private Color darkFadeColor = new Color(81, 99, 77);
+		private readonly Color lightFadeColor = new Color(255, 145, 229);
+		private readonly Color mediumFadeColor = new Color(179, 66, 152);
+		private readonly Color darkFadeColor = new Color(127, 47, 109);
 
 		private bool aiIsActive = true;
 
-		private TextElement TextElement;
+		private readonly TextElement textElement;
 
 		public string DisplayedString
 		{
-			get => TextElement.DisplayedString;
-			set => TextElement.DisplayedString = value;
+			get => textElement.DisplayedString;
+			set => textElement.DisplayedString = value;
 		}
 
 		public TextButtonElement()
-		{
-			background = new RectangleShape {FillColor = darkColor};
-			background.OutlineColor = mediumColor;
-			TextElement = new TextElement
+		{			
+			CapturesMouseClickEvents = true;
+			CapturesMouseMoveEvents = true;
+			FillColor = darkColor;
+			OutlineColor = mediumColor;
+			StretchToFit = true;
+			
+			textElement = new TextElement
 			{
 				CharacterSize = 16,
 				Font = AssetPool.Font,
 				FillColor = mediumColor,
-				TextHorizontalAlignment = HorizontalAlignment.Center,
-				TextVerticalAlignment = VerticalAlignment.Center,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
 			};
-			AddChild(TextElement);
+			AddChild(textElement);
 		}
 
 		protected override void OnButtonDown()
 		{			
-			TextElement.FillColor = aiIsActive ? mediumColor : mediumFadeColor;
-			background.FillColor = aiIsActive ? darkColor : darkFadeColor;
-			background.OutlineThickness = 1;
-			background.OutlineColor = aiIsActive ? lightColor : lightFadeColor;
+			Animation buttonDownAnimation = new Animation();
+			buttonDownAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.09f, textElement, aiIsActive ? mediumColor : mediumFadeColor));
+			buttonDownAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.09f, this,  aiIsActive ? darkColor : darkFadeColor));
+			buttonDownAnimation.AddElementAnimation(new OutlineColorAnimation(0.0f, 0.09f, this,  aiIsActive ? lightColor : lightFadeColor));
+			OutlineThickness = 1;
+			
+			PlayAnimation(buttonDownAnimation);
+			
 			base.OnButtonDown();
 		}
 
@@ -63,20 +70,24 @@ namespace TetrisDotnet.Code.UI.Generics
 
 		protected override void OnButtonReleased()
 		{
+			Animation buttonReleasedAnimation = new Animation();
 			if (MouseInside)
 			{
-				TextElement.FillColor = aiIsActive ? lightColor : lightFadeColor;
-				background.FillColor = aiIsActive ? mediumColor : mediumFadeColor;
-				background.OutlineThickness = 1;
-				background.OutlineColor = aiIsActive ? lightColor : lightFadeColor;
+				buttonReleasedAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.15f, textElement, aiIsActive ?  lightColor : lightFadeColor));
+				buttonReleasedAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.15f, this,  aiIsActive ? mediumColor : mediumFadeColor));
+				buttonReleasedAnimation.AddElementAnimation(new OutlineColorAnimation(0.0f, 0.15f, this,  aiIsActive ? lightColor : lightFadeColor));
+				OutlineThickness = 1;
 			}
 			else
 			{
-				TextElement.FillColor = aiIsActive ? mediumColor : mediumFadeColor;
-				background.FillColor = aiIsActive ? darkColor : darkFadeColor;
-				background.OutlineThickness = -1;
-				background.OutlineColor = aiIsActive ? mediumColor : mediumFadeColor;
+				buttonReleasedAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.25f, textElement, aiIsActive ?  mediumColor : mediumFadeColor));
+				buttonReleasedAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.25f, this,  aiIsActive ? darkColor : darkFadeColor));
+				buttonReleasedAnimation.AddElementAnimation(new OutlineColorAnimation(0.0f, 0.25f, this,  aiIsActive ? mediumColor : mediumFadeColor));
+				OutlineThickness = -1;
 			}
+			
+			PlayAnimation(buttonReleasedAnimation);
+			
 			base.OnButtonReleased();
 		}
 
@@ -84,10 +95,12 @@ namespace TetrisDotnet.Code.UI.Generics
 		{
 			if (!ButtonDown)
 			{
-				TextElement.FillColor = aiIsActive ? lightColor : lightFadeColor;
-				background.FillColor = aiIsActive ? mediumColor : mediumFadeColor;
-				background.OutlineThickness = 1;
-				background.OutlineColor = aiIsActive ? lightColor : lightFadeColor;
+				Animation mouseEnterAnimation = new Animation();
+				mouseEnterAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.25f, textElement, aiIsActive ?  lightColor : lightFadeColor));
+				mouseEnterAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.25f, this,  aiIsActive ? mediumColor : mediumFadeColor));
+				mouseEnterAnimation.AddElementAnimation(new OutlineColorAnimation(0.0f, 0.25f, this,  aiIsActive ? lightColor : lightFadeColor));
+				OutlineThickness = 1;
+				PlayAnimation(mouseEnterAnimation);
 			}
 
 			base.OnMouseEnter();
@@ -97,26 +110,14 @@ namespace TetrisDotnet.Code.UI.Generics
 		{			
 			if (!ButtonDown)
 			{
-				TextElement.FillColor = aiIsActive ? mediumColor : mediumFadeColor;
-				background.FillColor = aiIsActive ? darkColor : darkFadeColor;
-				background.OutlineThickness = -1;
-				background.OutlineColor = aiIsActive ? mediumColor : mediumFadeColor;
+				Animation mouseExitAnimation = new Animation();
+				mouseExitAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.25f, textElement, aiIsActive ?  mediumColor : mediumFadeColor));
+				mouseExitAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.25f, this,  aiIsActive ? darkColor : darkFadeColor));
+				mouseExitAnimation.AddElementAnimation(new OutlineColorAnimation(0.0f, 0.25f, this,  aiIsActive ? mediumColor : mediumFadeColor));
+				OutlineThickness = -1;
+				PlayAnimation(mouseExitAnimation);
 			}
 			base.OnMouseExit();
-		}
-
-		protected override void Refresh()
-		{
-			base.Refresh();
-			background.Position = new Vector2f(Rectangle.Left, Rectangle.Top);
-			background.Size = new Vector2f(Rectangle.Width, Rectangle.Height);
-			background.OutlineThickness = -1;
-		}
-
-		public override void Draw(RenderWindow window)
-		{
-			window.Draw(background);
-			base.Draw(window);
 		}
 	}
 }

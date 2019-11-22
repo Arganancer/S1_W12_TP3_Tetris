@@ -96,12 +96,12 @@ namespace TetrisDotnet.Code.AI
 		public Action GetBestPlacement(State state)
 		{
 			Queue<FinalPiece> finalPieces = new Queue<FinalPiece>(
-				GenerateAllFinalPossibilities(state, state.currentPiece).OrderBy(finalPiece => finalPiece.GetWeight()));
+				GenerateAllFinalPossibilities(state, state.CurrentPiece).OrderBy(finalPiece => finalPiece.GetWeight()));
 
-			if (state.currentHeldPiece != PieceType.Empty)
+			if (state.CurrentHeldPiece != PieceType.Empty && state.CanSwap)
 			{
 				FinalPiece heldPiece =
-					GetBestPiece(GenerateAllFinalPossibilities(state, new Piece(state.currentHeldPiece)));
+					GetBestPiece(GenerateAllFinalPossibilities(state, new Piece(state.CurrentHeldPiece)));
 				if (heldPiece.GetWeight() < finalPieces.Peek().GetWeight())
 				{
 					return new Action(ActionType.Hold, null);
@@ -120,7 +120,7 @@ namespace TetrisDotnet.Code.AI
 					return null;
 				}
 				
-				finalPath = Pathfinder.pathfinder.FindPath(state, state.currentPiece, finalPieces.Dequeue().Piece);
+				finalPath = Pathfinder.pathfinder.FindPath(state, state.CurrentPiece, finalPieces.Dequeue().Piece);
 			}
 
 			return new Action(ActionType.Place, finalPath);

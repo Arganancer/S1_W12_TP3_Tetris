@@ -3,6 +3,7 @@ using SFML.Graphics;
 using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.UI.Base;
+using TetrisDotnet.Code.UI.Base.BaseElement;
 
 namespace TetrisDotnet.Code.UI.Layouts
 {
@@ -29,7 +30,7 @@ namespace TetrisDotnet.Code.UI.Layouts
 		{
 			foreach (UiElement element in Elements)
 			{
-				element.Update();
+				element.Update(deltaTime);
 			}
 		}
 

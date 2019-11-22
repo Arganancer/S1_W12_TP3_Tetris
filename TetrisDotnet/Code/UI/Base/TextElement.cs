@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using SFML.Graphics;
 using SFML.System;
+using TetrisDotnet.Code.UI.Base.BaseElement;
 using TetrisDotnet.Code.Utils.Enums;
 using TetrisDotnet.Code.Utils.Extensions;
 
 namespace TetrisDotnet.Code.UI.Base
 {
-	public class TextElement : UiElement
+	public class TextElement : AlignableElement
 	{
-		protected List<Text> Texts;
+		private List<Text> Texts;
 
 		private string displayedString;
+
 		public string DisplayedString
 		{
 			get => displayedString;
@@ -24,6 +26,7 @@ namespace TetrisDotnet.Code.UI.Base
 		}
 
 		private Font font;
+
 		public Font Font
 		{
 			get => font;
@@ -35,6 +38,7 @@ namespace TetrisDotnet.Code.UI.Base
 		}
 
 		private uint characterSize;
+
 		public uint CharacterSize
 		{
 			get => characterSize;
@@ -46,6 +50,7 @@ namespace TetrisDotnet.Code.UI.Base
 		}
 
 		private uint spacingBetweenLines;
+
 		public uint SpacingBetweenLines
 		{
 			get => spacingBetweenLines;
@@ -57,7 +62,8 @@ namespace TetrisDotnet.Code.UI.Base
 		}
 
 		private Color fillColor;
-		public Color FillColor
+
+		public override Color FillColor
 		{
 			get => fillColor;
 			set
@@ -71,6 +77,7 @@ namespace TetrisDotnet.Code.UI.Base
 		}
 
 		private bool wrap;
+
 		public bool Wrap
 		{
 			get => wrap;
@@ -83,43 +90,8 @@ namespace TetrisDotnet.Code.UI.Base
 				}
 			}
 		}
-		
-		private HorizontalAlignment textHorizontalAlignment;
-		public HorizontalAlignment TextHorizontalAlignment
-		{
-			get => textHorizontalAlignment;
-			set
-			{
-				textHorizontalAlignment = value;
-				SetDirty();
-			}
-		}
 
-		private VerticalAlignment textVerticalAlignment;
-		public VerticalAlignment TextVerticalAlignment
-		{
-			get => textVerticalAlignment;
-			set
-			{
-				textVerticalAlignment = value;
-				SetDirty();
-			}
-		}
-
-		public TextElement() : base()
-		{
-			InitializeTextElementDefaults();
-		}
-
-		public TextElement(float topAnchor, float bottomAnchor, float leftAnchor, float rightAnchor) :
-			base(topAnchor, bottomAnchor, leftAnchor, rightAnchor)
-		{
-			InitializeTextElementDefaults();
-		}
-
-		public TextElement(float topAnchor, float bottomAnchor, float leftAnchor, float rightAnchor, float topHeight,
-			float bottomHeight, float leftWidth, float rightWidth) :
-			base(topAnchor, bottomAnchor, leftAnchor, rightAnchor, topHeight, bottomHeight, leftWidth, rightWidth)
+		public TextElement()
 		{
 			InitializeTextElementDefaults();
 		}
@@ -127,53 +99,47 @@ namespace TetrisDotnet.Code.UI.Base
 		private void InitializeTextElementDefaults()
 		{
 			Texts = new List<Text>();
-			TextHorizontalAlignment = HorizontalAlignment.Left;
-			TextVerticalAlignment = VerticalAlignment.Top;
+			HorizontalAlignment = HorizontalAlignment.Left;
+			VerticalAlignment = VerticalAlignment.Top;
 			FillColor = Color.Green;
 			spacingBetweenLines = 2;
 			Wrap = false;
 		}
 
-		public override void Draw(RenderWindow window)
+		protected override void SelfDraw(RenderWindow window)
 		{
-			if (!Hidden)
+			foreach (Text text in Texts)
 			{
-				foreach (Text text in Texts)
-				{
-					window.Draw(text);
-				}
+				window.Draw(text);
 			}
 
-			base.Draw(window);
+			base.SelfDraw(window);
 		}
 
 		protected override void Refresh()
-		{			
+		{
 			RecalculateRectangleLeft();
 			RecalculateRectangleWidth();
-			
-			Texts = new List<Text>();
 
-			Text defaultText = new Text
+			Texts = new List<Text>
 			{
-				DisplayedString = displayedString,
-				Font = font,
-				CharacterSize = characterSize,
-				FillColor = fillColor
+				new Text
+				{
+					DisplayedString = displayedString,
+					Font = font,
+					CharacterSize = characterSize,
+					FillColor = fillColor
+				}
 			};
 
-			FloatRect localRect = defaultText.GetLocalBounds();
+			FloatRect localRect = Texts.First().GetLocalBounds();
 
-			if (Wrap && localRect.Width > Rectangle.Width)
+			if (Wrap && localRect.Width > Width)
 			{
 				Texts = GetWrappedTextElements();
 			}
-			else
-			{
-				Texts.Add(defaultText);
-			}
 
-			if (textVerticalAlignment == VerticalAlignment.Top)
+			if (VerticalAlignment == VerticalAlignment.Top)
 			{
 				BottomHeight = Texts.Count * (characterSize + spacingBetweenLines) - spacingBetweenLines;
 			}
@@ -182,91 +148,20 @@ namespace TetrisDotnet.Code.UI.Base
 			RecalculateRectangleHeight();
 
 			Dirty = false;
-			
-			AlignTextElements();
+
+			AlignElement();
 		}
 
-		private void AlignTextElements()
+		protected override float GetMaxChildHeight()
 		{
-			int textCount = Texts.Count;
-			switch (TextVerticalAlignment)
-			{
-				case VerticalAlignment.Top:
-					for (int i = 0; i < textCount; i++)
-					{
-						Texts[i].Origin = new Vector2f(0, i * -(characterSize + spacingBetweenLines));
-						Texts[i].Position = new Vector2f(0, Rectangle.Top);
-					}
-					break;
-				case VerticalAlignment.Center:
-					for (int i = 0; i < textCount; i++)
-					{
-						float offset = 1 + i - textCount * 0.5f;
-						Texts[i].Origin = new Vector2f(0, offset * (characterSize + spacingBetweenLines));
-						Texts[i].Position = new Vector2f(0, Rectangle.Center().Y);
-					}
-					break;
-				case VerticalAlignment.Bottom:
-					int posOffset = 0;
-					for (int i = textCount - 1; i >= 0; i--)
-					{
-						Texts[i].Origin = new Vector2f(0, ++posOffset * (characterSize + spacingBetweenLines));
-						Texts[i].Position = new Vector2f(0, Rectangle.Top + Rectangle.Height);
-					}
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-
-			switch (TextHorizontalAlignment)
-			{
-				case HorizontalAlignment.Left:
-					for (int i = 0; i < textCount; i++)
-					{
-						Texts[i].Origin = new Vector2f(0, Texts[i].Origin.Y);
-						Texts[i].Position = new Vector2f(Rectangle.Left, Texts[i].Position.Y);
-					}
-					break;
-				case HorizontalAlignment.Center:
-					for (int i = 0; i < textCount; i++)
-					{
-						FloatRect rect = Texts[i].GetLocalBounds();
-						Texts[i].Origin = new Vector2f(rect.Center().X, Texts[i].Origin.Y);
-						Texts[i].Position = new Vector2f(Rectangle.Center().X, Texts[i].Position.Y);
-					}
-					break;
-				case HorizontalAlignment.Right:
-					for (int i = 0; i < textCount; i++)
-					{
-						FloatRect rect = Texts[i].GetLocalBounds();
-						Texts[i].Origin = new Vector2f(rect.Width, Texts[i].Origin.Y);
-						Texts[i].Position = new Vector2f(Rectangle.Left + Rectangle.Width, Texts[i].Position.Y);
-					}
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
+			return Math.Max(base.GetMaxChildHeight(),
+				Texts.Select(text => text.GetGlobalBounds().Top + text.GetGlobalBounds().Height).Max());
 		}
 
-		protected override void FitToChildren()
+		protected override float GetMaxChildWidth()
 		{
-			bool wasDirty = Dirty;
-			
-			if (AutoWidth)
-			{
-				float lastChildRight = Texts.Select(text => text.GetGlobalBounds().Left + text.GetGlobalBounds().Width).Max();
-				RightWidth = lastChildRight - Rectangle.Left;
-				RecalculateRectangleWidth();
-			}
-
-			if (AutoHeight)
-			{
-				float lastChildBottom = Texts.Select(text => text.GetGlobalBounds().Top + text.GetGlobalBounds().Height).Max();
-				BottomHeight = lastChildBottom - Rectangle.Top;
-				RecalculateRectangleHeight();
-			}
-
-			Dirty = wasDirty;
+			return Math.Max(base.GetMaxChildWidth(),
+				Texts.Select(text => text.GetGlobalBounds().Left + text.GetGlobalBounds().Width).Max());
 		}
 
 		private List<Text> GetWrappedTextElements()
@@ -297,7 +192,7 @@ namespace TetrisDotnet.Code.UI.Base
 					tmpTextElement.DisplayedString = $"{currentTextElement.DisplayedString} {words[i]}";
 				}
 
-				if (tmpTextElement.GetLocalBounds().Width > Rectangle.Width)
+				if (tmpTextElement.GetLocalBounds().Width > Width)
 				{
 					isFirstWord = true;
 					--i;
@@ -310,6 +205,64 @@ namespace TetrisDotnet.Code.UI.Base
 			}
 
 			return texts;
+		}
+
+		protected override void AlignVerticalTop()
+		{
+			for (int i = 0; i < Texts.Count; i++)
+			{
+				Texts[i].Origin = new Vector2f(0, i * -(characterSize + spacingBetweenLines));
+				Texts[i].Position = new Vector2f(0, Top);
+			}
+		}
+
+		protected override void AlignVerticalCenter()
+		{
+			for (int i = 0; i < Texts.Count; i++)
+			{
+				float offset = 1 + i - Texts.Count * 0.5f;
+				Texts[i].Origin = new Vector2f(0, offset * (characterSize + spacingBetweenLines));
+				Texts[i].Position = new Vector2f(0, Rectangle.Center().Y);
+			}
+		}
+
+		protected override void AlignVerticalBottom()
+		{
+			int posOffset = 0;
+			for (int i = Texts.Count - 1; i >= 0; i--)
+			{
+				Texts[i].Origin = new Vector2f(0, ++posOffset * (characterSize + spacingBetweenLines));
+				Texts[i].Position = new Vector2f(0, Top + Height);
+			}
+		}
+
+		protected override void AlignHorizontalLeft()
+		{
+			foreach (Text text in Texts)
+			{
+				text.Origin = new Vector2f(0, text.Origin.Y);
+				text.Position = new Vector2f(Left, text.Position.Y);
+			}
+		}
+
+		protected override void AlignHorizontalCenter()
+		{
+			foreach (Text text in Texts)
+			{
+				FloatRect rect = text.GetLocalBounds();
+				text.Origin = new Vector2f(rect.Center().X, text.Origin.Y);
+				text.Position = new Vector2f(Rectangle.Center().X, text.Position.Y);
+			}
+		}
+
+		protected override void AlignHorizontalRight()
+		{
+			foreach (Text text in Texts)
+			{
+				FloatRect rect = text.GetLocalBounds();
+				text.Origin = new Vector2f(rect.Width, text.Origin.Y);
+				text.Position = new Vector2f(Left + Width, text.Position.Y);
+			}
 		}
 	}
 }

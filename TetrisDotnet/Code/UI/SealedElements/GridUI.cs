@@ -19,8 +19,8 @@ namespace TetrisDotnet.Code.UI.SealedElements
 		public GridUI()
 		{
 			Texture = AssetPool.DrawGridBackgroundTexture;
-			SpriteHorizontalAlignment = HorizontalAlignment.Center;
-			SpriteVerticalAlignment = VerticalAlignment.Center;
+			HorizontalAlignment = HorizontalAlignment.Center;
+			VerticalAlignment = VerticalAlignment.Center;
 			
 			Application.EventSystem.Subscribe(EventType.GridUpdated, OnGridUpdated);
 		}
@@ -30,9 +30,10 @@ namespace TetrisDotnet.Code.UI.SealedElements
 			Application.EventSystem.Unsubscribe(EventType.GridUpdated, OnGridUpdated);
 		}
 
-		public override void Draw(RenderWindow window)
+		protected override void SelfDraw(RenderWindow window)
 		{
-			base.Draw(window);
+			base.SelfDraw(window);
+			
 			for (int x = 0; x < Grid.GridWidth; x++)
 			{
 				for (int y = 0; y < Grid.VisibleGridHeight; y++)

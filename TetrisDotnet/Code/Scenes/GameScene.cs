@@ -22,16 +22,16 @@ namespace TetrisDotnet.Code.Scenes
 		private readonly Hold holdManager = new Hold();
 		private SceneType nextScene;
 		private bool isPaused;
-		private Statistics statistics;
+		private readonly Statistics statistics;
 
 		private float timeUntilNextDrop;
 		private const float PieceLockDelay = 0.5f;
 		private float timeUntilPieceLock;
-		
+
 		// AI Elements
 		private readonly Evaluator evaluator = new Evaluator();
 		private readonly Controller controller = new Controller();
-		private const float AiTickInterval = 0.0001f;
+		private const float AiTickInterval = 0.005f;
 		private float lastAiTick;
 		private bool aiPlaying = true;
 
@@ -96,7 +96,7 @@ namespace TetrisDotnet.Code.Scenes
 					grid.MovePiece(activePiece, Vector2iUtils.down);
 				}
 			}
-			
+
 			if (!grid.CanPlacePiece(activePiece, Vector2iUtils.down))
 			{
 				timeUntilPieceLock += deltaTime;
@@ -120,15 +120,22 @@ namespace TetrisDotnet.Code.Scenes
 				{
 					int nbOfTicks = (int) (lastAiTick / AiTickInterval);
 					lastAiTick = 0;
-					controller.RunCommands(new State(activePiece, grid.GetBoolGrid(), holdManager.CurrentPiece),
-						nbOfTicks);
+
+					State currentState = new State(activePiece, grid.GetBoolGrid(), holdManager.CurrentPiece,
+						holdManager.CanSwap);
+					
+					if (!controller.RunCommands(currentState, nbOfTicks))
+					{
+						Action action = evaluator.GetBestPlacement(currentState);
+						controller.PlanPath(action);
+					}
 				}
 			}
 
 			base.Update(deltaTime);
 			return nextScene;
 		}
-		
+
 		private void OnAiToggled(EventData eventData)
 		{
 			ToggleEventData toggleEventData = eventData as ToggleEventData;
@@ -157,7 +164,8 @@ namespace TetrisDotnet.Code.Scenes
 			if (grid.CanPlacePiece(activePiece, Vector2iUtils.down))
 			{
 				grid.MovePiece(activePiece, Vector2iUtils.down);
-				Application.EventSystem.ProcessEvent(EventType.PieceDropped, new PieceDroppedEventData(Drop.SoftDrop, 1));
+				Application.EventSystem.ProcessEvent(EventType.PieceDropped,
+					new PieceDroppedEventData(Drop.SoftDrop, 1));
 				timeUntilNextDrop = 0.0f;
 			}
 		}
@@ -182,33 +190,34 @@ namespace TetrisDotnet.Code.Scenes
 
 		private void OnInputHold(EventData eventData)
 		{
-			if (holdManager.CanSwap)
+			if (!holdManager.CanSwap) return;
+			
+			PieceType newHeldPiece = activePiece.Type;
+			PieceType oldHeldPiece = holdManager.CurrentPiece;
+
+			grid.RemovePiece(activePiece);
+
+			holdManager.CurrentPiece = newHeldPiece;
+			holdManager.CanSwap = false;
+
+			if (oldHeldPiece == PieceType.Empty)
 			{
-				PieceType oldPiece = activePiece.Type;
-
-				grid.RemovePiece(activePiece);
-
-				if (holdManager.CurrentPiece == PieceType.Empty)
-				{
-					NewPiece();
-				}
-				else
-				{
-					NewPiece(holdManager.CurrentPiece);
-				}
-
-				holdManager.CurrentPiece = oldPiece;
-				holdManager.CanSwap = false;
+				NewPiece();
+			}
+			else
+			{
+				NewPiece(oldHeldPiece);
 			}
 		}
 
 		private void OnInputHardDrop(EventData eventData)
 		{
 			int spacesMoved = grid.DetermineDropdownPosition(activePiece);
-			Application.EventSystem.ProcessEvent(EventType.PieceDropped, new PieceDroppedEventData(Drop.HardDrop, spacesMoved));
+			Application.EventSystem.ProcessEvent(EventType.PieceDropped,
+				new PieceDroppedEventData(Drop.HardDrop, spacesMoved));
 
 			grid.MovePiece(activePiece, Vector2iUtils.down * spacesMoved);
-			
+
 			grid.KillPiece(activePiece);
 			CheckFullRows();
 			NewPiece();
@@ -223,9 +232,9 @@ namespace TetrisDotnet.Code.Scenes
 			}
 			else
 			{
-				SubscribeToInputs();;
+				SubscribeToInputs();
 			}
-			
+
 			Application.EventSystem.ProcessEvent(EventType.GamePauseToggled, new GamePauseToggledEventData(isPaused));
 		}
 
@@ -240,13 +249,14 @@ namespace TetrisDotnet.Code.Scenes
 		{
 			timeUntilPieceLock = 0.0f;
 			timeUntilNextDrop = 0.0f;
-			
+
 			holdManager.CanSwap = true;
 
 			activePiece = type == PieceType.Empty ? new Piece(pieceQueue.GrabNext()) : new Piece(type);
 
 			if (grid.CheckLose())
 			{
+				// TODO: Add better UX Experience instead of just starting a new game right away.
 				StartNewGame();
 			}
 			else
@@ -255,7 +265,8 @@ namespace TetrisDotnet.Code.Scenes
 
 				if (aiPlaying)
 				{
-					State currentState = new State(activePiece, grid.GetBoolGrid(), holdManager.CurrentPiece);
+					State currentState = new State(activePiece, grid.GetBoolGrid(), holdManager.CurrentPiece,
+						holdManager.CanSwap);
 					Action action = evaluator.GetBestPlacement(currentState);
 					controller.PlanPath(action);
 				}

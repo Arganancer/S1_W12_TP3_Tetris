@@ -4,6 +4,7 @@ using TetrisDotnet.Code.Events;
 using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.Game.Stats;
 using TetrisDotnet.Code.UI.Base;
+using TetrisDotnet.Code.UI.Base.BaseElement;
 using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code.UI.SealedElements
@@ -66,7 +67,7 @@ namespace TetrisDotnet.Code.UI.SealedElements
 				Font = AssetPool.Font,
 				CharacterSize = 16,
 				FillColor = Color.Green,
-				TextHorizontalAlignment = HorizontalAlignment.Right,
+				HorizontalAlignment = HorizontalAlignment.Right,
 				AutoHeight = true,
 			});
 
@@ -77,7 +78,7 @@ namespace TetrisDotnet.Code.UI.SealedElements
 			scoreElement.Font = AssetPool.Font;
 			scoreElement.CharacterSize = 16;
 			scoreElement.FillColor = Color.Green;
-			scoreElement.TextHorizontalAlignment = HorizontalAlignment.Left;
+			scoreElement.HorizontalAlignment = HorizontalAlignment.Left;
 			scoreElement.AutoHeight = true;
 
 			listContainer.AddChild(scoreElement);

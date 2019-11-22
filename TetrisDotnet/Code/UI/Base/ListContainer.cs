@@ -1,4 +1,5 @@
 using System.Linq;
+using TetrisDotnet.Code.UI.Base.BaseElement;
 
 namespace TetrisDotnet.Code.UI.Base
 {
@@ -15,17 +16,6 @@ namespace TetrisDotnet.Code.UI.Base
 		public float Spacing;
 
 		public ListContainer()
-		{
-		}
-
-		public ListContainer(float topAnchor, float bottomAnchor, float leftAnchor, float rightAnchor) : base(topAnchor,
-			bottomAnchor, leftAnchor, rightAnchor)
-		{
-		}
-
-		public ListContainer(float topAnchor, float bottomAnchor, float leftAnchor, float rightAnchor, float topHeight,
-			float bottomHeight, float leftWidth, float rightWidth) : base(topAnchor, bottomAnchor, leftAnchor,
-			rightAnchor, topHeight, bottomHeight, leftWidth, rightWidth)
 		{
 		}
 
@@ -56,7 +46,7 @@ namespace TetrisDotnet.Code.UI.Base
 
 		private void VerticalAlign()
 		{
-			float nextTopAnchor = Spacing / (Rectangle.Height - TopPadding - BottomPadding);
+			float nextTopAnchor = Spacing / (Height - TopPadding - BottomPadding);
 			foreach (UiElement child in Children)
 			{
 				if (child.Dirty)
@@ -69,13 +59,13 @@ namespace TetrisDotnet.Code.UI.Base
 				child.TopAnchor = nextTopAnchor;
 				child.BottomAnchor = nextTopAnchor;
 
-				nextTopAnchor += (Spacing + height) / (Rectangle.Height - TopPadding - BottomPadding);
+				nextTopAnchor += (Spacing + height) / (Height - TopPadding - BottomPadding);
 			}
 		}
 
 		private void HorizontalAlign()
 		{
-			float nextLeftAnchor = Spacing / (Rectangle.Width - LeftPadding - RightPadding);
+			float nextLeftAnchor = Spacing / (Width - LeftPadding - RightPadding);
 			foreach (UiElement child in Children)
 			{
 				if (child.Dirty)
@@ -88,7 +78,7 @@ namespace TetrisDotnet.Code.UI.Base
 				child.LeftAnchor = nextLeftAnchor;
 				child.RightAnchor = nextLeftAnchor;
 
-				nextLeftAnchor += (Spacing + width) / (Rectangle.Width - LeftPadding - RightPadding);
+				nextLeftAnchor += (Spacing + width) / (Width - LeftPadding - RightPadding);
 			}
 		}
 	}

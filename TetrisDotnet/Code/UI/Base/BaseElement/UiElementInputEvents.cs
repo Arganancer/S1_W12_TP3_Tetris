@@ -2,10 +2,11 @@ using System.Diagnostics;
 using SFML.Window;
 using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.Utils.Extensions;
+using EventType = TetrisDotnet.Code.Events.EventType;
 
-namespace TetrisDotnet.Code.UI.Base
+namespace TetrisDotnet.Code.UI.Base.BaseElement
 {
-	public class ButtonElement : UiElement
+	public partial class UiElement
 	{
 		private bool mouseInside;
 
@@ -49,21 +50,14 @@ namespace TetrisDotnet.Code.UI.Base
 			}
 		}
 
-		public ButtonElement()
-		{
-			CapturesMouseClickEvents = true;
-			CapturesMouseMoveEvents = true;
-		}
-
-		protected override void OnMouseMove(EventData eventData)
+		protected virtual void OnMouseMove(EventData eventData)
 		{
 			MouseMovedEventData mouseMovedEventData = eventData as MouseMovedEventData;
 			Debug.Assert(mouseMovedEventData != null, nameof(mouseMovedEventData) + " != null");
 			MouseInside = Rectangle.Contains(mouseMovedEventData.MousePosition);
-			base.OnMouseMove(eventData);
 		}
 
-		protected override void OnMouseClick(EventData eventData)
+		protected virtual void OnMouseClick(EventData eventData)
 		{
 			MouseButtonEventData mouseButtonEventData = eventData as MouseButtonEventData;
 			Debug.Assert(mouseButtonEventData != null, nameof(mouseButtonEventData) + " != null");
@@ -84,8 +78,6 @@ namespace TetrisDotnet.Code.UI.Base
 			{
 				ButtonDown = false;
 			}
-
-			base.OnMouseClick(eventData);
 		}
 
 		protected virtual void OnButtonReleased()
@@ -106,6 +98,63 @@ namespace TetrisDotnet.Code.UI.Base
 
 		protected virtual void OnMouseExit()
 		{
+		}
+
+		private bool capturesMouseMoveEvents;
+
+		protected bool CapturesMouseMoveEvents
+		{
+			get => capturesMouseMoveEvents;
+			set
+			{
+				if (value != capturesMouseMoveEvents)
+				{
+					capturesMouseMoveEvents = value;
+					if (capturesMouseMoveEvents)
+					{
+						Application.EventSystem.Subscribe(EventType.MouseMove, OnMouseMove);
+					}
+					else
+					{
+						Application.EventSystem.Unsubscribe(EventType.MouseMove, OnMouseMove);
+					}
+				}
+			}
+		}
+
+		private bool capturesMouseClickEvents;
+
+		protected bool CapturesMouseClickEvents
+		{
+			get => capturesMouseClickEvents;
+			set
+			{
+				if (value != capturesMouseClickEvents)
+				{
+					capturesMouseClickEvents = value;
+					if (capturesMouseClickEvents)
+					{
+						Application.EventSystem.Subscribe(EventType.MouseButton, OnMouseClick);
+					}
+					else
+					{
+						Application.EventSystem.Unsubscribe(EventType.MouseButton, OnMouseClick);
+					}
+				}
+			}
+		}
+
+		~UiElement()
+		{
+			if (capturesMouseMoveEvents)
+			{
+				Application.EventSystem.Unsubscribe(EventType.MouseMove, OnMouseMove);
+			}
+
+			if (capturesMouseClickEvents)
+			{
+				Application.EventSystem.Unsubscribe(EventType.MouseButton, OnMouseClick);
+			}
 		}
 	}
 }
