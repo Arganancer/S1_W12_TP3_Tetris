@@ -179,9 +179,9 @@ namespace TetrisDotnet.Code.Game.Stats
 
 		private void AddScore(params Move[] moves)
 		{
-			currentPieceScore.ComboScore = 50 * combo * level;
+			currentPieceScore.ComboScore = combo >= 2 ? 50 * combo * level : 0;
 			currentPieceScore.DifficultyScoreMultiplier = BackToBackChain >= 2 ? 1.5f : 1.0f;
-			currentPieceScore.LinesClearedScore += moves.CountPoints();
+			currentPieceScore.LinesClearedScore += moves.CountPoints() * level;
 			
 			Application.EventSystem.ProcessEvent(EventType.PieceScore, new PieceScoreEventData(currentPieceScore));
 			

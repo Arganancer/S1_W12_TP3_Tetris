@@ -65,7 +65,7 @@ namespace TetrisDotnet.Code.UI.Layouts
 			});
 			rightSectionContainer.AddChild(new PieceScoreElement
 			{
-				TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f,
+				TopAnchor = 0.0f, BottomAnchor = 1.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f,
 			});
 
 			// Center Section

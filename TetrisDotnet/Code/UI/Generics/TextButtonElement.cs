@@ -7,7 +7,7 @@ using TetrisDotnet.Code.Utils.Enums;
 
 namespace TetrisDotnet.Code.UI.Generics
 {
-	public class TextButtonElement : ButtonElement
+	public sealed class TextButtonElement : ButtonElement
 	{
 		private readonly RectangleShape background;
 
@@ -21,7 +21,7 @@ namespace TetrisDotnet.Code.UI.Generics
 
 		private bool aiIsActive = true;
 
-		protected TextElement TextElement;
+		private TextElement TextElement;
 
 		public string DisplayedString
 		{

@@ -31,7 +31,7 @@ namespace TetrisDotnet.Code.Scenes
 		// AI Elements
 		private readonly Evaluator evaluator = new Evaluator();
 		private readonly Controller controller = new Controller();
-		private const float AiTickInterval = 0.05f;
+		private const float AiTickInterval = 0.0001f;
 		private float lastAiTick;
 		private bool aiPlaying = true;
 
