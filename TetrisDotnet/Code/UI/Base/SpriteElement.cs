@@ -55,37 +55,37 @@ namespace TetrisDotnet.Code.UI.Base
 		protected override void AlignVerticalTop()
 		{
 			sprite.Origin = new Vector2f(0, 0);
-			sprite.Position = new Vector2f(0, Top);
+			sprite.Position = new Vector2f(0, MathF.Round(Top));
 		}
 
 		protected override void AlignVerticalCenter()
 		{
-			sprite.Origin = new Vector2f(0, sprite.TextureRect.Height * 0.5f);
-			sprite.Position = new Vector2f(0, Rectangle.Center().Y);
+			sprite.Origin = new Vector2f(0, MathF.Round(sprite.TextureRect.Height * 0.5f));
+			sprite.Position = new Vector2f(0, MathF.Round(Rectangle.Center().Y));
 		}
 
 		protected override void AlignVerticalBottom()
 		{
-			sprite.Origin = new Vector2f(0, sprite.TextureRect.Height);
-			sprite.Position = new Vector2f(0, Top + Height);
+			sprite.Origin = new Vector2f(0, MathF.Round(sprite.TextureRect.Height));
+			sprite.Position = new Vector2f(0, MathF.Round(Top + Height));
 		}
 
 		protected override void AlignHorizontalLeft()
 		{
 			sprite.Origin = new Vector2f(0, sprite.Origin.Y);
-			sprite.Position = new Vector2f(Left, sprite.Position.Y);
+			sprite.Position = new Vector2f(MathF.Round(Left), sprite.Position.Y);
 		}
 
 		protected override void AlignHorizontalCenter()
 		{
-			sprite.Origin = new Vector2f(sprite.TextureRect.Width * 0.5f, sprite.Origin.Y);
-			sprite.Position = new Vector2f(Rectangle.Center().X, sprite.Position.Y);
+			sprite.Origin = new Vector2f(MathF.Round(sprite.TextureRect.Width * 0.5f), sprite.Origin.Y);
+			sprite.Position = new Vector2f(MathF.Round(Rectangle.Center().X), sprite.Position.Y);
 		}
 
 		protected override void AlignHorizontalRight()
 		{
-			sprite.Origin = new Vector2f(sprite.TextureRect.Width, sprite.Origin.Y);
-			sprite.Position = new Vector2f(Left + Width, sprite.Position.Y);
+			sprite.Origin = new Vector2f(MathF.Round(sprite.TextureRect.Width), sprite.Origin.Y);
+			sprite.Position = new Vector2f(MathF.Round(Left + Width), sprite.Position.Y);
 		}
 	}
 }

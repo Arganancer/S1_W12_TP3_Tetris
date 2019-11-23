@@ -12,10 +12,12 @@ namespace TetrisDotnet.Code.Events
         InputHardDrop,
         InputPause,
         InputEscape,
+        InputKeyCode,
         
         // UI Input Events
         MouseMove,
         MouseButton,
+        ToggleKeyboardMode,
         
         // Scoring
         PiecePlaced,

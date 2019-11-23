@@ -163,6 +163,8 @@ namespace TetrisDotnet.Code.AI
 
 		private FinalPiece GetBestPiece(List<FinalPiece> pieces)
 		{
+			if (pieces.Count <= 0) return null;
+			
 			FinalPiece finalPiece = pieces.First();
 
 			foreach (FinalPiece piece in pieces)
@@ -174,6 +176,7 @@ namespace TetrisDotnet.Code.AI
 			}
 
 			return finalPiece;
+
 		}
 
 		private bool PositionIsValid(State state, Piece piece, int anchor, Vector2i position,

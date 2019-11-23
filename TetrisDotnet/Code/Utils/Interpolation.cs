@@ -6,26 +6,29 @@ namespace TetrisDotnet.Code.Utils
 {
 	public static class Interpolation
 	{
+		private static float CalculateCosineMu(float mu)
+		{
+			return (float) (1.0f - Math.Cos(mu * Math.PI)) * 0.5f;
+		}
+		
 		public static float Lerp(float origin, float target, float mu)
 		{
-			return origin * (1 - mu) + target * mu;
+			return origin * (1.0f - mu) + target * mu;
+		}
+
+		public static float CosineInterpolate(float origin, float target, float mu)
+		{
+			return Lerp(origin, target, CalculateCosineMu(mu));
 		}
 		
 		public static Vector2f Lerp(Vector2f origin, Vector2f target, float mu)
 		{
 			return origin * (1 - mu) + target * mu;
 		}
-
-		public static float CosineInterpolate(float origin, float target, float mu)
-		{
-			float mu2 = (float) (1.0f - Math.Cos(mu * Math.PI)) * 0.5f;
-			return Lerp(origin, target, mu2);
-		}
 		
 		public static Vector2f CosineInterpolate(Vector2f origin, Vector2f target, float mu)
 		{
-			float mu2 = (float) (1.0f - Math.Cos(mu * Math.PI)) * 0.5f;
-			return Lerp(origin, target, mu2);
+			return Lerp(origin, target, CalculateCosineMu(mu));
 		}
 		
 		public static Color Lerp(Color origin, Color target, float mu)
@@ -35,8 +38,8 @@ namespace TetrisDotnet.Code.Utils
 		
 		public static Color CosineInterpolate(Color origin, Color target, float mu)
 		{
-			float mu2 = (float) (1.0f - Math.Cos(mu * Math.PI)) * 0.5f;
-			return new Color((byte) Lerp(origin.R, target.R, mu2), (byte) Lerp(origin.G, target.G, mu2), (byte) Lerp(origin.B, target.B, mu2));
+			float mu2 = CalculateCosineMu(mu);
+			return Lerp(origin, target, mu2);
 		}
 	}
 }

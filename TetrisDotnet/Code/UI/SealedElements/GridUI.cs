@@ -77,8 +77,8 @@ namespace TetrisDotnet.Code.UI.SealedElements
 				{
 					drawableGrid[x, y] = new Sprite
 					{
-						Position = new Vector2f((x - Grid.GridWidth * 0.5f) * AssetPool.BlockSize.X + Rectangle.Center().X,
-							(y - Grid.GridHeight * 0.5f + 1) * AssetPool.BlockSize.Y + Rectangle.Center().Y + AssetPool.BlockSize.Y),
+						Position = (Vector2f) new Vector2i((int) ((x - Grid.GridWidth * 0.5f) * AssetPool.BlockSize.X + Rectangle.Center().X),
+							(int) ((y - Grid.GridHeight * 0.5f + 1) * AssetPool.BlockSize.Y + Rectangle.Center().Y + AssetPool.BlockSize.Y)),
 						Texture = AssetPool.BlockTextures[(int) PieceType.Empty]
 					};
 				}

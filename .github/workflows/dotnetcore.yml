@@ -16,7 +16,7 @@ jobs:
     - name: Build with dotnet
       run: dotnet publish TetrisDotnet --configuration Release
     - name: Copy files
-      run: cp -a TetrisDotnet/bin/Release/netcoreapp3.0/win-x64/Art/ TetrisDotnet/bin/Release/netcoreapp3.0/win-x64/publish/Art && cp TetrisDotnet/bin/Release/netcoreapp3.0/win-x64/consola.ttf TetrisDotnet/bin/Release/netcoreapp3.0/win-x64/publish/consola.ttf
+      run: cp -a TetrisDotnet/bin/Release/netcoreapp3.0/win-x64/Assets/ TetrisDotnet/bin/Release/netcoreapp3.0/win-x64/publish/Assets/
     - uses: actions/upload-artifact@master
       with:
         name: tetris

@@ -30,20 +30,20 @@ namespace TetrisDotnet.Code.UI.SealedElements
 		private void InitializeElements()
 		{
 			totalScore = new TextElement {DisplayedString = "0"};
-			AddChild(CreateLabelScoreElement("Total Score:", totalScore));
+			AddChild(CreateLabelScoreElement("Total Score:", totalScore, 16));
 			linesClearedScore = new TextElement {DisplayedString = "0"};
-			AddChild(CreateLabelScoreElement("Move Score:", linesClearedScore));
+			AddChild(CreateLabelScoreElement("Move Score:", linesClearedScore, 12));
 			softDropScore = new TextElement {DisplayedString = "0"};
-			AddChild(CreateLabelScoreElement("Soft Drop:", softDropScore));
+			AddChild(CreateLabelScoreElement("Soft Drop:", softDropScore, 12));
 			hardDropScore = new TextElement {DisplayedString = "0"};
-			AddChild(CreateLabelScoreElement("Hard Drop:", hardDropScore));
+			AddChild(CreateLabelScoreElement("Hard Drop:", hardDropScore, 12));
 			comboScore = new TextElement {DisplayedString = "0"};
-			AddChild(CreateLabelScoreElement("Combo Score:", comboScore));
+			AddChild(CreateLabelScoreElement("Combo Score:", comboScore, 12));
 			difficultyMultiplierScore = new TextElement {DisplayedString = "0"};
-			AddChild(CreateLabelScoreElement("B2B Multiplier:", difficultyMultiplierScore));
+			AddChild(CreateLabelScoreElement("B2B Multiplier:", difficultyMultiplierScore, 12));
 		}
 
-		private UiElement CreateLabelScoreElement(string labelText, TextElement scoreElement)
+		private UiElement CreateLabelScoreElement(string labelText, TextElement scoreElement, uint characterSize)
 		{
 			UiElement listContainer = new UiElement
 			{
@@ -65,7 +65,7 @@ namespace TetrisDotnet.Code.UI.SealedElements
 				RightWidth = -10.0f,
 				DisplayedString = labelText,
 				Font = AssetPool.Font,
-				CharacterSize = 16,
+				CharacterSize = characterSize,
 				FillColor = Color.Green,
 				HorizontalAlignment = HorizontalAlignment.Right,
 				AutoHeight = true,
@@ -76,7 +76,7 @@ namespace TetrisDotnet.Code.UI.SealedElements
 			scoreElement.LeftAnchor = 0.5f;
 			scoreElement.RightAnchor = 1.0f;
 			scoreElement.Font = AssetPool.Font;
-			scoreElement.CharacterSize = 16;
+			scoreElement.CharacterSize = characterSize;
 			scoreElement.FillColor = Color.Green;
 			scoreElement.HorizontalAlignment = HorizontalAlignment.Left;
 			scoreElement.AutoHeight = true;
