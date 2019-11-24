@@ -77,7 +77,12 @@ namespace TetrisDotnet.Code.UI.Base.BaseElement
 			else if (ButtonDown)
 			{
 				ButtonDown = false;
+				OnPressedOutsideElement();
 			}
+		}
+
+		protected virtual void OnPressedOutsideElement()
+		{
 		}
 
 		protected virtual void OnButtonReleased()

@@ -34,6 +34,7 @@ namespace TetrisDotnet.Code
 			window.MouseMoved += InputManager.OnMouseMoved;
 			window.MouseButtonPressed += InputManager.OnMouseButtonPressed;
 			window.MouseButtonReleased += InputManager.OnMouseButtonReleased;
+			window.TextEntered += InputManager.OnTextEntered;
 			
 			EventSystem.Subscribe(EventType.InputEscape, OnQuit);
 			window.Closed += OnWindowClosed;

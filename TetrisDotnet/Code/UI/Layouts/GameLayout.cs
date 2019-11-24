@@ -51,6 +51,10 @@ namespace TetrisDotnet.Code.UI.Layouts
 				{TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, AutoHeight = true});
 			leftSectionContainer.AddChild(new PiecesPlacedText
 				{TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f, AutoHeight = true});
+			leftSectionContainer.AddChild(new PieceScoreElement
+			{
+				TopAnchor = 0.0f, BottomAnchor = 1.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f,
+			});
 
 			// Right Section
 			UiElement rightSection = new UiElement
@@ -84,9 +88,9 @@ namespace TetrisDotnet.Code.UI.Layouts
 				TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.2f, RightAnchor = 0.8f, BottomHeight = 24,
 				DisplayedString = "Ai is On"
 			});
-			rightSectionContainer.AddChild(new PieceScoreElement
+			rightSectionContainer.AddChild(new TextFieldElement
 			{
-				TopAnchor = 0.0f, BottomAnchor = 1.0f, LeftAnchor = 0.0f, RightAnchor = 1.0f,
+				TopAnchor = 0.0f, BottomAnchor = 0.0f, LeftAnchor = 0.2f, RightAnchor = 0.8f, BottomHeight = 24,
 			});
 
 			// Center Section

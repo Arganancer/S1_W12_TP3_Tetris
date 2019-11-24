@@ -10,6 +10,8 @@ namespace TetrisDotnet.Code.Events
         private readonly SortedDictionary<EventType, List<OnEvent>> subscribers = new SortedDictionary<EventType, List<OnEvent>>();
         
         private readonly SortedDictionary<EventType, List<EventData.EventData>> queuedEvents = new SortedDictionary<EventType, List<EventData.EventData>>();
+        
+        private readonly SortedDictionary<EventType, List<OnEvent>> queuedUnsubscribe = new SortedDictionary<EventType, List<OnEvent>>();
 
         public bool Subscribe(EventType eventType, OnEvent onEvent)
         {
@@ -36,6 +38,22 @@ namespace TetrisDotnet.Code.Events
 
             return false;
         }
+        
+        public bool QueueUnsubscribe(EventType eventType, OnEvent onEvent)
+        {
+            if (!queuedUnsubscribe.TryGetValue(eventType, out List<OnEvent> eventUnsubscribers))
+            {
+                eventUnsubscribers = new List<OnEvent>();
+                queuedUnsubscribe.Add(eventType, eventUnsubscribers);
+            }
+            else if (eventUnsubscribers.Contains(onEvent))
+            {
+                return false;
+            }
+
+            eventUnsubscribers.Add(onEvent);
+            return true;
+        }
 
         public void ProcessEvent(EventType eventType, EventData.EventData eventData = null)
         {
@@ -50,6 +68,15 @@ namespace TetrisDotnet.Code.Events
 
         public void ProcessQueuedEvents()
         {
+            foreach ((EventType eventType, List<OnEvent> onEvents) in queuedUnsubscribe)
+            {
+                foreach (OnEvent onEvent in onEvents)
+                {
+                    Unsubscribe(eventType, onEvent);
+                }
+            }
+            queuedUnsubscribe.Clear();
+            
             foreach ((EventType eventType, List<EventData.EventData> eventDataList) in queuedEvents)
             {
                 foreach (EventData.EventData eventData in eventDataList)

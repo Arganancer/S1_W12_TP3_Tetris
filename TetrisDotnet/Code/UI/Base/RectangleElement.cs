@@ -10,7 +10,7 @@ namespace TetrisDotnet.Code.UI.Base
 	{
 		private readonly RectangleShape rectangleShape;
 		
-		public override Color FillColor
+		public sealed override Color FillColor
 		{
 			get => rectangleShape.FillColor;
 			set => rectangleShape.FillColor = value;

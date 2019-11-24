@@ -13,6 +13,7 @@ namespace TetrisDotnet.Code.Events
         InputPause,
         InputEscape,
         InputKeyCode,
+        TextEntered,
         
         // UI Input Events
         MouseMove,

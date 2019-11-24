@@ -26,12 +26,20 @@ namespace TetrisDotnet.Code.Controls
 			Debug.Assert(toggleEventData != null, nameof(toggleEventData) + " != null");
 			sendKeyCodes = toggleEventData.IsOn;
 		}
+		
+		public void OnTextEntered(object sender, TextEventArgs e)
+		{
+			if (sendKeyCodes)
+			{
+				Application.EventSystem.ProcessEvent(EventType.TextEntered, new TextEnteredEventData(e.Unicode));
+			}
+		}
 
 		public void OnKeyPressed(object sender, KeyEventArgs e)
 		{
 			if (sendKeyCodes)
 			{
-				
+				Application.EventSystem.ProcessEvent(EventType.InputKeyCode, new KeyPressedEventData(e.Code));
 			}
 			else
 			{
