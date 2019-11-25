@@ -91,6 +91,27 @@ namespace TetrisDotnet.Code.UI.Base
 			}
 		}
 
+		public Vector2f FindCharacterPos(uint index)
+		{
+			int currentLength = 0;
+			foreach (Text text in Texts)
+			{
+				currentLength += text.DisplayedString.Length;
+				if (index < currentLength)
+				{
+					return text.FindCharacterPos(index) + text.Position;
+				}
+
+				if (index >= currentLength)
+				{
+					FloatRect bounds = text.GetGlobalBounds();
+					return new Vector2f(bounds.Left + bounds.Width, text.FindCharacterPos(0).Y + text.Position.Y);
+				}
+			}
+
+			return new Vector2f();
+		}
+
 		public TextElement()
 		{
 			InitializeTextElementDefaults();

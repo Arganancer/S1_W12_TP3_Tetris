@@ -4,6 +4,7 @@ namespace TetrisDotnet.Code.UI.Animations.ElementAnimations
 	{
 		protected readonly float StartTime;
 		protected readonly float Duration;
+		private bool playedFinalFrame;
 
 		public float EndTime => StartTime + Duration;
 
@@ -15,13 +16,23 @@ namespace TetrisDotnet.Code.UI.Animations.ElementAnimations
 
 		public void Update(float totalElapsedTime)
 		{
-			float elapsedTime = totalElapsedTime - StartTime;
-			if (totalElapsedTime < EndTime && elapsedTime > 0)
+			float mu =  Duration > 0.0000000001f ? (totalElapsedTime - StartTime) / Duration : 1.0f;
+			if (totalElapsedTime <= EndTime && totalElapsedTime > StartTime)
 			{
-				PlayAnimation(elapsedTime);
+				PlayAnimation(mu);
+			}
+			else if (totalElapsedTime > EndTime && !playedFinalFrame)
+			{
+				PlayAnimation(mu);
+				playedFinalFrame = true;
 			}
 		}
 
-		protected abstract void PlayAnimation(float elapsedTime);
+		protected abstract void PlayAnimation(float mu);
+
+		public void ResetAnimation()
+		{
+			playedFinalFrame = false;
+		}
 	}
 }

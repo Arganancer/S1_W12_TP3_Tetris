@@ -19,10 +19,10 @@ namespace TetrisDotnet.Code.UI.Animations.ElementAnimations
 			this.targetColor = targetColor;
 		}
 
-		protected override void PlayAnimation(float elapsedTime)
+		protected override void PlayAnimation(float mu)
 		{
 			targetElement.OutlineColor =
-				Interpolation.Lerp(originalColor, targetColor, elapsedTime / Duration);
+				Interpolation.Lerp(originalColor, targetColor, mu);
 		}
 	}
 }

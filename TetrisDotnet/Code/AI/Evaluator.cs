@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using SFML.System;
 using TetrisDotnet.Code.AI.Pathfinding;
+using TetrisDotnet.Code.Events;
+using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.Game;
 using TetrisDotnet.Code.Game.World;
 using TetrisDotnet.Code.Utils.Enums;
@@ -31,10 +34,10 @@ namespace TetrisDotnet.Code.AI
 
 			public float GetWeight()
 			{
-				return Bumpiness * 0.3f +
-				       NbOfHoles * 1.8f +
-				       TopHeight * -0.18f +
-				       AggregateHeight * 0.4f +
+				return Bumpiness * BumpinessFactor +
+				       NbOfHoles * NbOfHolesFactor +
+				       TopHeight * TopHeightFactor +
+				       AggregateHeight * AggregateHeightFactor +
 				       GetLinesClearedWeight();
 			}
 
@@ -54,6 +57,7 @@ namespace TetrisDotnet.Code.AI
 							case 1:
 								return -3;
 						}
+
 						break;
 					case PieceType.O:
 						switch (LinesCleared)
@@ -63,6 +67,7 @@ namespace TetrisDotnet.Code.AI
 							case 1:
 								return -10;
 						}
+
 						break;
 					case PieceType.T:
 					case PieceType.S:
@@ -74,6 +79,7 @@ namespace TetrisDotnet.Code.AI
 							case 1:
 								return -8;
 						}
+
 						break;
 					case PieceType.J:
 					case PieceType.L:
@@ -86,11 +92,53 @@ namespace TetrisDotnet.Code.AI
 							case 1:
 								return -5;
 						}
+
 						break;
 				}
 
 				return 0;
 			}
+		}
+
+		public static float BumpinessFactor { get; private set; } = 0.3f;
+		public static float NbOfHolesFactor { get; private set; } = 1.8f;
+		public static float TopHeightFactor { get; private set; } = -0.18f;
+		public static float AggregateHeightFactor { get; private set; } = 0.4f;
+
+		public Evaluator()
+		{
+			Application.EventSystem.Subscribe(EventType.AiBumpinessUpdated, OnBumpinessUpdated);
+			Application.EventSystem.Subscribe(EventType.AiNbOfHolesUpdated, OnNbOfHolesUpdated);
+			Application.EventSystem.Subscribe(EventType.AiTopHeightUpdated, OnTopHeightUpdated);
+			Application.EventSystem.Subscribe(EventType.AiAggregateHeightUpdated, OnAggregateHeightUpdated);
+		}
+
+		private void OnAggregateHeightUpdated(EventData eventData)
+		{
+			FloatEventData floatEventData = eventData as FloatEventData;
+			Debug.Assert(floatEventData != null, nameof(floatEventData) + " != null");
+			AggregateHeightFactor = floatEventData.Value;
+		}
+
+		private void OnTopHeightUpdated(EventData eventData)
+		{
+			FloatEventData floatEventData = eventData as FloatEventData;
+			Debug.Assert(floatEventData != null, nameof(floatEventData) + " != null");
+			TopHeightFactor = floatEventData.Value;
+		}
+
+		private void OnNbOfHolesUpdated(EventData eventData)
+		{
+			FloatEventData floatEventData = eventData as FloatEventData;
+			Debug.Assert(floatEventData != null, nameof(floatEventData) + " != null");
+			NbOfHolesFactor = floatEventData.Value;
+		}
+
+		private void OnBumpinessUpdated(EventData eventData)
+		{
+			FloatEventData floatEventData = eventData as FloatEventData;
+			Debug.Assert(floatEventData != null, nameof(floatEventData) + " != null");
+			BumpinessFactor = floatEventData.Value;
 		}
 
 		public Action GetBestPlacement(State state)
@@ -119,7 +167,7 @@ namespace TetrisDotnet.Code.AI
 				{
 					return null;
 				}
-				
+
 				finalPath = Pathfinder.pathfinder.FindPath(state, state.CurrentPiece, finalPieces.Dequeue().Piece);
 			}
 
@@ -164,7 +212,7 @@ namespace TetrisDotnet.Code.AI
 		private FinalPiece GetBestPiece(List<FinalPiece> pieces)
 		{
 			if (pieces.Count <= 0) return null;
-			
+
 			FinalPiece finalPiece = pieces.First();
 
 			foreach (FinalPiece piece in pieces)
@@ -176,7 +224,6 @@ namespace TetrisDotnet.Code.AI
 			}
 
 			return finalPiece;
-
 		}
 
 		private bool PositionIsValid(State state, Piece piece, int anchor, Vector2i position,

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using TetrisDotnet.Code.UI.Animations;
 
 namespace TetrisDotnet.Code.UI.Base.BaseElement
@@ -11,7 +12,7 @@ namespace TetrisDotnet.Code.UI.Base.BaseElement
 		/// <summary>
 		/// Adds the given animation to the end of the animations queue.
 		/// </summary>
-		protected void QueueAnimation(Animation animation)
+		public void QueueAnimation(Animation animation)
 		{
 			animations.Enqueue(animation);
 		}
@@ -19,7 +20,7 @@ namespace TetrisDotnet.Code.UI.Base.BaseElement
 		/// <summary>
 		/// Squashes all previously enqueued animations and plays the given one instead.
 		/// </summary>
-		protected void PlayAnimation(Animation animation)
+		public void PlayAnimation(Animation animation)
 		{
 			animations.Clear();
 			
@@ -41,6 +42,16 @@ namespace TetrisDotnet.Code.UI.Base.BaseElement
 			}
 
 			currentAnimation?.Update(deltaTime);
+		}
+
+		public void ClearAnimations()
+		{
+			animations.Clear();
+		}
+
+		public void RestartCurrentAnimation()
+		{
+			currentAnimation?.RestartAnimation();
 		}
 	}
 }

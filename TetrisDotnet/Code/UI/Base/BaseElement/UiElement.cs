@@ -10,7 +10,7 @@ namespace TetrisDotnet.Code.UI.Base.BaseElement
 		private UiElement parent;
 
 		public bool Dirty { get; protected set; }
-		public bool Hidden { get; protected set; }
+		public bool Hidden { get; set; }
 
 		public void SetDirty()
 		{

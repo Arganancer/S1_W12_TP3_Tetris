@@ -74,7 +74,7 @@ namespace TetrisDotnet.Code.UI.Base.BaseElement
 					ButtonDown = false;
 				}
 			}
-			else if (ButtonDown)
+			else
 			{
 				ButtonDown = false;
 				OnPressedOutsideElement();

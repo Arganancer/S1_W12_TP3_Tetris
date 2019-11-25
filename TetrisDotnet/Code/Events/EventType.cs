@@ -36,6 +36,11 @@ namespace TetrisDotnet.Code.Events
         GamePauseToggled,
         TimeUpdated,
         ToggleAi,
+        AiTickSpeedUpdated,
+        AiBumpinessUpdated,
+        AiNbOfHolesUpdated,
+        AiTopHeightUpdated,
+        AiAggregateHeightUpdated,
         
         // Window Events
         WindowResized,

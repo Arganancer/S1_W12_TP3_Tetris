@@ -1,11 +1,11 @@
 using System.Diagnostics;
 using SFML.Graphics;
+using SFML.System;
 using SFML.Window;
 using TetrisDotnet.Code.Events.EventData;
 using TetrisDotnet.Code.UI.Animations;
 using TetrisDotnet.Code.UI.Animations.ElementAnimations;
 using TetrisDotnet.Code.Utils.Enums;
-using TetrisDotnet.Code.Utils.Extensions;
 using EventType = TetrisDotnet.Code.Events.EventType;
 
 namespace TetrisDotnet.Code.UI.Base
@@ -16,17 +16,28 @@ namespace TetrisDotnet.Code.UI.Base
 		private readonly Color mediumColor = new Color(29, 158, 0);
 		private readonly Color darkColor = new Color(0, 0, 0);
 
-		private readonly TextElement textElement;
+		protected readonly TextElement TextElement;
+		protected readonly RectangleElement Cursor;
 
-		private string oldValue;
-		private string newValue;
-		private int cursorIndex;
+		protected string CurrentValue;
+		protected string NewValue;
+		protected int CursorIndex;
 
 		private void StartKeyCapture()
 		{
 			Application.EventSystem.Subscribe(EventType.InputKeyCode, OnInputKeyCode);
 			Application.EventSystem.Subscribe(EventType.TextEntered, OnTextEntered);
 			Application.EventSystem.ProcessEvent(EventType.ToggleKeyboardMode, new ToggleEventData(true));
+			Cursor.Hidden = false;
+			
+			Animation blinkingAnim = new Animation(true);
+			blinkingAnim.AddElementAnimation(new WidthHeightAnimation(0.0f, 0.0f, Cursor,
+				TextElement.CharacterSize * 0.5f, TextElement.CharacterSize * 0.5f, TextElement.CharacterSize * 0.05f,
+				TextElement.CharacterSize * 0.05f));
+			blinkingAnim.AddElementAnimation(new WidthHeightAnimation(0.4f, 0.0f, Cursor, 0.0f, 0.0f, 0.0f, 0.0f));
+			blinkingAnim.AddElementAnimation(new WidthHeightAnimation(0.8f, 0.0f, Cursor, 0.0f, 0.0f, 0.0f, 0.0f));
+			Cursor.PlayAnimation(blinkingAnim);
+			RefreshCursor();
 		}
 
 		private void EndKeyCapture()
@@ -34,17 +45,21 @@ namespace TetrisDotnet.Code.UI.Base
 			Application.EventSystem.QueueUnsubscribe(EventType.InputKeyCode, OnInputKeyCode);
 			Application.EventSystem.QueueUnsubscribe(EventType.TextEntered, OnTextEntered);
 			Application.EventSystem.ProcessEvent(EventType.ToggleKeyboardMode, new ToggleEventData(false));
+			
+			Cursor.Hidden = true;
+			Cursor.ClearAnimations();
 		}
-		
+
 		public TextFieldElement()
 		{
 			CapturesMouseClickEvents = true;
-			CapturesMouseMoveEvents = true;			
+			CapturesMouseMoveEvents = true;
 			FillColor = darkColor;
 			OutlineColor = mediumColor;
 			StretchToFit = true;
-			
-			textElement = new TextElement
+			OutlineThickness = -1;
+
+			TextElement = new TextElement
 			{
 				TopAnchor = 0.0f,
 				BottomAnchor = 1.0f,
@@ -56,14 +71,47 @@ namespace TetrisDotnet.Code.UI.Base
 				HorizontalAlignment = HorizontalAlignment.Left,
 				VerticalAlignment = VerticalAlignment.Center,
 			};
-			AddChild(textElement);
+			AddChild(TextElement);
+
+			Cursor = new RectangleElement
+			{
+				FillColor = Color.White,
+				TopAnchor = 0.5f,
+				BottomAnchor = 0.5f,
+				LeftAnchor = 0.0f,
+				RightAnchor = 0.0f,
+				TopHeight = TextElement.CharacterSize * 0.5f,
+				BottomHeight = TextElement.CharacterSize * 0.5f,
+				RightWidth = TextElement.CharacterSize * 0.05f,
+				LeftWidth = TextElement.CharacterSize * 0.05f,
+				StretchToFit = true,
+				Hidden = true,
+			};
+			TextElement.AddChild(Cursor);
+		}
+
+		protected override void Refresh()
+		{
+			base.Refresh();
+			RefreshCursor();
+		}
+
+		private void RefreshCursor()
+		{
+			TextElement.ForceRefresh();
+			Vector2f desiredPos = TextElement.FindCharacterPos((uint) CursorIndex);
+			Cursor.LeftAnchor = (desiredPos.X - TextElement.Left) / TextElement.Width;
+			Cursor.RightAnchor = Cursor.LeftAnchor;
+			Cursor.TopAnchor = (desiredPos.Y - TextElement.Top) / TextElement.Height;
+			Cursor.BottomAnchor = Cursor.TopAnchor;
+			Cursor.RestartCurrentAnimation();
 		}
 
 		~TextFieldElement()
 		{
 			EndKeyCapture();
 		}
-		
+
 		private void OnInputKeyCode(EventData eventData)
 		{
 			KeyPressedEventData keyPressedEventData = eventData as KeyPressedEventData;
@@ -71,94 +119,112 @@ namespace TetrisDotnet.Code.UI.Base
 			switch (keyPressedEventData.Key)
 			{
 				case Keyboard.Key.Enter:
-					textElement.DisplayedString = newValue;
+					if (float.TryParse(NewValue, out float fVal))
+					{
+						CurrentValue = fVal.ToString();
+						TextElement.DisplayedString = CurrentValue;
+						OnNewValue(fVal);
+					}
+					else
+					{
+						TextElement.DisplayedString = CurrentValue;
+					}
 					EndKeyCapture();
 					break;
 				case Keyboard.Key.Escape:
-					textElement.DisplayedString = oldValue;
+					TextElement.DisplayedString = CurrentValue;
 					EndKeyCapture();
 					break;
 				case Keyboard.Key.Delete:
-					if (cursorIndex < newValue.Length)
+					if (CursorIndex < NewValue.Length)
 					{
-						newValue = newValue.Remove(cursorIndex, 1);
-						textElement.DisplayedString = newValue;
+						NewValue = NewValue.Remove(CursorIndex, 1);
+						TextElement.DisplayedString = NewValue;
+						RefreshCursor();
 					}
+
 					break;
 				case Keyboard.Key.Backspace:
-					if (cursorIndex > 0)
+					if (CursorIndex > 0)
 					{
-						newValue = newValue.Remove(--cursorIndex, 1);
-						textElement.DisplayedString = newValue;
+						NewValue = NewValue.Remove(--CursorIndex, 1);
+						TextElement.DisplayedString = NewValue;
+						RefreshCursor();
 					}
+
 					break;
 				case Keyboard.Key.Left:
-					if (cursorIndex > 0)
+					if (CursorIndex > 0)
 					{
-						--cursorIndex;
+						--CursorIndex;
+						RefreshCursor();
 					}
+
 					break;
 				case Keyboard.Key.Right:
-					if (cursorIndex < newValue.Length - 1)
+					if (CursorIndex <= NewValue.Length - 1)
 					{
-						++cursorIndex;
+						++CursorIndex;
+						RefreshCursor();
 					}
-					break;
-				default:
-					if (keyPressedEventData.Key.IsNumeric())
-					{
 
-					}
 					break;
 			}
+		}
+
+		protected virtual void OnNewValue(float value)
+		{
 		}
 
 		private void OnTextEntered(EventData eventData)
 		{
 			TextEnteredEventData textEnteredEventData = eventData as TextEnteredEventData;
 			Debug.Assert(textEnteredEventData != null, nameof(textEnteredEventData) + " != null");
-			if (float.TryParse(textEnteredEventData.Text, out float value) || textEnteredEventData.Text == ".")
+			if (float.TryParse(textEnteredEventData.Text, out float value) || textEnteredEventData.Text == "." || textEnteredEventData.Text == "-")
 			{
-				if (cursorIndex < newValue.Length)
+				if (CursorIndex < NewValue.Length)
 				{
-					newValue = newValue.Insert(cursorIndex++, textEnteredEventData.Text);
-					textElement.DisplayedString = newValue;
+					NewValue = NewValue.Insert(CursorIndex++, textEnteredEventData.Text);
+					TextElement.DisplayedString = NewValue;
 				}
 				else
 				{
-					newValue += textEnteredEventData.Text;
-					textElement.DisplayedString = newValue;
-					++cursorIndex;
+					NewValue += textEnteredEventData.Text;
+					TextElement.DisplayedString = NewValue;
+					++CursorIndex;
 				}
+
+				RefreshCursor();
 			}
 		}
 
 		protected override void OnPressedOutsideElement()
 		{
+			if (Cursor.Hidden) return;
 			EndKeyCapture();
+			TextElement.DisplayedString = CurrentValue;
 			base.OnPressedOutsideElement();
 		}
 
 		protected override void OnButtonDown()
-		{			
+		{
 			Animation buttonDownAnimation = new Animation();
-			buttonDownAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.09f, textElement, mediumColor));
-			buttonDownAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.09f, this,  darkColor));
-			buttonDownAnimation.AddElementAnimation(new OutlineColorAnimation(0.0f, 0.09f, this,  lightColor));
+			buttonDownAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.09f, TextElement, mediumColor));
+			buttonDownAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.09f, this, darkColor));
+			buttonDownAnimation.AddElementAnimation(new OutlineColorAnimation(0.0f, 0.09f, this, lightColor));
 			OutlineThickness = 1;
-			
+
 			PlayAnimation(buttonDownAnimation);
-			
+
 			base.OnButtonDown();
 		}
 
 		protected override void OnButtonPressed()
 		{
 			StartKeyCapture();
-			oldValue = textElement.DisplayedString;
-			newValue = "";
-			textElement.DisplayedString = newValue;
-			cursorIndex = 0;
+			NewValue = "";
+			TextElement.DisplayedString = NewValue;
+			CursorIndex = 0;
 			base.OnButtonPressed();
 		}
 
@@ -167,21 +233,23 @@ namespace TetrisDotnet.Code.UI.Base
 			Animation buttonReleasedAnimation = new Animation();
 			if (MouseInside)
 			{
-				buttonReleasedAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.15f, textElement, lightColor));
+				buttonReleasedAnimation.AddElementAnimation(
+					new FillColorAnimation(0.0f, 0.15f, TextElement, lightColor));
 				buttonReleasedAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.15f, this, mediumColor));
-				buttonReleasedAnimation.AddElementAnimation(new OutlineColorAnimation(0.0f, 0.15f, this,  lightColor));
+				buttonReleasedAnimation.AddElementAnimation(new OutlineColorAnimation(0.0f, 0.15f, this, lightColor));
 				OutlineThickness = 1;
 			}
 			else
 			{
-				buttonReleasedAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.25f, textElement, mediumColor));
+				buttonReleasedAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.25f, TextElement,
+					mediumColor));
 				buttonReleasedAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.25f, this, darkColor));
-				buttonReleasedAnimation.AddElementAnimation(new OutlineColorAnimation(0.0f, 0.25f, this,  mediumColor));
+				buttonReleasedAnimation.AddElementAnimation(new OutlineColorAnimation(0.0f, 0.25f, this, mediumColor));
 				OutlineThickness = -1;
 			}
-			
+
 			PlayAnimation(buttonReleasedAnimation);
-			
+
 			base.OnButtonReleased();
 		}
 
@@ -190,9 +258,9 @@ namespace TetrisDotnet.Code.UI.Base
 			if (!ButtonDown)
 			{
 				Animation mouseEnterAnimation = new Animation();
-				mouseEnterAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.15f, textElement, lightColor));
+				mouseEnterAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.15f, TextElement, lightColor));
 				mouseEnterAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.15f, this, mediumColor));
-				mouseEnterAnimation.AddElementAnimation(new OutlineColorAnimation(0.0f, 0.15f, this,  lightColor));
+				mouseEnterAnimation.AddElementAnimation(new OutlineColorAnimation(0.0f, 0.15f, this, lightColor));
 				OutlineThickness = 1;
 				PlayAnimation(mouseEnterAnimation);
 			}
@@ -201,16 +269,17 @@ namespace TetrisDotnet.Code.UI.Base
 		}
 
 		protected override void OnMouseExit()
-		{			
+		{
 			if (!ButtonDown)
 			{
 				Animation mouseExitAnimation = new Animation();
-				mouseExitAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.25f, textElement, mediumColor));
+				mouseExitAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.25f, TextElement, mediumColor));
 				mouseExitAnimation.AddElementAnimation(new FillColorAnimation(0.0f, 0.25f, this, darkColor));
-				mouseExitAnimation.AddElementAnimation(new OutlineColorAnimation(0.0f, 0.25f, this,  mediumColor));
+				mouseExitAnimation.AddElementAnimation(new OutlineColorAnimation(0.0f, 0.25f, this, mediumColor));
 				OutlineThickness = -1;
 				PlayAnimation(mouseExitAnimation);
 			}
+
 			base.OnMouseExit();
 		}
 	}

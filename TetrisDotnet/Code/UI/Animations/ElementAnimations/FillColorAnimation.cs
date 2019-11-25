@@ -17,9 +17,9 @@ namespace TetrisDotnet.Code.UI.Animations.ElementAnimations
 			this.targetColor = targetColor;
 		}
 
-		protected override void PlayAnimation(float elapsedTime)
+		protected override void PlayAnimation(float mu)
 		{
-			targetElement.FillColor = Interpolation.CosineInterpolate(originalColor, targetColor, elapsedTime / Duration);
+			targetElement.FillColor = Interpolation.CosineInterpolate(originalColor, targetColor, mu);
 		}
 	}
 }

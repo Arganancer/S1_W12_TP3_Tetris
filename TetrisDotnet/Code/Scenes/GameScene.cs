@@ -31,7 +31,7 @@ namespace TetrisDotnet.Code.Scenes
 		// AI Elements
 		private readonly Evaluator evaluator = new Evaluator();
 		private readonly Controller controller = new Controller();
-		private const float AiTickInterval = 0.00001f;
+		public static float AiTickInterval { get; private set; } = 0.01f;
 		private float lastAiTick;
 		private bool aiPlaying = true;
 
@@ -44,6 +44,7 @@ namespace TetrisDotnet.Code.Scenes
 			StartNewGame();
 
 			Application.EventSystem.Subscribe(EventType.ToggleAi, OnAiToggled);
+			Application.EventSystem.Subscribe(EventType.AiTickSpeedUpdated, OnAiTickSpeedUpdated);
 		}
 
 		~GameScene()
@@ -51,6 +52,14 @@ namespace TetrisDotnet.Code.Scenes
 			UnsubscribeFromInputs();
 			Application.EventSystem.Unsubscribe(EventType.InputPause, OnInputPause);
 			Application.EventSystem.Unsubscribe(EventType.ToggleAi, OnAiToggled);
+			Application.EventSystem.Unsubscribe(EventType.AiTickSpeedUpdated, OnAiTickSpeedUpdated);
+		}
+
+		private void OnAiTickSpeedUpdated(EventData eventData)
+		{
+			FloatEventData floatEventData = eventData as FloatEventData;
+			Debug.Assert(floatEventData != null, nameof(floatEventData) + " != null");
+			AiTickInterval = floatEventData.Value;
 		}
 
 		private void SubscribeToInputs()
@@ -123,7 +132,7 @@ namespace TetrisDotnet.Code.Scenes
 
 					State currentState = new State(activePiece, grid.GetBoolGrid(), holdManager.CurrentPiece,
 						holdManager.CanSwap);
-					
+
 					if (!controller.RunCommands(currentState, nbOfTicks))
 					{
 						Action action = evaluator.GetBestPlacement(currentState);
@@ -191,7 +200,7 @@ namespace TetrisDotnet.Code.Scenes
 		private void OnInputHold(EventData eventData)
 		{
 			if (!holdManager.CanSwap) return;
-			
+
 			PieceType newHeldPiece = activePiece.Type;
 			PieceType oldHeldPiece = holdManager.CurrentPiece;
 
