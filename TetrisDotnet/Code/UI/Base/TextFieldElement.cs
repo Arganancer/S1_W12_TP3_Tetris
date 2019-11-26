@@ -221,10 +221,10 @@ namespace TetrisDotnet.Code.UI.Base
 
 		protected override void OnButtonPressed()
 		{
-			StartKeyCapture();
 			NewValue = "";
 			TextElement.DisplayedString = NewValue;
 			CursorIndex = 0;
+			StartKeyCapture();
 			base.OnButtonPressed();
 		}
 

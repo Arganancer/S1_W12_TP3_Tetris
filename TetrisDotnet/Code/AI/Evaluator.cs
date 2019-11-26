@@ -150,7 +150,7 @@ namespace TetrisDotnet.Code.AI
 			{
 				FinalPiece heldPiece =
 					GetBestPiece(GenerateAllFinalPossibilities(state, new Piece(state.CurrentHeldPiece)));
-				if (heldPiece.GetWeight() < finalPieces.Peek().GetWeight())
+				if (heldPiece != null && finalPieces.Count > 0 && heldPiece.GetWeight() < finalPieces.Peek().GetWeight())
 				{
 					return new Action(ActionType.Hold, null);
 				}

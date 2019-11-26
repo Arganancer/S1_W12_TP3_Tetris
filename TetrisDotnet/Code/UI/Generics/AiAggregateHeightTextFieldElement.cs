@@ -15,7 +15,7 @@ namespace TetrisDotnet.Code.UI.Generics
 		
 		protected override void OnNewValue(float value)
 		{
-			Application.EventSystem.ProcessEvent(EventType.AiTickSpeedUpdated, new FloatEventData(value));
+			Application.EventSystem.ProcessEvent(EventType.AiAggregateHeightUpdated, new FloatEventData(value));
 		}
 	}
 }

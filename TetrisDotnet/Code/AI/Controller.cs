@@ -12,7 +12,7 @@ namespace TetrisDotnet.Code.AI
 		public void PlanPath(Action action)
 		{
 			currentAction = action;
-			if (currentAction.actionType == ActionType.Place)
+			if (currentAction != null && currentAction.actionType == ActionType.Place)
 			{
 				currentPathNodeAction = action.path.Pop();
 			}
